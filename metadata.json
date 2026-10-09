@@ -1,0 +1,6 @@
+{
+  "name": "Écrins de Mariage Var",
+  "description": "Annuaire premium des lieux de réception d'exception dans le Var.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
