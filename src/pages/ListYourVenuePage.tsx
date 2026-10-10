@@ -25,7 +25,7 @@ const benefits = [
   },
   {
     title: 'Vos statistiques',
-    text: 'Vues de votre fiche, enregistrements par les couples, demandes de coordonnées : vous suivez vos chiffres depuis votre compte.',
+    text: 'Visiteurs de votre fiche, enregistrements par les couples, demandes de coordonnées : vous suivez vos chiffres depuis votre compte.',
   },
 ];
 

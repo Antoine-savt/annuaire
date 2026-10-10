@@ -1,11 +1,10 @@
 import { useEffect, useState } from 'react';
 import { Venue } from '../types';
-import { findVenue, venues, venueTarget } from '../data';
+import { findVenue, venues } from '../data';
 import { clearSaved, removeSaved, saveAll, useSaved } from '../lib/saved';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { Breadcrumbs } from '../components/Breadcrumbs';
-import { ContactAccess } from '../components/ContactAccess';
 import { Photo } from '../components/Photo';
 import { VenueGrid } from '../components/VenueGrid';
 import { KeyFigures } from '../components/VenueListItem';
@@ -67,7 +66,9 @@ function Comparison({ list }: { list: Venue[] }) {
             </th>
             {list.map((v) => (
               <td key={v.slug} className="p-4">
-                <ContactAccess target={venueTarget(v)} className="btn-primary !px-4 !py-2 text-sm" />
+                <Link href={paths.venue(v.slug)} className="btn-primary !px-4 !py-2 text-sm">
+                  Obtenir les coordonnées
+                </Link>
               </td>
             ))}
           </tr>
@@ -96,7 +97,9 @@ function SavedCard({ venue, onRemove }: { venue: Venue; onRemove?: () => void })
         <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">{venue.summary}</p>
         <KeyFigures venue={venue} className="mt-4" />
         <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
-          <ContactAccess target={venueTarget(venue)} className="btn-primary !px-4 !py-2 text-sm" />
+          <Link href={paths.venue(venue.slug)} className="btn-primary !px-4 !py-2 text-sm">
+            Obtenir les coordonnées
+          </Link>
           {onRemove && (
             <button type="button" onClick={onRemove} className="text-sm text-muted underline-offset-2 hover:text-ink hover:underline">
               Retirer

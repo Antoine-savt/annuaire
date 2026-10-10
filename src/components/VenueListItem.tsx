@@ -1,9 +1,7 @@
 import { Venue } from '../types';
-import { venueTarget } from '../data';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { VenueGallery } from './VenueGallery';
-import { ContactAccess } from './ContactAccess';
 import { SaveButton } from './SaveButton';
 
 /** The three figures that let you size up a venue at a glance. */
@@ -79,7 +77,10 @@ export function VenueListItem({ venue, headingLevel: Heading = 'h3' }: VenueList
         <KeyFigures venue={venue} className="mt-5" />
 
         <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
-          <ContactAccess target={venueTarget(venue)} />
+          {/* Contact details are requested from the listing page, so every request follows a view of it. */}
+          <Link href={href} className="btn-primary">
+            Obtenir les coordonnées
+          </Link>
           <Link href={href} className="btn-ghost">
             Voir la fiche
           </Link>

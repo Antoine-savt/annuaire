@@ -105,7 +105,7 @@ function ListingCard({
 
         <dl className="mt-4 grid grid-cols-3 gap-3 sm:max-w-md">
           {[
-            ['Vues', stats.views],
+            ['Visiteurs', stats.visitors],
             ['Enregistrements', stats.saves],
             ['Demandes', stats.leads],
           ].map(([label, value]) => (

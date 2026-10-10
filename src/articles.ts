@@ -946,7 +946,7 @@ Les couples contactent plusieurs lieux en même temps. Répondre dans la journé
 
 ## Mesurer d'où viennent vos demandes
 
-Demandez à chaque couple comment il vous a trouvé, et notez-le. Au bout d'une saison, vous saurez quels canaux vous apportent des mariages et lesquels ne vous coûtent que du temps. Sur notre annuaire, nous mesurons les vues de votre fiche et les demandes de coordonnées, et nous vous transmettons ces chiffres sur demande.
+Demandez à chaque couple comment il vous a trouvé, et notez-le. Au bout d'une saison, vous saurez quels canaux vous apportent des mariages et lesquels ne vous coûtent que du temps. Sur notre annuaire, nous mesurons les visiteurs de votre fiche et les demandes de coordonnées, et nous vous transmettons ces chiffres sur demande.
 `,
     faq: [
       {

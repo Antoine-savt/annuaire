@@ -27,9 +27,10 @@ service cloud.firestore {
     }
 
     // ---------- Anonymous statistics ----------
+    // "visit" is a visit of the site (empty venue), the other types concern one listing.
     match /events/{id} {
       allow create: if request.resource.data.keys().hasOnly(['type', 'venue', 'session', 'path', 'referrer', 'owner', 'at'])
-        && request.resource.data.type in ['view', 'contact_open', 'lead', 'phone_click', 'website_click', 'save']
+        && request.resource.data.type in ['visit', 'view', 'contact_open', 'lead', 'phone_click', 'website_click', 'save']
         && shortString(request.resource.data.venue, 80)
         && shortString(request.resource.data.session, 40)
         && shortString(request.resource.data.path, 200)

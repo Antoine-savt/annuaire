@@ -266,7 +266,7 @@ export async function deleteListing(l: ListingDoc): Promise<void> {
 // ---------- Statistics of the professional's listings ----------
 
 export interface ListingStats {
-  views: number;
+  /** People who opened the listing page or saved it from a list, counted once per session. */
   visitors: number;
   saves: number;
   opens: number;
@@ -274,7 +274,7 @@ export interface ListingStats {
   clicks: number;
 }
 
-export const emptyStats: ListingStats = { views: 0, visitors: 0, saves: 0, opens: 0, leads: 0, clicks: 0 };
+export const emptyStats: ListingStats = { visitors: 0, saves: 0, opens: 0, leads: 0, clicks: 0 };
 
 /** Figures for each listing id, from the anonymous statistics recorded with the owner's id. */
 export async function myStats(uid: string): Promise<Map<string, ListingStats>> {
@@ -286,10 +286,9 @@ export async function myStats(uid: string): Promise<Map<string, ListingStats>> {
     const id = String(e.venue);
     if (!stats.has(id)) stats.set(id, { ...emptyStats, sessions: new Set() });
     const s = stats.get(id)!;
-    if (e.type === 'view') {
-      s.views++;
-      s.sessions.add(String(e.session));
-    } else if (e.type === 'save') s.saves++;
+    // Visitors include couples who saved the listing from a list without opening its page.
+    s.sessions.add(String(e.session));
+    if (e.type === 'save') s.saves++;
     else if (e.type === 'contact_open') s.opens++;
     else if (e.type === 'lead') s.leads++;
     else if (e.type === 'phone_click' || e.type === 'website_click') s.clicks++;

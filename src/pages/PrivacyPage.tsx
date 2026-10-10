@@ -85,7 +85,7 @@ export function PrivacyPage() {
       title: 'Statistiques de fréquentation',
       body: (
         <p>
-          Nous comptons de façon anonyme les consultations des fiches, les enregistrements dans « Mes lieux » et les clics sur les coordonnées. Un
+          Nous comptons de façon anonyme les visites du site, les consultations des fiches, les enregistrements dans « Mes lieux » et les clics sur les coordonnées. Un
           identifiant aléatoire est conservé dans votre navigateur le temps de la session (stockage de session, effacé à
           la fermeture de l'onglet) pour ne pas compter deux fois la même visite. Aucun cookie publicitaire, aucun suivi
           sur d'autres sites.

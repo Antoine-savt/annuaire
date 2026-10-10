@@ -18,6 +18,7 @@ import { ListYourVenuePage } from './pages/ListYourVenuePage';
 import { SavedPage } from './pages/SavedPage';
 import { SavedShortcut } from './components/SavedShortcut';
 import { refreshCatalog, useCatalogState } from './catalog';
+import { track } from './lib/track';
 
 // The statistics page and the professional area (with the Firebase sign-in code) load only when opened.
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -27,6 +28,9 @@ const ListingEditorPage = lazy(() => import('./pages/account/ListingEditorPage')
 
 /** Pages of listings published after the build only exist once the browser has fetched them. */
 const LISTING_PATH = /^\/(lieux|prestataires\/[^/]+)\/[^/]+$/;
+
+/** The dashboard and the professional area are not counted as visits of the site. */
+const PRIVATE_ROUTES: Route['name'][] = ['admin', 'login', 'account', 'listingEditor'];
 
 export default function App() {
   const { path } = useRouter();
@@ -40,6 +44,11 @@ export default function App() {
   useEffect(() => {
     void refreshCatalog();
   }, []);
+
+  // One visit per session, recorded on the first public page reached.
+  useEffect(() => {
+    if (!PRIVATE_ROUTES.includes(route.name)) void track('visit', '');
+  }, [route.name]);
 
   useEffect(() => {
     // Prerendered HTML for this exact path already carries the right head tags.

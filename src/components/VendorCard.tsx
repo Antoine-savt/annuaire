@@ -1,6 +1,4 @@
 import { Vendor } from '../types';
-import { vendorTarget } from '../vendorListings';
-import { ContactAccess } from './ContactAccess';
 import { Photo } from './Photo';
 import { Tags } from './VenueListItem';
 import { Link } from '../router';
@@ -22,9 +20,9 @@ function VendorImage({ vendor }: { vendor: Vendor }) {
   return <Photo id={vendor.image} alt={alt} sizes="(min-width: 768px) 30vw, 100vw" maxWidth={800} />;
 }
 
-/** A vendor in its category list, with the same gated contact form and statistics as the venues. */
+/** A vendor in its category list; the contact form is on its page, as for the venues. */
 export function VendorCard({ vendor }: { vendor: Vendor }) {
-  const target = vendorTarget(vendor);
+  const href = paths.vendorPage(vendor.category, vendor.slug);
 
   return (
     <article className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
@@ -39,7 +37,7 @@ export function VendorCard({ vendor }: { vendor: Vendor }) {
           {vendor.priceFrom && <p className="text-sm font-semibold text-ink">{vendor.priceFrom}</p>}
         </div>
         <h3 className="mt-1 text-[1.8rem] leading-tight text-ink">
-          <Link href={paths.vendorPage(vendor.category, vendor.slug)} className="hover:text-pine">
+          <Link href={href} className="hover:text-pine">
             {vendor.name}
           </Link>
         </h3>
@@ -50,8 +48,10 @@ export function VendorCard({ vendor }: { vendor: Vendor }) {
           </div>
         )}
         <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
-          <ContactAccess target={target} />
-          <Link href={paths.vendorPage(vendor.category, vendor.slug)} className="btn-ghost">
+          <Link href={href} className="btn-primary">
+            Obtenir les coordonnées
+          </Link>
+          <Link href={href} className="btn-ghost">
             Voir la fiche
           </Link>
         </div>

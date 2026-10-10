@@ -150,7 +150,7 @@ export default function LoginPage() {
         <ul className="mt-8 max-w-xl space-y-3 text-[1.02rem] text-ink">
           <li className="border-l-2 border-pine pl-4">Votre fiche en ligne immédiatement, avec vos photos et vos tarifs.</li>
           <li className="border-l-2 border-pine pl-4">Modifiable à tout moment depuis votre compte.</li>
-          <li className="border-l-2 border-pine pl-4">Vos statistiques : vues, enregistrements, demandes de coordonnées.</li>
+          <li className="border-l-2 border-pine pl-4">Vos statistiques : visiteurs, enregistrements, demandes de coordonnées.</li>
         </ul>
         <div className="mt-8 max-w-xl">
           <PricingNotice />

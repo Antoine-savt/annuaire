@@ -5,7 +5,7 @@ export function PricingNotice() {
       <p className="font-sans text-base font-semibold text-ink">Gratuit pendant le lancement, payant ensuite</p>
       <p className="mt-2 text-[0.95rem] leading-relaxed text-muted">
         Le référencement est gratuit pendant la phase de lancement de l'annuaire. Il deviendra ensuite payant, sous forme
-        d'abonnement mensuel. Avant ce changement, nous vous présenterons l'offre et les statistiques de votre fiche (vues,
+        d'abonnement mensuel. Avant ce changement, nous vous présenterons l'offre et les statistiques de votre fiche (visiteurs,
         demandes de coordonnées), et vous resterez libre de continuer ou de retirer votre fiche.
       </p>
     </div>

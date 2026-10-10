@@ -1,6 +1,7 @@
 import { getDb, trackingEnabled } from './firebase';
 
-export type EventType = 'view' | 'contact_open' | 'lead' | 'phone_click' | 'website_click' | 'save';
+/** "visit" is one visit of the site (any page), the others concern one listing. */
+export type EventType = 'visit' | 'view' | 'contact_open' | 'lead' | 'phone_click' | 'website_click' | 'save';
 
 function storage(kind: 'session' | 'local'): Storage | null {
   try {
@@ -26,18 +27,19 @@ function isBot(): boolean {
 }
 
 /**
- * Record an anonymous interaction with a listing. "owner" is the account managing the listing, so the
- * professional can see their own figures. Never throws: statistics must not break the page.
+ * Record an anonymous interaction with a listing (or a visit of the site, with an empty "venue").
+ * "owner" is the account managing the listing, so the professional can see their own figures.
+ * Never throws: statistics must not break the page.
  */
 export async function track(type: EventType, venue: string, owner?: string): Promise<void> {
   if (typeof window === 'undefined' || !trackingEnabled || isBot()) return;
 
-  // A venue page counts once per session, so refreshing does not inflate the figures.
-  if (type === 'view') {
-    const store = storage('session');
-    const key = `edition:viewed:${venue}`;
-    if (store?.getItem(key)) return;
-    store?.setItem(key, '1');
+  // The site and each listing page count once per session, so refreshing does not inflate the figures.
+  const onceKey = type === 'visit' ? 'edition:visit' : type === 'view' ? `edition:viewed:${venue}` : '';
+  const store = storage('session');
+  if (onceKey) {
+    if (store?.getItem(onceKey)) return;
+    store?.setItem(onceKey, '1');
   }
 
   try {
@@ -58,6 +60,8 @@ export async function track(type: EventType, venue: string, owner?: string): Pro
       at: serverTimestamp(),
     });
   } catch (error) {
+    // Not recorded: let the next page load of this session try again.
+    if (onceKey) store?.removeItem(onceKey);
     console.warn('Statistique non enregistrée', error);
   }
 }

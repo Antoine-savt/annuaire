@@ -53,7 +53,7 @@ interface LeadRow {
 interface VenueStats {
   slug: string;
   name: string;
-  views: number;
+  /** People who opened the listing page or saved it from a list, counted once per session. */
   visitors: number;
   opens: number;
   leads: number;
@@ -89,7 +89,7 @@ const monthLabel = (key: string) =>
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 1000) / 10} %` : '–');
 
 function emptyStats(slug: string): VenueStats {
-  return { slug, name: venueName(slug), views: 0, visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 };
+  return { slug, name: venueName(slug), visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 };
 }
 
 /** Per-venue figures from raw events and leads. */
@@ -98,13 +98,13 @@ function aggregate(events: EventRow[], leads: LeadRow[]): VenueStats[] {
   const map = new Map<string, VenueStats>(ids.map((id) => [id, emptyStats(id)]));
   const sessions = new Map<string, Set<string>>();
   for (const e of events) {
+    if (e.type === 'visit') continue;
     const s = map.get(e.venue) ?? emptyStats(e.venue);
     map.set(e.venue, s);
-    if (e.type === 'view') {
-      s.views++;
-      if (!sessions.has(e.venue)) sessions.set(e.venue, new Set());
-      sessions.get(e.venue)!.add(e.session);
-    } else if (e.type === 'contact_open') s.opens++;
+    // Visitors include couples who saved the listing from a list without opening its page.
+    if (!sessions.has(e.venue)) sessions.set(e.venue, new Set());
+    sessions.get(e.venue)!.add(e.session);
+    if (e.type === 'contact_open') s.opens++;
     else if (e.type === 'phone_click') s.phoneClicks++;
     else if (e.type === 'website_click') s.websiteClicks++;
     else if (e.type === 'save') s.saves++;
@@ -115,7 +115,7 @@ function aggregate(events: EventRow[], leads: LeadRow[]): VenueStats[] {
     s.leads++;
   }
   for (const [slug, set] of sessions) map.get(slug)!.visitors = set.size;
-  return [...map.values()].sort((a, b) => b.leads - a.leads || b.views - a.views);
+  return [...map.values()].sort((a, b) => b.leads - a.leads || b.visitors - a.visitors);
 }
 
 function downloadCsv(filename: string, rows: (string | number)[][]) {
@@ -206,7 +206,6 @@ export default function AdminPage() {
     () =>
       stats.reduce(
         (t, s) => ({
-          views: t.views + s.views,
           visitors: t.visitors + s.visitors,
           opens: t.opens + s.opens,
           leads: t.leads + s.leads,
@@ -214,7 +213,7 @@ export default function AdminPage() {
           websiteClicks: t.websiteClicks + s.websiteClicks,
           saves: t.saves + s.saves,
         }),
-        { views: 0, visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 },
+        { visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 },
       ),
     [stats],
   );
@@ -320,6 +319,8 @@ export default function AdminPage() {
   } else {
     content = (
       <>
+        <SiteVisits count={events.filter((e) => e.type === 'visit').length} />
+        <h2 className="mt-10 text-3xl">Toutes les fiches</h2>
         <StatCards s={totals} />
         <div className="mt-10 flex flex-wrap items-end justify-between gap-3">
           <h2 className="text-3xl">Par lieu</h2>
@@ -329,8 +330,8 @@ export default function AdminPage() {
               className="btn-ghost"
               onClick={() =>
                 downloadCsv('statistiques-lieux.csv', [
-                  ['Fiche', 'Vues de la fiche', 'Visiteurs uniques', 'Enregistrements', 'Formulaires ouverts', 'Demandes', 'Taux de demande', 'Clics téléphone', 'Clics site'],
-                  ...stats.map((s) => [s.name, s.views, s.visitors, s.saves, s.opens, s.leads, pct(s.leads, s.visitors), s.phoneClicks, s.websiteClicks]),
+                  ['Fiche', 'Visiteurs', 'Enregistrements', 'Formulaires ouverts', 'Demandes', 'Taux de demande', 'Clics téléphone', 'Clics site'],
+                  ...stats.map((s) => [s.name, s.visitors, s.saves, s.opens, s.leads, pct(s.leads, s.visitors), s.phoneClicks, s.websiteClicks]),
                 ])
               }
             >
@@ -355,7 +356,6 @@ export default function AdminPage() {
             <thead className="border-b border-line">
               <tr>
                 <th className={thClass}>Fiche</th>
-                <th className={thClass}>Vues</th>
                 <th className={thClass}>Visiteurs</th>
                 <th className={thClass}>Enregistrés</th>
                 <th className={thClass}>Formulaires ouverts</th>
@@ -373,7 +373,6 @@ export default function AdminPage() {
                       {s.name}
                     </button>
                   </td>
-                  <td className={tdClass}>{s.views}</td>
                   <td className={tdClass}>{s.visitors}</td>
                   <td className={tdClass}>{s.saves}</td>
                   <td className={tdClass}>{s.opens}</td>
@@ -387,7 +386,8 @@ export default function AdminPage() {
           </table>
         </div>
         <p className="mt-3 text-sm text-muted">
-          Taux = demandes ÷ visiteurs uniques de la fiche. Enregistrés = ajouts à la sélection « Mes lieux » d'un couple.
+          Visiteurs = personnes qui ont ouvert la page de la fiche (ou l'ont enregistrée depuis une liste), comptées une
+          fois par session. Taux = demandes ÷ visiteurs. Enregistrés = ajouts à la sélection « Mes lieux » d'un couple.
           Les visites de robots et les rechargements de page ne sont pas comptés.
         </p>
       </>
@@ -631,10 +631,25 @@ function RequestsPanel({ submissions }: { submissions: SubmissionRow[] }) {
   );
 }
 
+/** Visits of the whole site, whatever the pages seen. */
+function SiteVisits({ count }: { count: number }) {
+  return (
+    <div className="flex flex-wrap items-center gap-x-6 gap-y-3">
+      <div className={`${cardClass} min-w-[13rem]`}>
+        <p className="text-xs font-semibold text-muted">Visites du site</p>
+        <p className="mt-1 font-display text-3xl tabular-nums">{count}</p>
+      </div>
+      <p className="max-w-xl text-sm text-muted">
+        Une visite = une personne qui arrive sur le site, quelle que soit la page, comptée une fois tant que son onglet
+        reste ouvert. Les robots, les rechargements, ce tableau de bord et l'espace professionnel ne sont pas comptés.
+      </p>
+    </div>
+  );
+}
+
 function StatCards({ s }: { s: Omit<VenueStats, 'slug' | 'name'> }) {
   const cards = [
-    { label: 'Vues de la fiche', value: s.views },
-    { label: 'Visiteurs uniques', value: s.visitors },
+    { label: 'Visiteurs', value: s.visitors },
     { label: 'Enregistrements', value: s.saves },
     { label: 'Formulaires ouverts', value: s.opens },
     { label: 'Demandes de coordonnées', value: s.leads, strong: true },
@@ -642,7 +657,7 @@ function StatCards({ s }: { s: Omit<VenueStats, 'slug' | 'name'> }) {
     { label: 'Clics vers le site', value: s.websiteClicks },
   ];
   return (
-    <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-7">
+    <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
       {cards.map((c) => (
         <div key={c.label} className={`${cardClass} ${c.strong ? 'border-pine' : ''}`}>
           <dt className="text-xs font-semibold text-muted">{c.label}</dt>
@@ -654,13 +669,13 @@ function StatCards({ s }: { s: Omit<VenueStats, 'slug' | 'name'> }) {
 }
 
 function MonthlyTable({ events, leads }: { events: EventRow[]; leads: LeadRow[] }) {
-  const months = new Map<string, { views: number; leads: number; clicks: number }>();
+  const months = new Map<string, { visitors: Set<string>; leads: number; clicks: number }>();
   const row = (key: string) => {
-    if (!months.has(key)) months.set(key, { views: 0, leads: 0, clicks: 0 });
+    if (!months.has(key)) months.set(key, { visitors: new Set(), leads: 0, clicks: 0 });
     return months.get(key)!;
   };
   for (const e of events) {
-    if (e.type === 'view') row(monthKey(e.at)).views++;
+    row(monthKey(e.at)).visitors.add(e.session);
     if (e.type === 'phone_click' || e.type === 'website_click') row(monthKey(e.at)).clicks++;
   }
   for (const l of leads) row(monthKey(l.at)).leads++;
@@ -677,7 +692,7 @@ function MonthlyTable({ events, leads }: { events: EventRow[]; leads: LeadRow[] 
             <thead className="border-b border-line">
               <tr>
                 <th className={thClass}>Mois</th>
-                <th className={thClass}>Vues de la fiche</th>
+                <th className={thClass}>Visiteurs</th>
                 <th className={thClass}>Demandes</th>
                 <th className={thClass}>Clics coordonnées</th>
               </tr>
@@ -686,7 +701,7 @@ function MonthlyTable({ events, leads }: { events: EventRow[]; leads: LeadRow[] 
               {keys.map((k) => (
                 <tr key={k}>
                   <td className={`${tdClass} capitalize`}>{monthLabel(k)}</td>
-                  <td className={tdClass}>{months.get(k)!.views}</td>
+                  <td className={tdClass}>{months.get(k)!.visitors.size}</td>
                   <td className={tdClass}>{months.get(k)!.leads}</td>
                   <td className={tdClass}>{months.get(k)!.clicks}</td>
                 </tr>
