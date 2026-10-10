@@ -1,0 +1,208 @@
+rules_version = '2';
+
+// Visitors can add statistics, contact requests and listing requests, never read them.
+// Professionals manage their own profile and listings, and read the statistics of their listings.
+// L'Édition admins (accounts listed in the "admins" collection) can read and moderate everything.
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Publishing requires a confirmed e-mail address (Google accounts are confirmed), to limit spam.
+    function emailVerified() {
+      return signedIn() && request.auth.token.email_verified == true;
+    }
+
+    function shortString(value, max) {
+      return value is string && value.size() <= max;
+    }
+
+    function optionalInt(value, max) {
+      return value == null || (value is int && value >= 0 && value <= max);
+    }
+
+    // ---------- Anonymous statistics ----------
+    match /events/{id} {
+      allow create: if request.resource.data.keys().hasOnly(['type', 'venue', 'session', 'path', 'referrer', 'owner', 'at'])
+        && request.resource.data.type in ['view', 'contact_open', 'lead', 'phone_click', 'website_click', 'save']
+        && shortString(request.resource.data.venue, 80)
+        && shortString(request.resource.data.session, 40)
+        && shortString(request.resource.data.path, 200)
+        && shortString(request.resource.data.referrer, 120)
+        && (!('owner' in request.resource.data) || shortString(request.resource.data.owner, 128))
+        && request.resource.data.at == request.time;
+      // A professional reads the statistics of their own listings (query: where owner == uid).
+      allow read: if isAdmin() || (signedIn() && resource.data.owner == request.auth.uid);
+    }
+
+    // ---------- Couples' contact requests (personal data: admins only) ----------
+    match /leads/{id} {
+      allow create: if request.resource.data.keys().hasAll(['venue', 'firstName', 'email', 'consent', 'at'])
+        && request.resource.data.keys().hasOnly(['venue', 'firstName', 'email', 'phone', 'weddingDate', 'guests', 'consent', 'at'])
+        && shortString(request.resource.data.venue, 80)
+        && request.resource.data.firstName is string
+        && request.resource.data.firstName.size() > 0
+        && request.resource.data.firstName.size() <= 80
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && request.resource.data.email.size() <= 200
+        && (!('phone' in request.resource.data) || shortString(request.resource.data.phone, 40))
+        && (!('weddingDate' in request.resource.data) || shortString(request.resource.data.weddingDate, 10))
+        && (!('guests' in request.resource.data)
+            || (request.resource.data.guests is int && request.resource.data.guests > 0 && request.resource.data.guests <= 5000))
+        && request.resource.data.consent == true
+        && request.resource.data.at == request.time;
+      allow read, delete: if isAdmin();
+    }
+
+    // ---------- Listing requests sent with the forms (venues and vendors) ----------
+    match /submissions/{id} {
+      allow create: if request.resource.data.keys().hasAll(['category', 'kind', 'name', 'commune', 'contactName', 'email', 'phone', 'consent', 'at'])
+        && request.resource.data.keys().hasOnly(['category', 'kind', 'name', 'commune', 'zone', 'subtype', 'capacity', 'sleeps',
+             'priceFrom', 'website', 'instagram', 'contactName', 'role', 'email', 'phone', 'message', 'consent', 'at'])
+        && request.resource.data.category is string
+        && request.resource.data.category.matches('[a-z-]{2,40}')
+        && request.resource.data.kind in ['nouveau', 'mise-a-jour']
+        && request.resource.data.name is string && request.resource.data.name.size() > 0
+        && shortString(request.resource.data.name, 120)
+        && shortString(request.resource.data.commune, 80)
+        && request.resource.data.contactName is string && request.resource.data.contactName.size() > 0
+        && shortString(request.resource.data.contactName, 120)
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && request.resource.data.email.size() <= 200
+        && shortString(request.resource.data.phone, 40)
+        && (!('zone' in request.resource.data) || shortString(request.resource.data.zone, 60))
+        && (!('subtype' in request.resource.data) || shortString(request.resource.data.subtype, 120))
+        && (!('priceFrom' in request.resource.data) || shortString(request.resource.data.priceFrom, 120))
+        && (!('website' in request.resource.data) || shortString(request.resource.data.website, 200))
+        && (!('instagram' in request.resource.data) || shortString(request.resource.data.instagram, 120))
+        && (!('role' in request.resource.data) || shortString(request.resource.data.role, 60))
+        && (!('message' in request.resource.data) || shortString(request.resource.data.message, 2000))
+        && (!('capacity' in request.resource.data) || optionalInt(request.resource.data.capacity, 10000))
+        && (!('sleeps' in request.resource.data) || optionalInt(request.resource.data.sleeps, 10000))
+        && request.resource.data.consent == true
+        && request.resource.data.at == request.time;
+      allow read, delete: if isAdmin();
+    }
+
+    // ---------- Professional profiles ----------
+    function validProfile(d) {
+      return d.keys().hasOnly(['firstName', 'lastName', 'phone', 'company', 'role', 'intents', 'photoURL', 'email',
+             'termsAcceptedAt', 'createdAt', 'updatedAt'])
+        && shortString(d.firstName, 80)
+        && shortString(d.lastName, 80)
+        && shortString(d.phone, 40)
+        && shortString(d.company, 120)
+        && shortString(d.role, 60)
+        && d.intents is list && d.intents.size() <= 2
+        && shortString(d.photoURL, 1000)
+        && shortString(d.email, 200)
+        && d.updatedAt == request.time;
+    }
+
+    match /users/{uid} {
+      allow read: if (signedIn() && request.auth.uid == uid) || isAdmin();
+      allow create: if signedIn() && request.auth.uid == uid && validProfile(request.resource.data)
+        && request.resource.data.createdAt == request.time;
+      allow update: if signedIn() && request.auth.uid == uid && validProfile(request.resource.data)
+        && request.resource.data.createdAt == resource.data.createdAt;
+      allow delete: if (signedIn() && request.auth.uid == uid) || isAdmin();
+    }
+
+    // ---------- Listings published by professionals ----------
+    function validListing(id, d) {
+      return d.keys().hasOnly(['ownerUid', 'type', 'category', 'slug', 'status', 'name', 'commune', 'zone', 'summary',
+             'description', 'tags', 'highlight', 'phone', 'website', 'instagram', 'photos', 'venueType', 'guestsMin',
+             'guestsMax', 'sleeps', 'priceFrom', 'priceDetails', 'createdAt', 'updatedAt'])
+        && d.type in ['lieu', 'prestataire']
+        && d.category is string && d.category.matches('[a-z-]{2,40}')
+        && (d.type == 'prestataire' || d.category == 'lieu')
+        && d.slug is string && d.slug.matches('[a-z0-9-]{1,60}')
+        && id == (d.type == 'lieu' ? d.slug : d.category + '.' + d.slug)
+        && d.name is string && d.name.size() > 0 && d.name.size() <= 120
+        && shortString(d.commune, 80)
+        && shortString(d.zone, 60)
+        && shortString(d.summary, 200)
+        && shortString(d.description, 4000)
+        && d.tags is list && d.tags.size() <= 3
+        && shortString(d.highlight, 300)
+        && shortString(d.phone, 40)
+        && shortString(d.website, 200)
+        && shortString(d.instagram, 120)
+        && d.photos is list && d.photos.size() <= 8
+        && shortString(d.venueType, 60)
+        && optionalInt(d.guestsMin, 10000)
+        && optionalInt(d.guestsMax, 10000)
+        && d.sleeps is int && d.sleeps >= 0 && d.sleeps <= 10000
+        && optionalInt(d.priceFrom, 10000000)
+        && shortString(d.priceDetails, 200)
+        && d.updatedAt == request.time;
+    }
+
+    function ownerCanSave(d) {
+      return d.status in ['draft', 'published'] && (d.status == 'draft' || emailVerified());
+    }
+
+    match /listings/{id} {
+      // Reading a missing document is allowed, so a new listing can check that its address is free.
+      allow read: if resource == null
+        || resource.data.status == 'published'
+        || (signedIn() && resource.data.ownerUid == request.auth.uid)
+        || isAdmin();
+
+      // A professional creates a listing for themselves; curated venues ("reserved" slugs) can only be claimed.
+      allow create: if signedIn()
+        && request.resource.data.ownerUid == request.auth.uid
+        && ownerCanSave(request.resource.data)
+        && validListing(id, request.resource.data)
+        && request.resource.data.createdAt == request.time
+        && !exists(/databases/$(database)/documents/reserved/$(id));
+
+      // The owner edits it, but cannot change its identity nor bring back a listing hidden by L'Édition.
+      allow update: if signedIn()
+        && resource.data.ownerUid == request.auth.uid
+        && request.resource.data.ownerUid == resource.data.ownerUid
+        && resource.data.status != 'hidden'
+        && ownerCanSave(request.resource.data)
+        && request.resource.data.type == resource.data.type
+        && request.resource.data.category == resource.data.category
+        && request.resource.data.slug == resource.data.slug
+        && request.resource.data.createdAt == resource.data.createdAt
+        && validListing(id, request.resource.data);
+
+      // L'Édition moderates (hides, restores) and creates claimed listings for their owners.
+      allow create, update: if isAdmin() && validListing(id, request.resource.data);
+      allow delete: if (signedIn() && resource.data.ownerUid == request.auth.uid) || isAdmin();
+    }
+
+    // Slugs of the curated venues: a professional can claim them, not take them.
+    match /reserved/{slug} {
+      allow read: if true;
+    }
+
+    // ---------- Claims of curated venues ----------
+    match /claims/{id} {
+      allow create: if signedIn()
+        && request.resource.data.keys().hasOnly(['uid', 'email', 'name', 'venueSlug', 'message', 'status', 'at'])
+        && request.resource.data.uid == request.auth.uid
+        && shortString(request.resource.data.email, 200)
+        && shortString(request.resource.data.name, 160)
+        && request.resource.data.venueSlug is string && request.resource.data.venueSlug.matches('[a-z0-9-]{1,80}')
+        && shortString(request.resource.data.message, 1000)
+        && request.resource.data.status == 'pending'
+        && request.resource.data.at == request.time;
+      allow read: if (signedIn() && resource.data.uid == request.auth.uid) || isAdmin();
+      allow update, delete: if isAdmin();
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+    }
+  }
+}

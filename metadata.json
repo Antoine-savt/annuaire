@@ -1,6 +1,5 @@
 {
-  "name": "Écrins de Mariage Var",
-  "description": "Annuaire premium des lieux de réception d'exception dans le Var.",
-  "requestFramePermissions": [],
-  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+  "name": "L'Édition — Lieux de mariage dans le Var",
+  "description": "Annuaire indépendant des lieux de réception pour mariage dans le Var : châteaux, bastides et domaines viticoles.",
+  "requestFramePermissions": []
 }

@@ -2,22 +2,98 @@
 @plugin "@tailwindcss/forms";
 
 @theme {
-  --font-sans: "Plus Jakarta Sans", sans-serif;
-  --font-serif: "Playfair Display", serif;
+  --font-sans: "Figtree", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Marcellus", "Times New Roman", serif;
+
+  /* Limestone, olive and pine: the palette of a Var hillside. */
+  --color-paper: #f7f7f2;
+  --color-ink: #26301f;
+  --color-muted: #5b6154;
+  --color-line: #dcddd2;
+  --color-pine: #3d5a3f;
+  --color-pine-dark: #2c432e;
+  --color-sage: #a9b596;
+  --color-sage-soft: #e8ebe0;
+  --color-ochre: #b5832f;
 }
 
-body {
-  @apply bg-[#fdfbf9] text-stone-900 antialiased;
+@layer base {
+  html {
+    scroll-padding-top: 6rem;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    @apply bg-paper font-sans text-ink antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+  }
+
+  h1, h2, h3 {
+    @apply font-display font-normal;
+    text-wrap: balance;
+    letter-spacing: -0.005em;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  ::selection {
+    @apply bg-sage/50;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-pine);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
 }
 
-a, button, input, select, textarea, [role="button"], label {
-  /* Cursor styles removed */
+/* Rounded-top frame echoing the arcades of Provençal bastides. */
+@utility arch {
+  border-radius: 999px 999px 0.75rem 0.75rem;
+  overflow: hidden;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+@utility btn {
+  @apply inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-[0.95rem] font-semibold transition-colors;
 }
-.scrollbar-hide {
-  -ms-overflow-style: none;
-  scrollbar-width: none;
+
+@utility btn-primary {
+  @apply btn bg-pine text-white hover:bg-pine-dark;
+}
+
+@utility btn-ghost {
+  @apply btn border border-ink/25 text-ink hover:border-ink hover:bg-white;
+}
+
+@utility link {
+  @apply underline decoration-sage decoration-2 underline-offset-4 transition-colors hover:decoration-pine;
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(14px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.rise {
+  animation: rise 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

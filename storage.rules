@@ -1,0 +1,28 @@
+rules_version = '2';
+
+// Photos uploaded by professionals: each account writes only in its own folders, images under 5 MB.
+service firebase.storage {
+  match /b/{bucket}/o {
+    function isOwner(uid) {
+      return request.auth != null && request.auth.uid == uid;
+    }
+
+    function isImage() {
+      return request.resource.size < 5 * 1024 * 1024 && request.resource.contentType.matches('image/.*');
+    }
+
+    // Profile photo: visible to its owner (and through its download link).
+    match /users/{uid}/{allPaths=**} {
+      allow read: if isOwner(uid);
+      allow create, update: if isOwner(uid) && isImage();
+      allow delete: if isOwner(uid);
+    }
+
+    // Listing photos: public, since they are shown on the site.
+    match /listings/{uid}/{allPaths=**} {
+      allow read: if true;
+      allow create, update: if isOwner(uid) && isImage();
+      allow delete: if isOwner(uid);
+    }
+  }
+}
