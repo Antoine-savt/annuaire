@@ -19,3 +19,8 @@
   to = "https://ledition-mariage.fr/:splat"
   status = 301
   force = true
+
+[[headers]]
+  for = "/site.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
