@@ -271,6 +271,97 @@ function GoalBar({ title, unit, count, track }: { title: string; unit: [string, 
   );
 }
 
+const amount = (n: number) => `${n.toLocaleString('fr-FR', { maximumFractionDigits: 2 })} €`;
+
+/** Valid tiers of a draft, in order, with the running totals. */
+function cumulate(track: Track) {
+  let previous = 0;
+  let total = 0;
+  return track.tiers
+    .filter((t) => t.count > 0)
+    .sort((a, b) => a.count - b.count)
+    .map((t) => {
+      total += t.reward;
+      const added = t.count - previous;
+      previous = t.count;
+      return { ...t, added, total, perAdded: added > 0 ? t.reward / added : 0, perListing: total / t.count };
+    });
+}
+
+/**
+ * Orders of magnitude while editing (managers only): what each tier costs in total, and per extra
+ * listing, so the rewards can be compared with what a listing brings in.
+ */
+function TierRatios({ track, unit }: { track: Track; unit: string }) {
+  const rows = cumulate(track);
+  if (!rows.length) return null;
+  const last = rows[rows.length - 1];
+  const beyond = rows.filter((r) => r.count > track.max);
+  return (
+    <div className="mt-5 border-t border-line pt-4">
+      <p className="text-sm font-semibold">Ordres de grandeur</p>
+      <div className="mt-2 overflow-x-auto">
+        <table className="w-full min-w-[26rem] text-sm tabular-nums">
+          <thead>
+            <tr className="text-left text-xs text-muted">
+              <th className="py-1.5 pr-2 font-semibold">Palier</th>
+              <th className="py-1.5 pr-2 font-semibold">Récompense</th>
+              <th className="py-1.5 pr-2 font-semibold">Cumul versé</th>
+              <th className="py-1.5 pr-2 font-semibold" title="Récompense du palier ÷ fiches gagnées depuis le palier précédent">
+                € / {unit} en plus
+              </th>
+              <th className="py-1.5 font-semibold" title="Cumul versé ÷ nombre total de fiches">
+                € / {unit} en moyenne
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-line">
+            {rows.map((r) => (
+              <tr key={r.count} className={r.count > track.max ? 'text-muted' : ''}>
+                <td className="py-1.5 pr-2">
+                  {r.count} <span className="text-muted">(+{r.added})</span>
+                </td>
+                <td className="py-1.5 pr-2">{amount(r.reward)}</td>
+                <td className="py-1.5 pr-2 font-semibold">{amount(r.total)}</td>
+                <td className="py-1.5 pr-2">{amount(r.perAdded)}</td>
+                <td className="py-1.5">{amount(r.perListing)}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      <p className="mt-2 text-sm text-muted">
+        Tous les paliers atteints : <strong className="font-semibold text-ink">{amount(last.total)}</strong> pour {last.count}{' '}
+        {unit}s, soit {amount(last.perListing)} par {unit} en moyenne.
+      </p>
+      {beyond.length > 0 && (
+        <p className="mt-1 text-sm text-ochre">
+          {beyond.length > 1 ? 'Des paliers dépassent' : 'Un palier dépasse'} le maximum ({track.max}) : il{beyond.length > 1 ? 's' : ''}{' '}
+          n’apparaît{beyond.length > 1 ? 'ront' : 'ra'} pas sur la barre.
+        </p>
+      )}
+    </div>
+  );
+}
+
+/** Both bars together: the most that can be paid, and the average per listing. */
+function GoalsTotal({ venues, vendors }: { venues: Track; vendors: Track }) {
+  const last = (t: Track) => cumulate(t).at(-1) ?? { count: 0, total: 0 };
+  const v = last(venues);
+  const p = last(vendors);
+  const total = v.total + p.total;
+  const listings = v.count + p.count;
+  if (!total) return null;
+  return (
+    <div className="mt-5 rounded-2xl bg-sage-soft/60 px-5 py-4 text-[0.95rem]">
+      <p>
+        <strong className="font-semibold">Si tous les paliers sont atteints :</strong> {amount(total)} au total ({amount(v.total)} pour{' '}
+        {v.count} lieux, {amount(p.total)} pour {p.count} prestataires), soit {amount(total / listings)} par fiche en moyenne.
+      </p>
+    </div>
+  );
+}
+
 /** Form to set the start date, the maximum and the tiers of each bar (managers only). */
 function GoalsEditor({
   initial,
@@ -398,9 +489,12 @@ function GoalsEditor({
             >
               Ajouter un palier
             </button>
+            <TierRatios track={draft[key]} unit={key === 'venues' ? 'lieu' : 'prestataire'} />
           </fieldset>
         ))}
       </div>
+
+      <GoalsTotal venues={draft.venues} vendors={draft.vendors} />
 
       {error && (
         <p role="alert" className="mt-4 text-red-700">
