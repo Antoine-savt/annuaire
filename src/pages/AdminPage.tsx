@@ -9,6 +9,7 @@ import { ProsPanel } from './AdminProsPanel';
 import { ListingsPanel } from './AdminListingsPanel';
 import { GoalsPanel } from './AdminGoalsPanel';
 import { TeamPanel } from './AdminTeamPanel';
+import { ProspectsPanel } from './AdminProspectsPanel';
 import { site } from '../site';
 import { categoryLabel, vendorCategories } from '../vendors';
 import { findVendorById, vendorId, vendors } from '../vendorListings';
@@ -165,15 +166,17 @@ interface Access {
   manage: boolean;
   /** Sees the "Objectifs" tab and its rewards. */
   goals: boolean;
+  /** Adds and removes helpers in the "Équipe" tab. */
+  team: boolean;
 }
 
-const NO_ACCESS: Access = { admin: false, manage: false, goals: false };
+const NO_ACCESS: Access = { admin: false, manage: false, goals: false, team: false };
 
-type Tab = 'stats' | 'demandes' | 'portfolios' | 'fiches' | 'pros' | 'objectifs' | 'equipe';
+type Tab = 'stats' | 'demandes' | 'portfolios' | 'prospection' | 'fiches' | 'pros' | 'objectifs' | 'equipe';
 
 export default function AdminPage() {
   const user = useAuthUser();
-  const [access, setAccess] = useState<Access | null>(REQUIRE_SIGN_IN ? null : { admin: true, manage: false, goals: false });
+  const [access, setAccess] = useState<Access | null>(REQUIRE_SIGN_IN ? null : { ...NO_ACCESS, admin: true });
   const isAdmin = access ? access.admin : null;
   const [period, setPeriod] = useState(90);
   const [events, setEvents] = useState<EventRow[]>([]);
@@ -200,7 +203,7 @@ export default function AdminPage() {
       ]);
       if (!legacy && !entry) return setAccess(NO_ACCESS);
       const manage = entry?.manage === true;
-      setAccess({ admin: true, manage, goals: manage || entry?.goals === true });
+      setAccess({ admin: true, manage, goals: manage || entry?.goals === true, team: manage || entry?.team === true });
     })();
   }, [user]);
 
@@ -324,8 +327,10 @@ export default function AdminPage() {
     content = <ListingsPanel userEmail={user?.email ?? ''} />;
   } else if (tab === 'objectifs' && access?.goals) {
     content = <GoalsPanel canEdit={access.manage} userEmail={user?.email?.toLowerCase() ?? ''} />;
-  } else if (tab === 'equipe' && access?.manage) {
-    content = <TeamPanel userEmail={user?.email?.toLowerCase() ?? ''} />;
+  } else if (tab === 'equipe' && access?.team) {
+    content = <TeamPanel userEmail={user?.email?.toLowerCase() ?? ''} canManage={access.manage} />;
+  } else if (tab === 'prospection') {
+    content = <ProspectsPanel userEmail={user?.email?.toLowerCase() ?? ''} />;
   } else if (tab === 'pros') {
     content = <ProsPanel />;
   } else if (selected && report) {
@@ -493,10 +498,11 @@ export default function AdminPage() {
               ['stats', 'Statistiques'],
               ['demandes', `Demandes de référencement (${submissions.length})`],
               ['portfolios', `Portfolios (${portfolios.length})`],
+              ['prospection', 'Prospection'],
               ['fiches', 'Fiches'],
               ['pros', 'Professionnels'],
               ...(access?.goals ? [['objectifs', 'Objectifs'] as const] : []),
-              ...(access?.manage ? [['equipe', 'Équipe'] as const] : []),
+              ...(access?.team ? [['equipe', 'Équipe'] as const] : []),
             ] as [Tab, string][]
           ).map(([key, label]) => (
             <button

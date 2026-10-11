@@ -2,7 +2,7 @@
 //
 //   node scripts/firebase-admin.mjs reserve          protect the addresses of the curated venues
 //   node scripts/firebase-admin.mjs admin <e-mail>   give an account access to /admin
-//   node scripts/firebase-admin.mjs team <e-mail> [--goals] [--manage]
+//   node scripts/firebase-admin.mjs team <e-mail> [--goals] [--team] [--manage]
 //                                                    give an e-mail address access to /admin, even before
 //                                                    its account exists (then from the "Équipe" tab)
 //
@@ -116,10 +116,12 @@ try {
     const flags = process.argv.slice(4);
     const manage = flags.includes('--manage');
     const goals = manage || flags.includes('--goals');
-    await setTypedDoc(`adminEmails/${email}`, { manage, goals, addedBy: 'script', at: new Date() });
-    console.log(`${email} : accès à /admin${manage ? ', gère l’équipe et les objectifs' : goals ? ', voit les objectifs' : ''}${firestoreEmulator ? ' (émulateur)' : ''}.`);
+    const team = manage || flags.includes('--team');
+    await setTypedDoc(`adminEmails/${email}`, { manage, goals, team, addedBy: 'script', at: new Date() });
+    const rights = manage ? ['gère l’équipe et les objectifs'] : [goals && 'voit les objectifs', team && 'ajoute des admins'].filter(Boolean);
+    console.log(`${email} : accès à /admin${rights.length ? `, ${rights.join(', ')}` : ''}${firestoreEmulator ? ' (émulateur)' : ''}.`);
   } else {
-    console.log('Usage : node scripts/firebase-admin.mjs reserve | admin <e-mail> | team <e-mail> [--goals] [--manage]');
+    console.log('Usage : node scripts/firebase-admin.mjs reserve | admin <e-mail> | team <e-mail> [--goals] [--team] [--manage]');
     process.exitCode = 1;
   }
 } catch (error) {

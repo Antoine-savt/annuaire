@@ -2,8 +2,9 @@ import { FormEvent, useEffect, useState } from 'react';
 import { getDb } from '../lib/firebase';
 
 /*
- * "Équipe" tab (managers only): who can open /admin, by e-mail address (Firestore "adminEmails").
- * A person gets access as soon as they sign in with that address, with Google or a confirmed e-mail.
+ * "Équipe" tab: who can open /admin, by e-mail address (Firestore "adminEmails"). A person gets access
+ * as soon as they sign in with that address, with Google or a confirmed e-mail.
+ * Managers set every right. People with "team" add and remove helpers: plain admins only.
  */
 
 interface Member {
@@ -12,20 +13,26 @@ interface Member {
   manage: boolean;
   /** Sees the goals and their rewards. */
   goals: boolean;
+  /** Adds and removes helpers. */
+  team: boolean;
   addedBy: string;
 }
+
+type Rights = Pick<Member, 'manage' | 'goals' | 'team'>;
+
+const isPlain = (m: Rights) => !m.manage && !m.goals && !m.team;
 
 const firestore = () => Promise.all([getDb(), import('firebase/firestore/lite')]);
 const thClass = 'px-3 py-2.5 text-left text-xs font-semibold text-muted';
 const tdClass = 'px-3 py-2.5 align-top text-[0.95rem]';
 const checkboxClass = 'h-[1.05rem] w-[1.05rem] rounded border-ink/30 text-pine focus:ring-pine/40';
 
-export function TeamPanel({ userEmail }: { userEmail: string }) {
+export function TeamPanel({ userEmail, canManage }: { userEmail: string; canManage: boolean }) {
   const [members, setMembers] = useState<Member[]>([]);
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
-  const [form, setForm] = useState({ email: '', goals: false });
+  const [form, setForm] = useState({ email: '', goals: false, team: false });
 
   const load = async () => {
     try {
@@ -35,7 +42,7 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
         snap.docs
           .map((d) => {
             const x = d.data();
-            return { email: d.id, manage: x.manage === true, goals: x.goals === true, addedBy: String(x.addedBy ?? '') };
+            return { email: d.id, manage: x.manage === true, goals: x.goals === true, team: x.team === true, addedBy: String(x.addedBy ?? '') };
           })
           .sort((a, b) => Number(b.manage) - Number(a.manage) || a.email.localeCompare(b.email)),
       );
@@ -51,12 +58,12 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
     void load();
   }, []);
 
-  const save = async (key: string, email: string, manage: boolean, goals: boolean) => {
+  const save = async (key: string, email: string, rights: Rights) => {
     setBusy(key);
     setError('');
     try {
       const [db, fs] = await firestore();
-      await fs.setDoc(fs.doc(db, 'adminEmails', email), { manage, goals, addedBy: userEmail.slice(0, 200), at: fs.serverTimestamp() });
+      await fs.setDoc(fs.doc(db, 'adminEmails', email), { ...rights, addedBy: userEmail.slice(0, 200), at: fs.serverTimestamp() });
       await load();
       return true;
     } catch (err) {
@@ -75,7 +82,13 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
       setError('Adresse e-mail invalide.');
       return;
     }
-    if (await save('add', email, false, form.goals)) setForm({ email: '', goals: false });
+    if (members.some((m) => m.email === email)) {
+      setError('Cette adresse a déjà accès.');
+      return;
+    }
+    // Helpers can only add plain admins (firestore.rules refuses the rest).
+    const rights = canManage ? { manage: false, goals: form.goals, team: form.team } : { manage: false, goals: false, team: false };
+    if (await save('add', email, rights)) setForm({ email: '', goals: false, team: false });
   };
 
   const remove = async (m: Member) => {
@@ -101,8 +114,10 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
       <h2 className="text-3xl">Équipe</h2>
       <p className="mt-1 max-w-3xl text-muted">
         Les personnes ci-dessous ouvrent /admin en se connectant avec cette adresse (Google, ou e-mail confirmé). Toutes
-        voient les statistiques et les demandes, et peuvent modérer les fiches. « Voit les objectifs » donne aussi accès
-        à l’onglet Objectifs et à ses récompenses.
+        voient les statistiques, les demandes et la prospection, et peuvent modérer les fiches.{' '}
+        {canManage
+          ? '« Voit les objectifs » donne aussi accès à l’onglet Objectifs et à ses récompenses ; « Ajoute des admins » permet d’ajouter et de retirer des aides.'
+          : 'Vous pouvez ajouter des personnes pour vous aider, et retirer celles qui n’ont que l’accès administrateur.'}
       </p>
 
       {error && (
@@ -117,7 +132,8 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
             <tr>
               <th className={thClass}>E-mail</th>
               <th className={thClass}>Rôle</th>
-              <th className={thClass}>Voit les objectifs</th>
+              {canManage && <th className={thClass}>Voit les objectifs</th>}
+              {canManage && <th className={thClass}>Ajoute des admins</th>}
               <th className={thClass}>Actions</th>
             </tr>
           </thead>
@@ -130,23 +146,28 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
                     {m.email}
                     {self && <span className="ml-2 text-sm font-normal text-muted">(vous)</span>}
                   </td>
-                  <td className={tdClass}>{m.manage ? 'Gère l’équipe et les objectifs' : 'Administrateur'}</td>
                   <td className={tdClass}>
-                    {m.manage ? (
-                      'Oui'
-                    ) : (
-                      <input
-                        type="checkbox"
-                        checked={m.goals}
-                        disabled={!!busy}
-                        onChange={(e) => void save(m.email, m.email, m.manage, e.target.checked)}
-                        aria-label={`${m.email} voit les objectifs`}
-                        className={checkboxClass}
-                      />
-                    )}
+                    {m.manage ? 'Gère l’équipe et les objectifs' : m.team ? 'Administrateur, ajoute des admins' : 'Administrateur'}
                   </td>
+                  {canManage &&
+                    (['goals', 'team'] as const).map((right) => (
+                      <td key={right} className={tdClass}>
+                        {m.manage ? (
+                          'Oui'
+                        ) : (
+                          <input
+                            type="checkbox"
+                            checked={m[right]}
+                            disabled={!!busy}
+                            onChange={(e) => void save(m.email, m.email, { manage: m.manage, goals: m.goals, team: m.team, [right]: e.target.checked })}
+                            aria-label={`${m.email} ${right === 'goals' ? 'voit les objectifs' : 'ajoute des admins'}`}
+                            className={checkboxClass}
+                          />
+                        )}
+                      </td>
+                    ))}
                   <td className={tdClass}>
-                    {!self && (
+                    {!self && (canManage || isPlain(m)) && (
                       <button type="button" disabled={!!busy} onClick={() => void remove(m)} className="text-sm text-muted hover:text-red-700 hover:underline">
                         Retirer l’accès
                       </button>
@@ -171,10 +192,18 @@ export function TeamPanel({ userEmail }: { userEmail: string }) {
             className="mt-1 w-full rounded-xl border-line bg-white px-3 py-2 text-[0.95rem] focus:border-pine focus:ring-pine/30"
           />
         </label>
-        <label className="mb-2.5 flex items-center gap-2 text-sm">
-          <input type="checkbox" checked={form.goals} onChange={(e) => setForm({ ...form, goals: e.target.checked })} className={checkboxClass} />
-          Voit les objectifs
-        </label>
+        {canManage && (
+          <>
+            <label className="mb-2.5 flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={form.goals} onChange={(e) => setForm({ ...form, goals: e.target.checked })} className={checkboxClass} />
+              Voit les objectifs
+            </label>
+            <label className="mb-2.5 flex items-center gap-2 text-sm">
+              <input type="checkbox" checked={form.team} onChange={(e) => setForm({ ...form, team: e.target.checked })} className={checkboxClass} />
+              Ajoute des admins
+            </label>
+          </>
+        )}
         <button type="submit" disabled={!!busy} className="btn-primary disabled:opacity-60">
           {busy === 'add' ? 'Ajout…' : 'Donner l’accès'}
         </button>

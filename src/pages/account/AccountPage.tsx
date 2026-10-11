@@ -1,4 +1,4 @@
-import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { ChangeEvent, FormEvent, useEffect, useRef, useState } from 'react';
 import type { User } from 'firebase/auth';
 import { ListingDoc, UserProfile } from '../../types';
 import { staticVenues } from '../../data';
@@ -325,9 +325,16 @@ function ProfileForm({ user, profile, isNew, onSaved }: { user: User; profile: U
   );
 }
 
+/** Venue to claim from a link sent to its owner, e.g. "/compte?revendiquer=chateau-de-berne". */
+function claimFromLink(): string {
+  const slug = new URLSearchParams(window.location.search).get('revendiquer') ?? '';
+  return staticVenues.some((v) => v.slug === slug) ? slug : '';
+}
+
 function ClaimForm({ user, name, claims, onSent }: { user: User; name: string; claims: Claim[]; onSent: () => void }) {
-  const [open, setOpen] = useState(false);
-  const [slug, setSlug] = useState('');
+  const [slug, setSlug] = useState(claimFromLink);
+  const [open, setOpen] = useState(() => slug !== '');
+  const cardRef = useRef<HTMLDivElement>(null);
   const [message, setMessage] = useState('');
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
@@ -351,8 +358,13 @@ function ClaimForm({ user, name, claims, onSent }: { user: User; name: string; c
     }
   };
 
+  // Opened from a claim link: bring the form into view.
+  useEffect(() => {
+    if (claimFromLink()) cardRef.current?.scrollIntoView({ block: 'center' });
+  }, []);
+
   return (
-    <div className={cardClass}>
+    <div ref={cardRef} id="revendiquer" className={cardClass}>
       <h3 className="font-sans text-lg font-semibold text-ink">Votre lieu est déjà dans l’annuaire ?</h3>
       <p className="mt-1 text-[0.95rem] text-muted">
         Revendiquez sa fiche pour la gérer vous-même. Nous vérifions que vous en êtes bien le propriétaire ou le gérant,

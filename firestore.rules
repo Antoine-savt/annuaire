@@ -32,6 +32,15 @@ service cloud.firestore {
       return invitedAdmin() && (get(adminEntry()).data.goals == true || get(adminEntry()).data.manage == true);
     }
 
+    // Adds and removes helpers ("team"): plain admins only, never goals or management rights.
+    function managesTeam() {
+      return invitedAdmin() && (get(adminEntry()).data.manage == true || get(adminEntry()).data.get('team', false) == true);
+    }
+
+    function plainMember(d) {
+      return d.manage == false && d.goals == false && d.get('team', false) == false;
+    }
+
     // Publishing requires a confirmed e-mail address (Google accounts are confirmed), to limit spam.
     function emailVerified() {
       return signedIn() && request.auth.token.email_verified == true;
@@ -253,16 +262,34 @@ service cloud.firestore {
 
     // ---------- Team of the dashboard, by e-mail address ----------
     match /adminEmails/{email} {
-      allow read: if (signedIn() && request.auth.token.email == email) || isManager();
-      allow create, update: if isManager()
+      allow read: if (signedIn() && request.auth.token.email == email) || managesTeam();
+      allow create, update: if (isManager()
+          || (managesTeam() && plainMember(request.resource.data) && (resource == null || plainMember(resource.data))))
         && email.matches('[^@ /A-Z]+@[^@ /A-Z]+[.][^@ /A-Z]+')
-        && request.resource.data.keys().hasOnly(['manage', 'goals', 'addedBy', 'at'])
+        && request.resource.data.keys().hasOnly(['manage', 'goals', 'team', 'addedBy', 'at'])
         && request.resource.data.manage is bool
         && request.resource.data.goals is bool
+        && request.resource.data.get('team', false) is bool
         && shortString(request.resource.data.addedBy, 200)
         && request.resource.data.at == request.time;
-      // A manager cannot remove their own access by mistake.
-      allow delete: if isManager() && email != request.auth.token.email;
+      // Nobody removes their own access by mistake; helpers' managers only remove plain admins.
+      allow delete: if email != request.auth.token.email && (isManager() || (managesTeam() && plainMember(resource.data)));
+    }
+
+    // ---------- Prospecting: venues and vendors to call and e-mail (admins only) ----------
+    match /prospects/{id} {
+      allow read, delete: if isAdmin();
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['name', 'contact', 'kind', 'category', 'commune', 'phone', 'email',
+             'website', 'status', 'notes', 'nextAction', 'calls', 'reached', 'emails', 'owner', 'venueSlug', 'history',
+             'createdBy', 'createdAt', 'updatedAt'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0
+        && shortString(request.resource.data.name, 120)
+        && request.resource.data.kind in ['lieu', 'prestataire']
+        && request.resource.data.status in ['a_appeler', 'a_rappeler', 'mail_a_envoyer', 'mail_envoye', 'inscrit', 'refus']
+        && shortString(request.resource.data.notes, 4000)
+        && request.resource.data.history is list && request.resource.data.history.size() <= 200
+        && request.resource.data.updatedAt == request.time;
     }
 
     // ---------- Recruitment goals and rewards: the managers and the people with "goals" only ----------
