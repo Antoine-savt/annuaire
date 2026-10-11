@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Venue } from '../types';
-import { venues, venueTarget } from '../data';
+import { regionOf, venues, venueTarget, zoneHref } from '../data';
 import { paths } from '../routes';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Photo } from '../components/Photo';
@@ -49,7 +49,7 @@ export function VenuePage({ venue }: { venue: Venue }) {
   return (
     <>
       <div className="mx-auto max-w-6xl px-5 pt-6 sm:px-8">
-        <Breadcrumbs items={[{ label: venue.zone.name, href: paths.zone(venue.zone.slug) }, { label: venue.nom_du_lieu }]} />
+        <Breadcrumbs items={[{ label: venue.zone.name, href: zoneHref(venue.zone) ?? '/#lieux' }, { label: venue.nom_du_lieu }]} />
       </div>
 
       <article>
@@ -88,7 +88,7 @@ export function VenuePage({ venue }: { venue: Venue }) {
 
           <div>
             <p className="text-muted">
-              {venue.commune}, {venue.zone.name} (Var)
+              {venue.commune}, {venue.zone.department ? `${venue.zone.name} (${venue.zone.department})` : `${venue.zone.name} (Var)`}
               {venue.ownerUid && <span className="ml-2 rounded-full bg-sage-soft px-2.5 py-0.5 text-sm text-pine-dark">Fiche gérée par le lieu</span>}
             </p>
             <h1 className="mt-1 text-[2.5rem] leading-[1.05] text-ink sm:text-[3.4rem]">{venue.nom_du_lieu}</h1>
@@ -160,7 +160,7 @@ export function VenuePage({ venue }: { venue: Venue }) {
 
       <section aria-labelledby="autres" className="mx-auto max-w-6xl px-5 py-20 sm:px-8">
         <h2 id="autres" className="mb-10 text-4xl text-ink">
-          {relatedInZone ? `Autres lieux ${venue.zone.where}` : 'Autres lieux dans le Var'}
+          {relatedInZone ? `Autres lieux ${venue.zone.where}` : regionOf(venue) === 'Var' ? 'Autres lieux dans le Var' : 'Autres lieux de réception'}
         </h2>
         <VenueGrid venues={related} />
       </section>

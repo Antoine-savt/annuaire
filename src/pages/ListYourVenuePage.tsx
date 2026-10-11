@@ -219,6 +219,7 @@ export function ListYourVenuePage() {
                         {z.name}
                       </option>
                     ))}
+                    <option value="Hors du Var">Hors du Var (précisez la commune)</option>
                   </select>
                 </label>
                 <label className={labelClass}>

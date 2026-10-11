@@ -11,6 +11,8 @@ export interface Zone {
   body: string;
   /** Slugs of the journal articles most useful for this area. */
   articles: string[];
+  /** Set for a department outside the Var (see src/departments.ts): no area page to link to. */
+  department?: string;
 }
 
 export interface VendorCategory {
@@ -57,6 +59,8 @@ export interface Vendor {
   website?: string;
   /** Instagram handle without "@", used when there is no website. */
   instagram?: string;
+  /** Link to the vendor's portfolio, shown on their page. */
+  portfolio?: string;
   /** Unsplash photo id (see src/images.ts) or a path under public/, e.g. "/images/vendors/studio.jpg". */
   image?: string;
   imageAlt?: string;
@@ -107,6 +111,8 @@ export interface ListingDoc {
   phone: string;
   website: string;
   instagram: string;
+  /** Vendor: link to their portfolio (empty for venues). */
+  portfolio: string;
   /** Photo URLs, the first one is the cover. */
   photos: string[];
   /** Venue type (château, bastide…). */

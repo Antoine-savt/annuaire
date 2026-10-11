@@ -17,6 +17,8 @@ export interface ListingInput {
   priceFrom: string;
   website: string;
   instagram: string;
+  /** Vendors: link to their portfolio. */
+  portfolio: string;
   contactName: string;
   role: string;
   email: string;
@@ -36,6 +38,7 @@ export const emptyListing: ListingInput = {
   priceFrom: '',
   website: '',
   instagram: '',
+  portfolio: '',
   contactName: '',
   role: '',
   email: '',
@@ -66,6 +69,7 @@ export async function submitListing(input: ListingInput): Promise<void> {
     ['priceFrom', input.priceFrom, 120],
     ['website', input.website, 200],
     ['instagram', input.instagram, 120],
+    ['portfolio', input.portfolio, 200],
     ['role', input.role, 60],
     ['message', input.message, 2000],
   ];

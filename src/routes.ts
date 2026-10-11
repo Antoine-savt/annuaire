@@ -1,7 +1,7 @@
 import { Article, Venue, Vendor, VendorCategory, Zone } from './types';
 import { findVendorCategory, vendorCategories } from './vendors';
 import { findVendor, vendors, vendorsIn } from './vendorListings';
-import { findVenue, findZone, inCommune, venues, venuesInZone, zones } from './data';
+import { findVenue, findZone, inCommune, regionOf, venues, venuesInZone, zoneHref, zones } from './data';
 import { articles, findArticle } from './articles';
 import { imgUrl, photos, photoUrl } from './images';
 import { absoluteUrl, site } from './site';
@@ -201,8 +201,8 @@ export function getSeo(route: Route, path: string): Seo {
       return {
         ...base,
         image: photoUrl(v.image, 1200),
-        title: withBrand(`${v.nom_du_lieu} : mariage ${inCommune(v.commune)} (Var)`),
-        description: clamp(`${v.nom_du_lieu}, lieu de mariage ${inCommune(v.commune)} (Var). ${v.summary} ${v.maxGuests ? `${v.guestsShort} invités` : 'Capacité sur demande'}, ${v.priceShort.toLowerCase()}.`),
+        title: withBrand(`${v.nom_du_lieu} : mariage ${inCommune(v.commune)} (${regionOf(v)})`),
+        description: clamp(`${v.nom_du_lieu}, lieu de mariage ${inCommune(v.commune)} (${regionOf(v)}). ${v.summary} ${v.maxGuests ? `${v.guestsShort} invités` : 'Capacité sur demande'}, ${v.priceShort.toLowerCase()}.`),
         jsonLd: [
           {
             '@context': 'https://schema.org',
@@ -213,12 +213,12 @@ export function getSeo(route: Route, path: string): Seo {
             address: {
               '@type': 'PostalAddress',
               addressLocality: v.commune,
-              addressRegion: 'Var',
+              addressRegion: regionOf(v),
               addressCountry: 'FR',
             },
             ...(v.maxGuests ? { maximumAttendeeCapacity: v.maxGuests } : {}),
           },
-          breadcrumb([home, { name: v.zone.name, path: paths.zone(v.zone.slug) }, { name: v.nom_du_lieu, path }]),
+          breadcrumb([home, ...(zoneHref(v.zone) ? [{ name: v.zone.name, path: zoneHref(v.zone)! }] : []), { name: v.nom_du_lieu, path }]),
           faqPage(venueFaq(v)),
         ],
       };

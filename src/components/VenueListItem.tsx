@@ -1,4 +1,5 @@
 import { Venue } from '../types';
+import { zoneHref } from '../data';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { VenueGallery } from './VenueGallery';
@@ -52,9 +53,13 @@ export function VenueListItem({ venue, headingLevel: Heading = 'h3' }: VenueList
         <div className="flex items-start justify-between gap-4">
           <p className="text-sm text-muted">
             {venue.commune},{' '}
-            <Link href={paths.zone(venue.zone.slug)} className="hover:text-pine hover:underline">
-              {venue.zone.name}
-            </Link>
+            {zoneHref(venue.zone) ? (
+              <Link href={zoneHref(venue.zone)!} className="hover:text-pine hover:underline">
+                {venue.zone.name}
+              </Link>
+            ) : (
+              venue.zone.name
+            )}
           </p>
           <p className="shrink-0 text-sm font-semibold text-ink" title="Budget indicatif de location">
             <span className="sr-only">Budget : </span>

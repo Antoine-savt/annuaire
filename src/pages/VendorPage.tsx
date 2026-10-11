@@ -95,6 +95,18 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
               <p className="mt-1 text-[0.95rem] text-muted">Téléphone et site disponibles en quelques secondes, gratuitement.</p>
               <ContactAccess target={target} className="btn-primary mt-4 w-full sm:w-auto" />
             </div>
+            {v.portfolio && (
+              <a
+                href={v.portfolio}
+                target="_blank"
+                rel="noopener"
+                onClick={() => void track('portfolio_click', target.id, target.owner)}
+                className="btn-ghost mt-4 w-full sm:w-auto"
+              >
+                Voir le portfolio
+                <span className="sr-only"> (nouvel onglet)</span>
+              </a>
+            )}
           </div>
         </header>
 

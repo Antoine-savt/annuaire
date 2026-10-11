@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from 'react';
 import { venues } from '../data';
 import { firebaseConfigured, getDb } from '../lib/firebase';
-import { signInWithGoogle, signOutUser, useAuthUser } from '../lib/auth';
+import { signInWithGoogle, useAuthUser } from '../lib/auth';
+import { SignOutButton } from '../components/SignOutButton';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { ProsPanel } from './AdminProsPanel';
@@ -31,11 +32,27 @@ interface SubmissionRow {
   priceFrom?: string;
   website?: string;
   instagram?: string;
+  portfolio?: string;
   contactName: string;
   role?: string;
   email: string;
   phone: string;
   message?: string;
+  at: Date;
+}
+
+interface PortfolioRow {
+  id: string;
+  name: string;
+  company: string;
+  /** Vendor category slug, empty when not given. */
+  category: string;
+  email: string;
+  phone: string;
+  current?: string;
+  message?: string;
+  /** Account of the professional, when sent from their account. */
+  uid?: string;
   at: Date;
 }
 
@@ -59,6 +76,7 @@ interface VenueStats {
   leads: number;
   phoneClicks: number;
   websiteClicks: number;
+  portfolioClicks: number;
   /** Times couples added the listing to their saved selection. */
   saves: number;
 }
@@ -89,7 +107,7 @@ const monthLabel = (key: string) =>
 const pct = (a: number, b: number) => (b ? `${Math.round((a / b) * 1000) / 10} %` : '–');
 
 function emptyStats(slug: string): VenueStats {
-  return { slug, name: venueName(slug), visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 };
+  return { slug, name: venueName(slug), visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, portfolioClicks: 0, saves: 0 };
 }
 
 /** Per-venue figures from raw events and leads. */
@@ -107,6 +125,7 @@ function aggregate(events: EventRow[], leads: LeadRow[]): VenueStats[] {
     if (e.type === 'contact_open') s.opens++;
     else if (e.type === 'phone_click') s.phoneClicks++;
     else if (e.type === 'website_click') s.websiteClicks++;
+    else if (e.type === 'portfolio_click') s.portfolioClicks++;
     else if (e.type === 'save') s.saves++;
   }
   for (const l of leads) {
@@ -143,11 +162,12 @@ export default function AdminPage() {
   const [events, setEvents] = useState<EventRow[]>([]);
   const [leads, setLeads] = useState<LeadRow[]>([]);
   const [submissions, setSubmissions] = useState<SubmissionRow[]>([]);
+  const [portfolios, setPortfolios] = useState<PortfolioRow[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const [report, setReport] = useState(false);
-  const [tab, setTab] = useState<'stats' | 'demandes' | 'pros'>('stats');
+  const [tab, setTab] = useState<'stats' | 'demandes' | 'portfolios' | 'pros'>('stats');
 
   // Admin check: the account must have a document in the "admins" collection.
   useEffect(() => {
@@ -175,16 +195,22 @@ export default function AdminPage() {
         const ref = (name: string) =>
           period ? fs.query(fs.collection(db, name), fs.where('at', '>=', since)) : fs.collection(db, name);
         // Listing requests are few: always show them all, whatever the period.
-        const [eventSnap, leadSnap, submissionSnap] = await Promise.all([
+        const [eventSnap, leadSnap, submissionSnap, portfolioSnap] = await Promise.all([
           fs.getDocs(ref('events')),
           fs.getDocs(ref('leads')),
           fs.getDocs(fs.collection(db, 'submissions')),
+          fs.getDocs(fs.collection(db, 'portfolioRequests')),
         ]);
         const toDate = (value: unknown) => (value instanceof fs.Timestamp ? value.toDate() : new Date(0));
         setEvents(eventSnap.docs.map((d) => ({ ...(d.data() as Omit<EventRow, 'at'>), at: toDate(d.get('at')) })));
         setLeads(
           leadSnap.docs
             .map((d) => ({ id: d.id, ...(d.data() as Omit<LeadRow, 'id' | 'at'>), at: toDate(d.get('at')) }))
+            .sort((a, b) => b.at.getTime() - a.at.getTime()),
+        );
+        setPortfolios(
+          portfolioSnap.docs
+            .map((d) => ({ id: d.id, ...(d.data() as Omit<PortfolioRow, 'id' | 'at'>), at: toDate(d.get('at')) }))
             .sort((a, b) => b.at.getTime() - a.at.getTime()),
         );
         setSubmissions(
@@ -211,9 +237,10 @@ export default function AdminPage() {
           leads: t.leads + s.leads,
           phoneClicks: t.phoneClicks + s.phoneClicks,
           websiteClicks: t.websiteClicks + s.websiteClicks,
+          portfolioClicks: t.portfolioClicks + s.portfolioClicks,
           saves: t.saves + s.saves,
         }),
-        { visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, saves: 0 },
+        { visitors: 0, opens: 0, leads: 0, phoneClicks: 0, websiteClicks: 0, portfolioClicks: 0, saves: 0 },
       ),
     [stats],
   );
@@ -263,13 +290,15 @@ export default function AdminPage() {
           Pour l'autoriser, créez dans Firestore un document <code className="rounded bg-sage-soft px-1">admins/{user.uid}</code>{' '}
           (collection « admins », identifiant ci-dessus, contenu libre), puis rechargez la page.
         </p>
-        <button type="button" onClick={() => void signOutUser()} className="btn-ghost mt-4">
-          Se déconnecter
-        </button>
+        <div className="mt-4">
+          <SignOutButton />
+        </div>
       </div>
     );
   } else if (tab === 'demandes') {
     content = <RequestsPanel submissions={submissions} />;
+  } else if (tab === 'portfolios') {
+    content = <PortfoliosPanel requests={portfolios} />;
   } else if (tab === 'pros') {
     content = <ProsPanel />;
   } else if (selected && report) {
@@ -330,8 +359,8 @@ export default function AdminPage() {
               className="btn-ghost"
               onClick={() =>
                 downloadCsv('statistiques-lieux.csv', [
-                  ['Fiche', 'Visiteurs', 'Enregistrements', 'Formulaires ouverts', 'Demandes', 'Taux de demande', 'Clics téléphone', 'Clics site'],
-                  ...stats.map((s) => [s.name, s.visitors, s.saves, s.opens, s.leads, pct(s.leads, s.visitors), s.phoneClicks, s.websiteClicks]),
+                  ['Fiche', 'Visiteurs', 'Enregistrements', 'Formulaires ouverts', 'Demandes', 'Taux de demande', 'Clics téléphone', 'Clics site', 'Clics portfolio'],
+                  ...stats.map((s) => [s.name, s.visitors, s.saves, s.opens, s.leads, pct(s.leads, s.visitors), s.phoneClicks, s.websiteClicks, s.portfolioClicks]),
                 ])
               }
             >
@@ -363,6 +392,7 @@ export default function AdminPage() {
                 <th className={thClass}>Taux</th>
                 <th className={thClass}>Clics tél.</th>
                 <th className={thClass}>Clics site</th>
+                <th className={thClass}>Clics portfolio</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-line">
@@ -380,6 +410,7 @@ export default function AdminPage() {
                   <td className={tdClass}>{pct(s.leads, s.visitors)}</td>
                   <td className={tdClass}>{s.phoneClicks}</td>
                   <td className={tdClass}>{s.websiteClicks}</td>
+                  <td className={tdClass}>{s.portfolioClicks}</td>
                 </tr>
               ))}
             </tbody>
@@ -422,9 +453,7 @@ export default function AdminPage() {
                 </select>
               </label>
               {user && (
-                <button type="button" onClick={() => void signOutUser()} className="btn-ghost">
-                  Se déconnecter
-                </button>
+                <SignOutButton />
               )}
             </div>
           )}
@@ -436,6 +465,7 @@ export default function AdminPage() {
             [
               ['stats', 'Statistiques des lieux'],
               ['demandes', `Demandes de référencement (${submissions.length})`],
+              ['portfolios', `Portfolios (${portfolios.length})`],
               ['pros', 'Professionnels'],
             ] as const
           ).map(([key, label]) => (
@@ -478,6 +508,7 @@ const requestCsvHeader = [
   'Tarifs',
   'Site',
   'Instagram',
+  'Portfolio',
   'Contact',
   'Fonction',
   'E-mail',
@@ -498,6 +529,7 @@ const requestCsvRow = (x: SubmissionRow) => [
   x.priceFrom ?? '',
   x.website ?? '',
   x.instagram ?? '',
+  x.portfolio ?? '',
   x.contactName,
   x.role ?? '',
   x.email,
@@ -541,11 +573,16 @@ function RequestCard({ x }: { x: SubmissionRow }) {
         </a>
       </p>
       {details.length > 0 && <p className="mt-1 text-sm text-muted">{details.join(' · ')}</p>}
-      {(x.website || x.instagram) && (
+      {(x.website || x.instagram || x.portfolio) && (
         <p className="mt-1 text-sm">
           {x.website && (
             <a href={x.website} target="_blank" rel="noopener" className="link mr-4">
               {x.website.replace(/^https?:\/\/(www\.)?/, '')}
+            </a>
+          )}
+          {x.portfolio && (
+            <a href={x.portfolio} target="_blank" rel="noopener" className="link mr-4">
+              Portfolio
             </a>
           )}
           {x.instagram && <span className="text-muted">Instagram : {x.instagram}</span>}
@@ -553,6 +590,83 @@ function RequestCard({ x }: { x: SubmissionRow }) {
       )}
       {x.message && <p className="mt-2 whitespace-pre-line text-[0.95rem] text-ink/85">{x.message}</p>}
     </li>
+  );
+}
+
+/** Professionals who asked L'Édition to create their portfolio, newest first. */
+function PortfoliosPanel({ requests }: { requests: PortfolioRow[] }) {
+  if (requests.length === 0) {
+    return (
+      <p className="text-muted">
+        Aucune demande pour l'instant. Elles arrivent depuis le lien « Déléguez la création de votre portfolio » des
+        fiches de prestataires et du formulaire de référencement.
+      </p>
+    );
+  }
+  return (
+    <div>
+      <div className="flex flex-wrap items-end justify-between gap-3">
+        <p className="text-muted">
+          {requests.length} demande{requests.length > 1 ? 's' : ''} de création de portfolio.
+        </p>
+        <button
+          type="button"
+          className="btn-ghost"
+          onClick={() =>
+            downloadCsv('demandes-portfolio.csv', [
+              ['Date', 'Nom', 'Entreprise', 'Métier', 'E-mail', 'Téléphone', 'Site ou portfolio actuel', 'Projet', 'Compte pro'],
+              ...requests.map((x) => [
+                x.at.toLocaleString('fr-FR'),
+                x.name,
+                x.company,
+                x.category ? categoryLabel(x.category) : '',
+                x.email,
+                x.phone,
+                x.current ?? '',
+                x.message ?? '',
+                x.uid ? 'Oui' : 'Non',
+              ]),
+            ])
+          }
+        >
+          Exporter en CSV
+        </button>
+      </div>
+      <ul className="mt-6 space-y-3">
+        {requests.map((x) => (
+          <li key={x.id} className={cardClass}>
+            <div className="flex flex-wrap items-baseline justify-between gap-2">
+              <p className="font-display text-2xl">
+                {x.company}{' '}
+                {x.category && <span className="font-sans text-base text-muted">{categoryLabel(x.category)}</span>}
+              </p>
+              <p className="text-sm text-muted">
+                {x.uid && <span className="mr-2 rounded-full bg-sage-soft px-2.5 py-0.5 text-pine-dark">Compte pro</span>}
+                {x.at.toLocaleDateString('fr-FR')}
+              </p>
+            </div>
+            <p className="mt-2 text-[0.95rem]">
+              {x.name} :{' '}
+              <a href={`mailto:${x.email}`} className="link">
+                {x.email}
+              </a>
+              ,{' '}
+              <a href={`tel:${x.phone.replace(/[^\d+]/g, '')}`} className="link">
+                {x.phone}
+              </a>
+            </p>
+            {x.current && (
+              <p className="mt-1 text-sm">
+                <a href={/^https?:\/\//i.test(x.current) ? x.current : `https://${x.current}`} target="_blank" rel="noopener" className="link">
+                  {x.current.replace(/^https?:\/\/(www\.)?/, '')}
+                </a>
+              </p>
+            )}
+            {x.message && <p className="mt-2 whitespace-pre-line text-[0.95rem] text-ink/85">{x.message}</p>}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
 }
 
@@ -655,9 +769,10 @@ function StatCards({ s }: { s: Omit<VenueStats, 'slug' | 'name'> }) {
     { label: 'Demandes de coordonnées', value: s.leads, strong: true },
     { label: 'Clics sur le téléphone', value: s.phoneClicks },
     { label: 'Clics vers le site', value: s.websiteClicks },
+    { label: 'Clics vers le portfolio', value: s.portfolioClicks },
   ];
   return (
-    <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
+    <dl className="mt-6 grid grid-cols-2 gap-3 md:grid-cols-4 lg:grid-cols-7">
       {cards.map((c) => (
         <div key={c.label} className={`${cardClass} ${c.strong ? 'border-pine' : ''}`}>
           <dt className="text-xs font-semibold text-muted">{c.label}</dt>

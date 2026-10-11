@@ -3,7 +3,7 @@ import { ListingDoc, ListingStatus, UserProfile } from '../types';
 import { staticVenues } from '../data';
 import { getDb, getStorageInstance } from './firebase';
 import { listingId, listingSlug, toListingDoc } from './listings';
-import { getAuthInstance } from './auth';
+import { getAuthInstance, signInWithGoogle } from './auth';
 
 /*
  * Data of the professional accounts: profile, listings, photos, statistics and claims.
@@ -85,6 +85,19 @@ async function resizeImage(file: File, maxSize: number): Promise<Blob> {
   );
 }
 
+/** Google sign-in; the first time, the profile is created from the Google account. */
+export async function signInWithGoogleProfile(): Promise<void> {
+  const { user: g } = await signInWithGoogle();
+  if (!(await getProfile(g.uid))) {
+    const [firstName = '', ...rest] = (g.displayName ?? '').split(' ');
+    await saveProfile(
+      g.uid,
+      { ...emptyProfile, firstName, lastName: rest.join(' '), email: g.email ?? '', photoURL: g.photoURL ?? '' },
+      true,
+    );
+  }
+}
+
 /** Upload a photo under the account's folder and return its public URL. */
 export async function uploadPhoto(uid: string, folder: 'profile' | 'listings', file: File): Promise<string> {
   if (!file.type.startsWith('image/')) throw new Error('Ce fichier n’est pas une image.');
@@ -124,6 +137,7 @@ export interface ListingDraft {
   phone: string;
   website: string;
   instagram: string;
+  portfolio: string;
   photos: string[];
   venueType: string;
   guestsMin: string;
@@ -148,6 +162,7 @@ export function draftFromListing(l: ListingDoc): ListingDraft {
     phone: l.phone,
     website: l.website,
     instagram: l.instagram,
+    portfolio: l.portfolio,
     photos: l.photos,
     venueType: l.venueType,
     guestsMin: n(l.guestsMin),
@@ -182,6 +197,7 @@ function listingFields(d: ListingDraft) {
     phone: d.phone.trim().slice(0, 40),
     website: normalizeWebsite(d.website).slice(0, 200),
     instagram: d.instagram.trim().replace(/^@/, '').slice(0, 120),
+    portfolio: d.type === 'prestataire' ? normalizeWebsite(d.portfolio).slice(0, 200) : '',
     photos: d.photos.slice(0, 8),
     venueType: d.type === 'lieu' ? d.venueType.slice(0, 60) : '',
     guestsMin: d.type === 'lieu' ? toInt(d.guestsMin, 10000) : null,
@@ -291,7 +307,7 @@ export async function myStats(uid: string): Promise<Map<string, ListingStats>> {
     if (e.type === 'save') s.saves++;
     else if (e.type === 'contact_open') s.opens++;
     else if (e.type === 'lead') s.leads++;
-    else if (e.type === 'phone_click' || e.type === 'website_click') s.clicks++;
+    else if (e.type === 'phone_click' || e.type === 'website_click' || e.type === 'portfolio_click') s.clicks++;
   }
   return new Map([...stats].map(([id, { sessions, ...s }]) => [id, { ...s, visitors: sessions.size }]));
 }

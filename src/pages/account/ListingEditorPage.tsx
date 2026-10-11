@@ -2,6 +2,7 @@ import { ChangeEvent, ReactNode, useEffect, useState } from 'react';
 import type { User } from 'firebase/auth';
 import { ListingDoc } from '../../types';
 import { findZone, zones } from '../../data';
+import { departmentZone, departments, departmentZoneSlug } from '../../departments';
 import { findVendorCategory, vendorCategories } from '../../vendors';
 import { authErrorMessage, refreshVerification, resendVerification, useAuthUser } from '../../lib/auth';
 import {
@@ -20,6 +21,7 @@ import { Link, useRouter } from '../../router';
 import { paths } from '../../routes';
 import { KeyFigures, Tags } from '../../components/VenueListItem';
 import { Photo } from '../../components/Photo';
+import { PortfolioOffer } from '../../components/PortfolioOffer';
 
 const MAX_PHOTOS = 8;
 const VAR_WIDE = 'Tout le Var';
@@ -43,6 +45,7 @@ function emptyDraft(type: ListingDoc['type'], category: string): ListingDraft {
     phone: '',
     website: '',
     instagram: '',
+    portfolio: '',
     photos: [],
     venueType: '',
     guestsMin: '',
@@ -93,6 +96,7 @@ function previewListing(d: ListingDraft): ListingDoc {
     phone: d.phone,
     website: d.website,
     instagram: d.instagram,
+    portfolio: d.portfolio,
     photos: d.photos,
     venueType: d.venueType,
     guestsMin: toNumber(d.guestsMin),
@@ -347,7 +351,7 @@ export default function ListingEditorPage() {
 
   const preview = previewListing(draft);
   const previewVenue = listingToVenue(preview);
-  const zoneName = isVenue ? findZone(draft.zone)?.name : draft.zone;
+  const zoneName = isVenue ? (findZone(draft.zone) ?? departmentZone(draft.zone))?.name : draft.zone;
 
   return (
     <div className="mx-auto max-w-6xl px-5 py-10 sm:px-8 sm:py-12">
@@ -445,16 +449,25 @@ export default function ListingEditorPage() {
                 <input value={draft.commune} maxLength={80} onChange={(e) => update({ commune: e.target.value })} placeholder="Lorgues" className={fieldClass} />
               </label>
               <label className={labelClass}>
-                {isVenue ? 'Secteur du Var' : 'Zone d’intervention'}
+                {isVenue ? 'Secteur ou département' : 'Zone d’intervention'}
                 <select value={draft.zone} onChange={(e) => update({ zone: e.target.value })} className={fieldClass}>
                   {isVenue ? (
                     <>
                       <option value="">Choisir le secteur</option>
-                      {zones.map((z) => (
-                        <option key={z.slug} value={z.slug}>
-                          {z.name}
-                        </option>
-                      ))}
+                      <optgroup label="Dans le Var">
+                        {zones.map((z) => (
+                          <option key={z.slug} value={z.slug}>
+                            {z.name}
+                          </option>
+                        ))}
+                      </optgroup>
+                      <optgroup label="Hors du Var">
+                        {departments.map((d) => (
+                          <option key={d.code} value={departmentZoneSlug(d.code)}>
+                            {d.name} ({d.code})
+                          </option>
+                        ))}
+                      </optgroup>
                     </>
                   ) : (
                     [VAR_WIDE, ...zones.map((z) => z.name)].map((name) => <option key={name}>{name}</option>)
@@ -677,6 +690,33 @@ export default function ListingEditorPage() {
                 Instagram <span className="font-normal text-muted">(facultatif)</span>
                 <input value={draft.instagram} maxLength={120} onChange={(e) => update({ instagram: e.target.value })} placeholder="@votrecompte" className={fieldClass} />
               </label>
+              {!isVenue && (
+                <div className="sm:col-span-2">
+                  <label className={labelClass}>
+                    Portfolio <span className="font-normal text-muted">(facultatif)</span>
+                    <input
+                      inputMode="url"
+                      value={draft.portfolio}
+                      maxLength={200}
+                      onChange={(e) => update({ portfolio: e.target.value })}
+                      placeholder="www.votre-portfolio.fr"
+                      className={fieldClass}
+                    />
+                    <Hint>Visible sur votre fiche : les couples peuvent découvrir vos réalisations avant de vous contacter.</Hint>
+                  </label>
+                  <PortfolioOffer
+                    defaults={{
+                      name: user.displayName ?? '',
+                      company: draft.name,
+                      category: draft.category,
+                      email: user.email ?? '',
+                      phone: draft.phone,
+                      current: draft.portfolio || draft.website,
+                    }}
+                    context={{ uid: user.uid, listingId: listing?.id }}
+                  />
+                </div>
+              )}
             </div>
           </Section>
         </div>

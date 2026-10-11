@@ -8,7 +8,6 @@ import {
   refreshVerification,
   resendVerification,
   sendPasswordReset,
-  signOutUser,
   useAuthUser,
 } from '../../lib/auth';
 import {
@@ -34,6 +33,7 @@ import { Link, useRouter } from '../../router';
 import { paths } from '../../routes';
 import { PricingNotice } from '../../components/PricingNotice';
 import { Photo } from '../../components/Photo';
+import { SignOutButton } from '../../components/SignOutButton';
 
 const fieldClass =
   'mt-1.5 w-full rounded-xl border-line bg-white px-4 py-2.5 text-[0.95rem] text-ink placeholder:text-muted/70 focus:border-pine focus:ring-pine/30';
@@ -462,15 +462,7 @@ export default function AccountPage() {
           <h1 className="mt-1 text-4xl text-ink sm:text-5xl">Bonjour {profile?.firstName || name}</h1>
           <p className="mt-1 text-muted">{user.email}</p>
         </div>
-        <button
-          type="button"
-          onClick={() => {
-            void signOutUser().then(() => navigate('/'));
-          }}
-          className="btn-ghost"
-        >
-          Se déconnecter
-        </button>
+        <SignOutButton onSignedOut={() => navigate('/')} />
       </header>
 
       {!verified && (

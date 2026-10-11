@@ -5,7 +5,10 @@ import { site } from '../site';
 import { venues, venuesInZone, zones } from '../data';
 import { vendorCategories } from '../vendors';
 import { useSavedCount } from '../lib/saved';
-import { useProHint } from '../lib/proHint';
+import { ProHint, useProHint } from '../lib/proHint';
+import { articles } from '../articles';
+import { Photo } from './Photo';
+import { SignOutButton } from './SignOutButton';
 
 const isVenues = (p: string) => p === '/' || p.startsWith('/lieux') || p.startsWith('/secteurs');
 const isVendors = (p: string) => p.startsWith(paths.prestataires);
@@ -17,12 +20,12 @@ const navLinkClass = (active: boolean) =>
   }`;
 
 /**
- * "Prestataires" entry: opens a panel of every vendor category on hover or keyboard focus.
- * The links are always in the page (hidden when closed) so search engines can follow them.
+ * Open state of a header menu: on hover (with a short delay so the pointer can reach the panel) or keyboard
+ * focus, closed with Escape, when focus leaves it or when the page changes.
  */
-function VendorsMenu({ path }: { path: string }) {
+function useHeaderMenu<T extends HTMLElement>(path: string) {
   const [open, setOpen] = useState(false);
-  const wrapperRef = useRef<HTMLLIElement>(null);
+  const wrapperRef = useRef<T>(null);
   const triggerRef = useRef<HTMLAnchorElement>(null);
   const closeTimer = useRef<number | undefined>(undefined);
   const panelId = useId();
@@ -45,7 +48,6 @@ function VendorsMenu({ path }: { path: string }) {
     window.clearTimeout(closeTimer.current);
     setOpen(true);
   };
-  // A short delay lets the pointer travel from the link to the panel.
   const hide = () => {
     closeTimer.current = window.setTimeout(() => setOpen(false), 150);
   };
@@ -53,22 +55,37 @@ function VendorsMenu({ path }: { path: string }) {
     if (!wrapperRef.current?.contains(e.relatedTarget as Node | null)) setOpen(false);
   };
 
+  return {
+    open,
+    close: () => setOpen(false),
+    wrapper: { ref: wrapperRef, onMouseEnter: show, onMouseLeave: hide, onBlur },
+    trigger: { ref: triggerRef, onFocus: show, 'aria-expanded': open, 'aria-controls': panelId },
+    panel: { id: panelId, className: `${open ? 'block' : 'hidden'} absolute top-full z-50 pt-4` },
+  };
+}
+
+const panelClass = 'rounded-2xl border border-line bg-paper p-3 shadow-xl';
+
+/**
+ * "Prestataires" entry: opens a panel of every vendor category on hover or keyboard focus.
+ * The links are always in the page (hidden when closed) so search engines can follow them.
+ */
+function VendorsMenu({ path }: { path: string }) {
+  const menu = useHeaderMenu<HTMLLIElement>(path);
+
   return (
-    <li ref={wrapperRef} className="relative" onMouseEnter={show} onMouseLeave={hide} onBlur={onBlur}>
+    <li className="relative" {...menu.wrapper}>
       <Link
-        ref={triggerRef}
         href={paths.prestataires}
-        onFocus={show}
-        aria-expanded={open}
-        aria-controls={panelId}
+        {...menu.trigger}
         aria-current={path === paths.prestataires ? 'page' : undefined}
         className={navLinkClass(isVendors(path))}
       >
         Prestataires
       </Link>
 
-      <div id={panelId} className={`${open ? 'block' : 'hidden'} absolute left-1/2 top-full z-50 -translate-x-1/2 pt-4`}>
-        <div className="w-[32rem] rounded-2xl border border-line bg-paper p-3 shadow-xl lg:w-[46rem]">
+      <div {...menu.panel} className={`${menu.panel.className} left-1/2 -translate-x-1/2`}>
+        <div className={`${panelClass} w-[32rem] lg:w-[46rem]`}>
           <ul className="grid grid-cols-2 gap-1 lg:grid-cols-3">
             {vendorCategories.map((c) => (
               <li key={c.slug}>
@@ -97,35 +114,192 @@ function VendorsMenu({ path }: { path: string }) {
   );
 }
 
+/** Latest articles for couples shown in the "Journal" menu (the ones for professionals stay in the journal). */
+const latestArticles = articles
+  .filter((a) => a.category !== 'Professionnels')
+  .sort((a, b) => b.date.localeCompare(a.date))
+  .slice(0, 3);
+
+/** "Journal" entry: the latest articles on hover or keyboard focus, and a link to all of them. */
+function JournalMenu({ path }: { path: string }) {
+  const menu = useHeaderMenu<HTMLLIElement>(path);
+
+  return (
+    <li className="relative" {...menu.wrapper}>
+      <Link
+        href={paths.journal}
+        {...menu.trigger}
+        aria-current={path === paths.journal ? 'page' : undefined}
+        className={navLinkClass(isJournal(path))}
+      >
+        Journal
+      </Link>
+
+      <div {...menu.panel} className={`${menu.panel.className} left-1/2 -translate-x-1/2`}>
+        <div className={`${panelClass} w-[34rem] lg:w-[44rem]`}>
+          <p className="px-3 pb-2 pt-1 text-xs font-semibold text-muted">Derniers articles</p>
+          <ul className="grid grid-cols-3 gap-2">
+            {latestArticles.map((a) => (
+              <li key={a.slug}>
+                <Link
+                  href={paths.article(a.slug)}
+                  aria-current={path === paths.article(a.slug) ? 'page' : undefined}
+                  className="group block rounded-xl p-2 transition-colors hover:bg-sage-soft focus-visible:bg-sage-soft aria-[current=page]:bg-sage-soft"
+                >
+                  {/* The menu is closed on load: its images only download once it is opened. */}
+                  <span className="block aspect-[4/3] overflow-hidden rounded-lg bg-sage-soft">
+                    {menu.open && <Photo id={a.image} alt="" sizes="220px" maxWidth={480} />}
+                  </span>
+                  <span className="mt-2 block text-xs text-pine">{a.category}</span>
+                  <span className="mt-0.5 block text-[0.95rem] font-semibold leading-snug text-ink group-hover:text-pine">
+                    {a.title}
+                  </span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-2 flex items-center justify-between gap-3 border-t border-line px-3 pb-1 pt-3 text-sm">
+            <span className="text-muted">Budget, lieux, organisation : nos conseils pour un mariage dans le Var</span>
+            <Link href={paths.journal} className="btn-ghost !px-4 !py-2 text-sm">
+              Voir tous les articles
+            </Link>
+          </div>
+        </div>
+      </div>
+    </li>
+  );
+}
+
+/** Round account icon: the professional's photo or initial once signed in, otherwise a silhouette. */
+function AccountIcon({ pro }: { pro: ProHint | null }) {
+  if (pro?.photoURL) return <img src={pro.photoURL} alt="" className="h-full w-full object-cover" />;
+  if (pro) return <span className="text-[0.95rem] font-semibold">{(pro.name || '?').charAt(0).toUpperCase()}</span>;
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
+      <circle cx="12" cy="8.5" r="3.75" />
+      <path d="M4.75 19.5c1.2-3.3 4-5 7.25-5s6.05 1.7 7.25 5" />
+    </svg>
+  );
+}
+
+const menuLinkClass =
+  'block rounded-xl px-3 py-2 text-[0.95rem] text-ink transition-colors hover:bg-sage-soft focus-visible:bg-sage-soft';
+
 /**
- * Account button: the professional's photo or initial once signed in (from a hint kept in this browser,
- * so Firebase Authentication does not load on every page), otherwise a silhouette leading to the sign-in page.
+ * Account button. Signed in (from a hint kept in this browser, so Firebase Authentication does not load on
+ * every page): the professional's photo, with a menu to their account. Otherwise a silhouette, with a menu
+ * to sign in with Google or by e-mail, or create an account. A click goes to the account or sign-in page.
  */
-function AccountButton({ path }: { path: string }) {
+function AccountMenu({ path }: { path: string }) {
   const pro = useProHint();
+  const { navigate } = useRouter();
+  const menu = useHeaderMenu<HTMLDivElement>(path);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
   const active = path === paths.login || path.startsWith(paths.account);
   const label = pro ? `Mon compte (${pro.name})` : 'Espace pro : se connecter';
+
+  const google = async () => {
+    setBusy(true);
+    setError('');
+    // Loaded on demand: Firebase Authentication stays out of the public pages.
+    const [{ signInWithGoogleProfile }, { authErrorMessage }] = await Promise.all([import('../lib/account'), import('../lib/auth')]);
+    try {
+      await signInWithGoogleProfile();
+      menu.close();
+      navigate(paths.account);
+    } catch (err) {
+      console.error(err);
+      setError(authErrorMessage(err));
+    } finally {
+      setBusy(false);
+    }
+  };
+
   return (
-    <Link
-      href={pro ? paths.account : paths.login}
-      aria-label={label}
-      title={label}
-      aria-current={active ? 'page' : undefined}
-      className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-colors ${
-        active ? 'border-pine bg-sage-soft text-pine' : 'border-ink/20 bg-white/60 text-ink hover:border-pine hover:text-pine'
-      }`}
-    >
-      {pro?.photoURL ? (
-        <img src={pro.photoURL} alt="" className="h-full w-full object-cover" />
-      ) : pro ? (
-        <span className="text-[0.95rem] font-semibold">{(pro.name || '?').charAt(0).toUpperCase()}</span>
-      ) : (
-        <svg viewBox="0 0 24 24" aria-hidden="true" className="h-5 w-5" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round">
-          <circle cx="12" cy="8.5" r="3.75" />
-          <path d="M4.75 19.5c1.2-3.3 4-5 7.25-5s6.05 1.7 7.25 5" />
-        </svg>
-      )}
-    </Link>
+    <div className="relative" {...menu.wrapper}>
+      <Link
+        href={pro ? paths.account : paths.login}
+        {...menu.trigger}
+        aria-label={label}
+        aria-current={active ? 'page' : undefined}
+        className={`flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full border transition-colors ${
+          active ? 'border-pine bg-sage-soft text-pine' : 'border-ink/20 bg-white/60 text-ink hover:border-pine hover:text-pine'
+        }`}
+      >
+        <AccountIcon pro={pro} />
+      </Link>
+
+      <div {...menu.panel} className={`${menu.panel.className} right-0`}>
+        <div className={`${panelClass} w-80 p-4`}>
+          {pro ? (
+            <>
+              <div className="flex items-center gap-3 px-1">
+                <span className="flex h-10 w-10 shrink-0 items-center justify-center overflow-hidden rounded-full bg-sage-soft text-pine">
+                  <AccountIcon pro={pro} />
+                </span>
+                <div className="min-w-0">
+                  <p className="truncate font-semibold text-ink">{pro.name}</p>
+                  <p className="text-xs text-muted">Espace professionnel</p>
+                </div>
+              </div>
+              <ul className="mt-3 border-t border-line pt-2">
+                <li>
+                  <Link href={paths.account} className={menuLinkClass}>
+                    Mes fiches et statistiques
+                  </Link>
+                </li>
+                <li>
+                  <Link href={paths.newListing('lieu')} className={menuLinkClass}>
+                    Ajouter un lieu de réception
+                  </Link>
+                </li>
+                <li>
+                  <Link href={paths.newListing('prestataire')} className={menuLinkClass}>
+                    Ajouter une activité de prestataire
+                  </Link>
+                </li>
+              </ul>
+              <div className="mt-2 border-t border-line px-1 pt-3">
+                {/* Remounted at each opening, so a confirmation left pending is not shown again. */}
+                <SignOutButton
+                  key={String(menu.open)}
+                  className="text-sm font-semibold text-muted underline-offset-2 hover:text-ink hover:underline"
+                  onSignedOut={() => {
+                    menu.close();
+                    if (active || path.startsWith(paths.admin)) navigate('/');
+                  }}
+                />
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="font-semibold text-ink">Espace professionnel</p>
+              <p className="mt-1 text-sm leading-snug text-muted">
+                Lieux et prestataires : publiez votre fiche gratuitement et suivez vos statistiques.
+              </p>
+              <button type="button" onClick={() => void google()} disabled={busy} className="btn-primary mt-4 w-full !py-2.5 text-sm">
+                {busy ? 'Connexion…' : 'Se connecter avec Google'}
+              </button>
+              {error && (
+                <p role="alert" className="mt-2 text-sm text-red-700">
+                  {error}
+                </p>
+              )}
+              <Link href={paths.login} className="btn-ghost mt-2 w-full !py-2.5 text-sm">
+                Se connecter avec un e-mail
+              </Link>
+              <p className="mt-3 text-center text-sm text-muted">
+                Pas encore de compte ?{' '}
+                <Link href={`${paths.login}?mode=inscription`} className="font-semibold text-ink underline underline-offset-2">
+                  Créer un compte
+                </Link>
+              </p>
+            </>
+          )}
+        </div>
+      </div>
+    </div>
   );
 }
 
@@ -203,11 +377,7 @@ export function Header() {
                 </Link>
               </li>
               <VendorsMenu path={path} />
-              <li>
-                <Link href={paths.journal} aria-current={path === paths.journal ? 'page' : undefined} className={navLinkClass(isJournal(path))}>
-                  Journal
-                </Link>
-              </li>
+              <JournalMenu path={path} />
               <li className="hidden lg:block">
                 <Link
                   href={paths.saved}
@@ -223,7 +393,7 @@ export function Header() {
           </nav>
 
           <div className="flex items-center gap-3">
-            <AccountButton path={path} />
+            <AccountMenu path={path} />
             {/* On the listing page itself, the button scrolls to the form instead of reloading the page. */}
             <Link
               href={path === paths.referencer ? '#formulaire' : paths.referencer}

@@ -1,4 +1,5 @@
 import { ContactTarget, Venue, Zone } from './types';
+import { paths } from './paths';
 import { photos } from './images';
 
 export const zones: Zone[] = [
@@ -638,6 +639,16 @@ export function findVenue(slug: string): Venue | undefined {
 
 export function findZone(slug: string): Zone | undefined {
   return zoneBySlug[slug];
+}
+
+/** Area of a venue, its sector of the Var or its department, e.g. "Var" or "Bouches-du-Rhône". */
+export function regionOf(v: Venue): string {
+  return v.zone.department ? v.zone.name : 'Var';
+}
+
+/** Page of the venue's sector, or none for a venue outside the Var. */
+export function zoneHref(zone: Zone): string | undefined {
+  return zone.department ? undefined : paths.zone(zone.slug);
 }
 
 export function venuesInZone(zoneSlug: string): Venue[] {

@@ -56,6 +56,17 @@ export function PrivacyPage() {
       ),
     },
     {
+      title: 'Quand vous demandez la création de votre portfolio',
+      body: (
+        <p>
+          Le formulaire « Déléguez la création de votre portfolio » recueille votre nom, votre entreprise, votre métier,
+          votre e-mail, votre téléphone et, si vous les indiquez, votre site actuel et la description de votre projet. Ces
+          informations servent uniquement à vous recontacter avec une proposition. Base légale : votre consentement. Durée
+          de conservation : 3 ans après notre dernier échange.
+        </p>
+      ),
+    },
+    {
       title: 'Si vous créez un compte professionnel',
       body: (
         <>

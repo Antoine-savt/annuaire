@@ -1,7 +1,7 @@
 import { getDb, trackingEnabled } from './firebase';
 
 /** "visit" is one visit of the site (any page), the others concern one listing. */
-export type EventType = 'visit' | 'view' | 'contact_open' | 'lead' | 'phone_click' | 'website_click' | 'save';
+export type EventType = 'visit' | 'view' | 'contact_open' | 'lead' | 'phone_click' | 'website_click' | 'portfolio_click' | 'save';
 
 function storage(kind: 'session' | 'local'): Storage | null {
   try {

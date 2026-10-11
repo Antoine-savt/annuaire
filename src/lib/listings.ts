@@ -1,5 +1,6 @@
 import { Budget, ListingDoc, Venue, Vendor } from '../types';
 import { findZone, zones } from '../data';
+import { departmentZone } from '../departments';
 import { slugify } from './richtext';
 
 const euros = (n: number) => `${n.toLocaleString('fr-FR')} €`;
@@ -14,7 +15,7 @@ function budgetFor(price: number | null): Budget | null {
 
 /** A venue listing from a professional account, shaped like the curated venues. */
 export function listingToVenue(l: ListingDoc): Venue {
-  const zone = findZone(l.zone) ?? zones[0];
+  const zone = findZone(l.zone) ?? departmentZone(l.zone) ?? zones[0];
   const guestsShort =
     l.guestsMin && l.guestsMax ? `${l.guestsMin} à ${l.guestsMax}` : l.guestsMax ? `Jusqu'à ${l.guestsMax}` : 'Sur demande';
   const priceShort = l.priceFrom ? `Dès ${euros(l.priceFrom)}` : 'Sur devis';
@@ -66,6 +67,7 @@ export function listingToVendor(l: ListingDoc): Vendor {
     phone: l.phone,
     website: l.website || undefined,
     instagram: l.instagram || undefined,
+    portfolio: l.portfolio || undefined,
     image: l.photos[0],
     imageAlt: `${l.name}, ${l.commune}`,
     description: l.description,
@@ -114,6 +116,7 @@ export function toListingDoc(id: string, data: Record<string, unknown>): Listing
     phone: str(data.phone),
     website: str(data.website),
     instagram: str(data.instagram),
+    portfolio: str(data.portfolio),
     photos: Array.isArray(data.photos) ? data.photos.filter((p): p is string => typeof p === 'string') : [],
     venueType: str(data.venueType),
     guestsMin: num(data.guestsMin),

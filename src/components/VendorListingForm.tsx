@@ -6,6 +6,7 @@ import { emptyListing, ListingInput, submitListing } from '../lib/submissions';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { site } from '../site';
+import { PortfolioOffer } from './PortfolioOffer';
 
 const fieldClass =
   'mt-1.5 w-full rounded-xl border-line bg-white px-4 py-2.5 text-[0.95rem] text-ink placeholder:text-muted/70 focus:border-pine focus:ring-pine/30';
@@ -135,10 +136,26 @@ export function VendorListingForm({ category }: { category?: VendorCategory }) {
           Site web {optional}
           <input type="url" value={form.website} onChange={(e) => update({ website: e.target.value })} placeholder="https://" className={fieldClass} />
         </label>
-        <label className={`${labelClass} sm:col-span-2`}>
+        <label className={labelClass}>
           Instagram {optional}
           <input value={form.instagram} onChange={(e) => update({ instagram: e.target.value })} placeholder="@votrecompte" className={fieldClass} />
         </label>
+        <div>
+          <label className={labelClass}>
+            Portfolio {optional}
+            <input type="url" value={form.portfolio} onChange={(e) => update({ portfolio: e.target.value })} placeholder="https://" className={fieldClass} />
+          </label>
+          <PortfolioOffer
+            defaults={{
+              name: form.contactName,
+              company: form.name,
+              category: form.category,
+              email: form.email,
+              phone: form.phone,
+              current: form.portfolio || form.website,
+            }}
+          />
+        </div>
       </div>
 
       <h3 className="mt-8 font-sans text-base font-semibold text-pine">Vos coordonnées</h3>

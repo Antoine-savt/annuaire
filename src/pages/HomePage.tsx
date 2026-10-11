@@ -1,5 +1,6 @@
 import { useId, useMemo } from 'react';
 import { normalize, venues, venuesInZone, zones } from '../data';
+import { OUTSIDE_VAR } from '../departments';
 import { articles, formatDate } from '../articles';
 import { Venue } from '../types';
 import { Link } from '../router';
@@ -88,7 +89,6 @@ interface HomePageProps {
 
 export function HomePage({ filters, onFiltersChange }: HomePageProps) {
   const ids = useId();
-  const featured = venues.find((v) => v.slug === 'chateau-sainte-roseline');
   const set = (patch: Partial<Filters>) => onFiltersChange({ ...filters, ...patch });
 
   const results = useMemo(() => {
@@ -97,11 +97,12 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
       const haystack = normalize(
         `${v.nom_du_lieu} ${v.commune} ${v.zone.name} ${v.type_de_cadre} ${v.summary} ${v.tags.join(' ')} ${v.description}`,
       );
-      return (!q || haystack.includes(q)) && (!filters.zone || v.zone.slug === filters.zone) && matches(v, filters);
+      return (!q || haystack.includes(q)) && (!filters.zone || (filters.zone === OUTSIDE_VAR ? !!v.zone.department : v.zone.slug === filters.zone)) && matches(v, filters);
     });
   }, [filters, venues]);
 
   const hasFilters = Object.values(filters).some(Boolean);
+  const outsideCount = venues.filter((v) => v.zone.department).length;
 
   const labelClass = 'mb-1.5 block text-sm font-semibold text-ink';
   const fieldClass =
@@ -179,18 +180,13 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
               decoding="sync"
               className="h-full w-full object-cover object-[50%_70%]"
             />
-            {featured && (
-              <Link
-                href={paths.venue(featured.slug)}
-                className="absolute hidden rounded-xl bg-white/95 p-4 shadow-lg backdrop-blur transition-colors hover:bg-white sm:left-4 sm:top-4 sm:block sm:max-w-xs"
-              >
-                <span className="block text-xs font-semibold text-pine">Lieu à découvrir</span>
-                <span className="mt-0.5 block font-display text-xl leading-tight text-ink">{featured.nom_du_lieu}</span>
-                <span className="mt-1 block text-sm leading-snug text-muted">
-                  {featured.commune}, {featured.zone.name}. {featured.guestsShort} invités, {featured.priceShort.toLowerCase()}.
-                </span>
-              </Link>
-            )}
+            {/* A general tip, not a caption: the photo was not taken at one of the listed venues. */}
+            <p className="absolute hidden rounded-xl bg-white/95 p-4 shadow-lg backdrop-blur sm:left-4 sm:top-4 sm:block sm:max-w-xs">
+              <span className="block text-xs font-semibold text-pine">Le saviez-vous ?</span>
+              <span className="mt-1 block text-sm leading-snug text-muted">
+                Le lancer de riz à la sortie de la cérémonie est un vœu de prospérité et de fécondité pour les mariés.
+              </span>
+            </p>
           </div>
           <figcaption className="mt-2 text-xs text-muted">
             La sortie de cérémonie, l'un des moments les plus attendus de la journée.
@@ -239,12 +235,13 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
                   onChange={(e) => set({ zone: e.target.value })}
                   className={`${fieldClass} pl-4`}
                 >
-                  <option value="">Tout le Var</option>
+                  <option value="">{outsideCount ? 'Tous les secteurs' : 'Tout le Var'}</option>
                   {zones.map((z) => (
                     <option key={z.slug} value={z.slug}>
                       {z.name} ({venuesInZone(z.slug).length})
                     </option>
                   ))}
+                  {outsideCount > 0 && <option value={OUTSIDE_VAR}>Hors du Var ({outsideCount})</option>}
                 </select>
               </div>
             </div>

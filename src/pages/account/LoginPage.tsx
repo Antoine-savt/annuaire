@@ -3,11 +3,10 @@ import {
   authErrorMessage,
   sendPasswordReset,
   signInWithEmail,
-  signInWithGoogle,
   signUpWithEmail,
   useAuthUser,
 } from '../../lib/auth';
-import { emptyProfile, getProfile, saveProfile } from '../../lib/account';
+import { emptyProfile, saveProfile, signInWithGoogleProfile } from '../../lib/account';
 import { firebaseConfigured } from '../../lib/firebase';
 import { Link, useRouter } from '../../router';
 import { paths } from '../../routes';
@@ -101,15 +100,7 @@ export default function LoginPage() {
 
   const onGoogle = () =>
     void run(async () => {
-      const { user: g } = await signInWithGoogle();
-      if (!(await getProfile(g.uid))) {
-        const [firstName = '', ...rest] = (g.displayName ?? '').split(' ');
-        await saveProfile(
-          g.uid,
-          { ...emptyProfile, firstName, lastName: rest.join(' '), email: g.email ?? '', photoURL: g.photoURL ?? '' },
-          true,
-        );
-      }
+      await signInWithGoogleProfile();
       navigate(nextPath());
     });
 
@@ -144,7 +135,7 @@ export default function LoginPage() {
           Publiez votre lieu ou votre activité sur {site.name}
         </h1>
         <p className="mt-5 max-w-xl text-lg leading-relaxed text-muted">
-          Propriétaires de domaines et prestataires de mariage dans le Var : créez votre compte, publiez votre fiche en
+          Propriétaires de lieux de réception, dans le Var et au-delà, et prestataires de mariage : créez votre compte, publiez votre fiche en
           quelques minutes et suivez combien de couples la consultent.
         </p>
         <ul className="mt-8 max-w-xl space-y-3 text-[1.02rem] text-ink">

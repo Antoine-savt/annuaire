@@ -1,5 +1,5 @@
 import { FaqItem, Venue, Zone } from './types';
-import { inCommune, venues, venuesInZone } from './data';
+import { inCommune, venues, venuesInZone, zoneHref } from './data';
 import { paths } from './paths';
 
 const lcFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
@@ -25,7 +25,9 @@ export function venueFaq(v: Venue): FaqItem[] {
     },
     {
       q: `Où se trouve ${v.nom_du_lieu} ?`,
-      a: `${v.nom_du_lieu} se trouve ${inCommune(v.commune)}, ${v.zone.where}, dans le Var. Découvrez les autres [lieux de mariage ${v.zone.where}](${paths.zone(v.zone.slug)}).`,
+      a: zoneHref(v.zone)
+        ? `${v.nom_du_lieu} se trouve ${inCommune(v.commune)}, ${v.zone.where}, dans le Var. Découvrez les autres [lieux de mariage ${v.zone.where}](${zoneHref(v.zone)}).`
+        : `${v.nom_du_lieu} se trouve ${inCommune(v.commune)}, ${v.zone.where}.`,
     },
     {
       q: `Comment contacter ${v.nom_du_lieu} ?`,

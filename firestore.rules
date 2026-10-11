@@ -30,7 +30,7 @@ service cloud.firestore {
     // "visit" is a visit of the site (empty venue), the other types concern one listing.
     match /events/{id} {
       allow create: if request.resource.data.keys().hasOnly(['type', 'venue', 'session', 'path', 'referrer', 'owner', 'at'])
-        && request.resource.data.type in ['visit', 'view', 'contact_open', 'lead', 'phone_click', 'website_click', 'save']
+        && request.resource.data.type in ['visit', 'view', 'contact_open', 'lead', 'phone_click', 'website_click', 'portfolio_click', 'save']
         && shortString(request.resource.data.venue, 80)
         && shortString(request.resource.data.session, 40)
         && shortString(request.resource.data.path, 200)
@@ -65,7 +65,7 @@ service cloud.firestore {
     match /submissions/{id} {
       allow create: if request.resource.data.keys().hasAll(['category', 'kind', 'name', 'commune', 'contactName', 'email', 'phone', 'consent', 'at'])
         && request.resource.data.keys().hasOnly(['category', 'kind', 'name', 'commune', 'zone', 'subtype', 'capacity', 'sleeps',
-             'priceFrom', 'website', 'instagram', 'contactName', 'role', 'email', 'phone', 'message', 'consent', 'at'])
+             'priceFrom', 'website', 'instagram', 'portfolio', 'contactName', 'role', 'email', 'phone', 'message', 'consent', 'at'])
         && request.resource.data.category is string
         && request.resource.data.category.matches('[a-z-]{2,40}')
         && request.resource.data.kind in ['nouveau', 'mise-a-jour']
@@ -83,10 +83,35 @@ service cloud.firestore {
         && (!('priceFrom' in request.resource.data) || shortString(request.resource.data.priceFrom, 120))
         && (!('website' in request.resource.data) || shortString(request.resource.data.website, 200))
         && (!('instagram' in request.resource.data) || shortString(request.resource.data.instagram, 120))
+        && (!('portfolio' in request.resource.data) || shortString(request.resource.data.portfolio, 200))
         && (!('role' in request.resource.data) || shortString(request.resource.data.role, 60))
         && (!('message' in request.resource.data) || shortString(request.resource.data.message, 2000))
         && (!('capacity' in request.resource.data) || optionalInt(request.resource.data.capacity, 10000))
         && (!('sleeps' in request.resource.data) || optionalInt(request.resource.data.sleeps, 10000))
+        && request.resource.data.consent == true
+        && request.resource.data.at == request.time;
+      allow read, delete: if isAdmin();
+    }
+
+    // ---------- Requests to have L'Édition create a portfolio (admins only) ----------
+    match /portfolioRequests/{id} {
+      allow create: if request.resource.data.keys().hasAll(['name', 'company', 'category', 'email', 'phone', 'consent', 'at'])
+        && request.resource.data.keys().hasOnly(['name', 'company', 'category', 'email', 'phone', 'current', 'message',
+             'uid', 'listingId', 'consent', 'at'])
+        && request.resource.data.name is string && request.resource.data.name.size() > 0
+        && shortString(request.resource.data.name, 120)
+        && request.resource.data.company is string && request.resource.data.company.size() > 0
+        && shortString(request.resource.data.company, 120)
+        && request.resource.data.category is string
+        && request.resource.data.category.matches('([a-z-]{2,40})?')
+        && request.resource.data.email is string
+        && request.resource.data.email.matches('[^@ ]+@[^@ ]+[.][^@ ]+')
+        && request.resource.data.email.size() <= 200
+        && shortString(request.resource.data.phone, 40)
+        && (!('current' in request.resource.data) || shortString(request.resource.data.current, 200))
+        && (!('message' in request.resource.data) || shortString(request.resource.data.message, 2000))
+        && (!('uid' in request.resource.data) || (signedIn() && request.resource.data.uid == request.auth.uid))
+        && (!('listingId' in request.resource.data) || shortString(request.resource.data.listingId, 120))
         && request.resource.data.consent == true
         && request.resource.data.at == request.time;
       allow read, delete: if isAdmin();
@@ -119,7 +144,7 @@ service cloud.firestore {
     // ---------- Listings published by professionals ----------
     function validListing(id, d) {
       return d.keys().hasOnly(['ownerUid', 'type', 'category', 'slug', 'status', 'name', 'commune', 'zone', 'summary',
-             'description', 'tags', 'highlight', 'phone', 'website', 'instagram', 'photos', 'venueType', 'guestsMin',
+             'description', 'tags', 'highlight', 'phone', 'website', 'instagram', 'portfolio', 'photos', 'venueType', 'guestsMin',
              'guestsMax', 'sleeps', 'priceFrom', 'priceDetails', 'createdAt', 'updatedAt'])
         && d.type in ['lieu', 'prestataire']
         && d.category is string && d.category.matches('[a-z-]{2,40}')
@@ -136,6 +161,7 @@ service cloud.firestore {
         && shortString(d.phone, 40)
         && shortString(d.website, 200)
         && shortString(d.instagram, 120)
+        && (!('portfolio' in d) || shortString(d.portfolio, 200))
         && d.photos is list && d.photos.size() <= 8
         && shortString(d.venueType, 60)
         && optionalInt(d.guestsMin, 10000)
