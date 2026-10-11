@@ -6,6 +6,9 @@ import { SignOutButton } from '../components/SignOutButton';
 import { Link } from '../router';
 import { paths } from '../routes';
 import { ProsPanel } from './AdminProsPanel';
+import { ListingsPanel } from './AdminListingsPanel';
+import { GoalsPanel } from './AdminGoalsPanel';
+import { TeamPanel } from './AdminTeamPanel';
 import { site } from '../site';
 import { categoryLabel, vendorCategories } from '../vendors';
 import { findVendorById, vendorId, vendors } from '../vendorListings';
@@ -155,9 +158,23 @@ const cardClass = 'rounded-2xl border border-line bg-white p-5';
 const thClass = 'px-3 py-2.5 text-left text-xs font-semibold text-muted';
 const tdClass = 'px-3 py-2.5 text-[0.95rem] tabular-nums';
 
+/** What the signed-in account may see in the dashboard. */
+interface Access {
+  admin: boolean;
+  /** Manages the team ("Équipe") and edits the goals. */
+  manage: boolean;
+  /** Sees the "Objectifs" tab and its rewards. */
+  goals: boolean;
+}
+
+const NO_ACCESS: Access = { admin: false, manage: false, goals: false };
+
+type Tab = 'stats' | 'demandes' | 'portfolios' | 'fiches' | 'pros' | 'objectifs' | 'equipe';
+
 export default function AdminPage() {
   const user = useAuthUser();
-  const [isAdmin, setIsAdmin] = useState<boolean | null>(REQUIRE_SIGN_IN ? null : true);
+  const [access, setAccess] = useState<Access | null>(REQUIRE_SIGN_IN ? null : { admin: true, manage: false, goals: false });
+  const isAdmin = access ? access.admin : null;
   const [period, setPeriod] = useState(90);
   const [events, setEvents] = useState<EventRow[]>([]);
   const [leads, setLeads] = useState<LeadRow[]>([]);
@@ -167,19 +184,23 @@ export default function AdminPage() {
   const [error, setError] = useState('');
   const [selected, setSelected] = useState<string | null>(null);
   const [report, setReport] = useState(false);
-  const [tab, setTab] = useState<'stats' | 'demandes' | 'portfolios' | 'pros'>('stats');
+  const [tab, setTab] = useState<Tab>('stats');
 
-  // Admin check: the account must have a document in the "admins" collection.
+  // Admin check: an "admins/{uid}" document, or the confirmed e-mail address in "adminEmails" (Équipe tab).
   useEffect(() => {
     if (!REQUIRE_SIGN_IN) return;
-    if (!user) return setIsAdmin(null);
+    if (!user) return setAccess(null);
     void (async () => {
       const [db, { doc, getDoc }] = await Promise.all([getDb(), import('firebase/firestore/lite')]);
-      try {
-        setIsAdmin((await getDoc(doc(db, 'admins', user.uid))).exists());
-      } catch {
-        setIsAdmin(false);
-      }
+      const read = (path: string) => getDoc(doc(db, path)).then((d) => d.data() ?? null, () => null);
+      const email = user.email?.toLowerCase();
+      const [legacy, entry] = await Promise.all([
+        read(`admins/${user.uid}`),
+        email && user.emailVerified ? read(`adminEmails/${email}`) : Promise.resolve(null),
+      ]);
+      if (!legacy && !entry) return setAccess(NO_ACCESS);
+      const manage = entry?.manage === true;
+      setAccess({ admin: true, manage, goals: manage || entry?.goals === true });
     })();
   }, [user]);
 
@@ -285,10 +306,10 @@ export default function AdminPage() {
   } else if (REQUIRE_SIGN_IN && !isAdmin && user) {
     content = (
       <div className={cardClass}>
-        <p className="font-semibold">Ce compte ({user.email}) n'a pas accès aux statistiques.</p>
+        <p className="font-semibold">Ce compte ({user.email}) n'a pas accès au tableau de bord.</p>
         <p className="mt-2 text-muted">
-          Pour l'autoriser, créez dans Firestore un document <code className="rounded bg-sage-soft px-1">admins/{user.uid}</code>{' '}
-          (collection « admins », identifiant ci-dessus, contenu libre), puis rechargez la page.
+          Demandez à un responsable d'ajouter cette adresse dans l'onglet « Équipe », puis rechargez la page. Avec une
+          adresse e-mail (sans Google), elle doit d'abord être confirmée.
         </p>
         <div className="mt-4">
           <SignOutButton />
@@ -299,6 +320,12 @@ export default function AdminPage() {
     content = <RequestsPanel submissions={submissions} />;
   } else if (tab === 'portfolios') {
     content = <PortfoliosPanel requests={portfolios} />;
+  } else if (tab === 'fiches') {
+    content = <ListingsPanel userEmail={user?.email ?? ''} />;
+  } else if (tab === 'objectifs' && access?.goals) {
+    content = <GoalsPanel canEdit={access.manage} userEmail={user?.email?.toLowerCase() ?? ''} />;
+  } else if (tab === 'equipe' && access?.manage) {
+    content = <TeamPanel userEmail={user?.email?.toLowerCase() ?? ''} />;
   } else if (tab === 'pros') {
     content = <ProsPanel />;
   } else if (selected && report) {
@@ -463,11 +490,14 @@ export default function AdminPage() {
         <div role="tablist" aria-label="Sections du tableau de bord" className="mb-8 flex flex-wrap gap-1 border-b border-line print:hidden">
           {(
             [
-              ['stats', 'Statistiques des lieux'],
+              ['stats', 'Statistiques'],
               ['demandes', `Demandes de référencement (${submissions.length})`],
               ['portfolios', `Portfolios (${portfolios.length})`],
+              ['fiches', 'Fiches'],
               ['pros', 'Professionnels'],
-            ] as const
+              ...(access?.goals ? [['objectifs', 'Objectifs'] as const] : []),
+              ...(access?.manage ? [['equipe', 'Équipe'] as const] : []),
+            ] as [Tab, string][]
           ).map(([key, label]) => (
             <button
               key={key}
@@ -488,7 +518,7 @@ export default function AdminPage() {
         </div>
       )}
       {error && <p role="alert" className="mb-6 text-red-700">{error}</p>}
-      {loading && tab !== 'pros' ? <p className="text-muted">Chargement des données…</p> : content}
+      {loading && ['stats', 'demandes', 'portfolios'].includes(tab) ? <p className="text-muted">Chargement des données…</p> : content}
     </section>
   );
 }

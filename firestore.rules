@@ -9,8 +9,27 @@ service cloud.firestore {
       return request.auth != null;
     }
 
+    // An admin has an "admins/{uid}" document, or their confirmed e-mail address in "adminEmails"
+    // (added from the "Équipe" tab of /admin, so they get access before even creating their account).
+    function adminEntry() {
+      return /databases/$(database)/documents/adminEmails/$(request.auth.token.email);
+    }
+
+    function invitedAdmin() {
+      return signedIn() && request.auth.token.email_verified == true && exists(adminEntry());
+    }
+
     function isAdmin() {
-      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+      return signedIn() && (exists(/databases/$(database)/documents/admins/$(request.auth.uid)) || invitedAdmin());
+    }
+
+    // Manages the team and the goals ("manage"); sees the goals and rewards ("goals").
+    function isManager() {
+      return invitedAdmin() && get(adminEntry()).data.manage == true;
+    }
+
+    function seesGoals() {
+      return invitedAdmin() && (get(adminEntry()).data.goals == true || get(adminEntry()).data.manage == true);
     }
 
     // Publishing requires a confirmed e-mail address (Google accounts are confirmed), to limit spam.
@@ -230,6 +249,38 @@ service cloud.firestore {
 
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
+    }
+
+    // ---------- Team of the dashboard, by e-mail address ----------
+    match /adminEmails/{email} {
+      allow read: if (signedIn() && request.auth.token.email == email) || isManager();
+      allow create, update: if isManager()
+        && email.matches('[^@ /A-Z]+@[^@ /A-Z]+[.][^@ /A-Z]+')
+        && request.resource.data.keys().hasOnly(['manage', 'goals', 'addedBy', 'at'])
+        && request.resource.data.manage is bool
+        && request.resource.data.goals is bool
+        && shortString(request.resource.data.addedBy, 200)
+        && request.resource.data.at == request.time;
+      // A manager cannot remove their own access by mistake.
+      allow delete: if isManager() && email != request.auth.token.email;
+    }
+
+    // ---------- Recruitment goals and rewards: the managers and the people with "goals" only ----------
+    match /goals/{id} {
+      allow read: if seesGoals();
+      allow write: if isManager();
+    }
+
+    // ---------- Curated listings (written in the code) withdrawn from the site ----------
+    // Read by every visitor (the site hides them) and by the build (no page is generated).
+    match /removed/{id} {
+      allow read: if true;
+      allow create, update: if isAdmin()
+        && request.resource.data.keys().hasOnly(['name', 'by', 'at'])
+        && shortString(request.resource.data.name, 120)
+        && shortString(request.resource.data.by, 200)
+        && request.resource.data.at == request.time;
+      allow delete: if isAdmin();
     }
   }
 }

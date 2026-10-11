@@ -81,7 +81,11 @@ export async function prepareCatalog(): Promise<number> {
     const docs = rows
       .filter((r) => r.document)
       .map(({ document: d }) => toListingDoc(d!.name.split('/').pop()!, decode({ mapValue: { fields: d!.fields } }) as Record<string, unknown>));
-    initCatalog(docs, startedAt);
+    // Curated listings withdrawn in /admin: no page, no sitemap entry.
+    const removedResponse = await fetch(`${base}/projects/${projectId}/databases/(default)/documents/removed?key=${apiKey}&pageSize=300`);
+    if (!removedResponse.ok) throw new Error(`${removedResponse.status} ${await removedResponse.text()}`);
+    const removed = (((await removedResponse.json()) as { documents?: { name: string }[] }).documents ?? []).map((d) => d.name.split('/').pop()!);
+    initCatalog(docs, startedAt, removed);
     return docs.length;
   } catch (error) {
     console.warn(`\n⚠  Fiches des professionnels non chargées (${String(error)}) : elles seront chargées par le navigateur.\n`);

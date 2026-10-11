@@ -2,6 +2,9 @@
 //
 //   node scripts/firebase-admin.mjs reserve          protect the addresses of the curated venues
 //   node scripts/firebase-admin.mjs admin <e-mail>   give an account access to /admin
+//   node scripts/firebase-admin.mjs team <e-mail> [--goals] [--manage]
+//                                                    give an e-mail address access to /admin, even before
+//                                                    its account exists (then from the "Équipe" tab)
 //
 // Against the real project, it uses your Firebase CLI login (run `firebase login` first).
 // Against the local emulators (npm run emulators), set FIRESTORE_EMULATOR_HOST=127.0.0.1:8085
@@ -56,6 +59,24 @@ function setDoc(docPath, fields) {
   return call(`${documents}/${docPath}`, { method: 'PATCH', body: JSON.stringify(body) }, !!firestoreEmulator);
 }
 
+/** JavaScript value to a Firestore REST value (Date as a timestamp). */
+function encode(value) {
+  if (value instanceof Date) return { timestampValue: value.toISOString() };
+  if (typeof value === 'boolean') return { booleanValue: value };
+  if (typeof value === 'number') return Number.isInteger(value) ? { integerValue: String(value) } : { doubleValue: value };
+  if (Array.isArray(value)) return { arrayValue: { values: value.map(encode) } };
+  if (value && typeof value === 'object') {
+    return { mapValue: { fields: Object.fromEntries(Object.entries(value).map(([k, v]) => [k, encode(v)])) } };
+  }
+  return { stringValue: String(value) };
+}
+
+/** Create or replace a document with typed fields. */
+function setTypedDoc(docPath, fields) {
+  const body = { fields: Object.fromEntries(Object.entries(fields).map(([k, v]) => [k, encode(v)])) };
+  return call(`${documents}/${docPath}`, { method: 'PATCH', body: JSON.stringify(body) }, !!firestoreEmulator);
+}
+
 /** Slugs and names of the curated venues, read from src/data.ts. */
 function curatedVenues() {
   const source = fs.readFileSync(path.join(root, 'src', 'data.ts'), 'utf8');
@@ -89,8 +110,16 @@ try {
     if (!user) throw new Error(`Aucun compte avec l'e-mail ${arg} : connectez-vous d'abord une fois sur le site.`);
     await setDoc(`admins/${user.localId}`, { email: arg, at: new Date().toISOString() });
     console.log(`${arg} a maintenant accès à /admin${firestoreEmulator ? ' (émulateur)' : ''}.`);
+  } else if (command === 'team' && arg) {
+    // Access by e-mail address, also managed from the "Équipe" tab of /admin.
+    const email = arg.trim().toLowerCase();
+    const flags = process.argv.slice(4);
+    const manage = flags.includes('--manage');
+    const goals = manage || flags.includes('--goals');
+    await setTypedDoc(`adminEmails/${email}`, { manage, goals, addedBy: 'script', at: new Date() });
+    console.log(`${email} : accès à /admin${manage ? ', gère l’équipe et les objectifs' : goals ? ', voit les objectifs' : ''}${firestoreEmulator ? ' (émulateur)' : ''}.`);
   } else {
-    console.log('Usage : node scripts/firebase-admin.mjs reserve | admin <e-mail>');
+    console.log('Usage : node scripts/firebase-admin.mjs reserve | admin <e-mail> | team <e-mail> [--goals] [--manage]');
     process.exitCode = 1;
   }
 } catch (error) {

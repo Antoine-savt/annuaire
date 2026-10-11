@@ -1,14 +1,12 @@
 import { useEffect, useState } from 'react';
-import { ListingDoc, ListingStatus } from '../types';
+import { ListingDoc } from '../types';
 import { staticVenues } from '../data';
-import { categoryLabel } from '../vendors';
 import { getDb } from '../lib/firebase';
 import { toListingDoc } from '../lib/listings';
-import { paths } from '../routes';
 
 /*
- * "Professionnels" tab of the dashboard: accounts, listings published from them (moderation after
- * publication) and claims of the curated venues.
+ * "Professionnels" tab of the dashboard: accounts and claims of the curated venues. Their listings are
+ * moderated in the "Fiches" tab (AdminListingsPanel.tsx).
  */
 
 interface ProUser {
@@ -37,13 +35,6 @@ interface ClaimRow {
 const cardClass = 'rounded-2xl border border-line bg-white p-5';
 const thClass = 'px-3 py-2.5 text-left text-xs font-semibold text-muted';
 const tdClass = 'px-3 py-2.5 align-top text-[0.95rem]';
-
-const STATUS_LABEL: Record<ListingStatus, string> = { published: 'Publiée', draft: 'Brouillon', hidden: 'Masquée' };
-const STATUS_CLASS: Record<ListingStatus, string> = {
-  published: 'bg-pine text-white',
-  draft: 'bg-sage-soft text-pine-dark',
-  hidden: 'bg-red-50 text-red-800',
-};
 
 const firestore = () => Promise.all([getDb(), import('firebase/firestore/lite')]);
 
@@ -76,7 +67,6 @@ export function ProsPanel() {
   const [loading, setLoading] = useState(true);
   const [busy, setBusy] = useState('');
   const [error, setError] = useState('');
-  const [filter, setFilter] = useState<'toutes' | ListingStatus>('toutes');
 
   const load = async () => {
     setError('');
@@ -149,20 +139,6 @@ export function ProsPanel() {
     }
   };
 
-  const setStatus = (l: ListingDoc, status: ListingStatus) =>
-    act(l.id, async () => {
-      const [db, fs] = await firestore();
-      await fs.updateDoc(fs.doc(db, 'listings', l.id), { status, updatedAt: fs.serverTimestamp() });
-    });
-
-  const remove = (l: ListingDoc) => {
-    if (!window.confirm(`Supprimer définitivement la fiche « ${l.name} » ? Son propriétaire ne pourra pas la récupérer.`)) return;
-    void act(l.id, async () => {
-      const [db, fs] = await firestore();
-      await fs.deleteDoc(fs.doc(db, 'listings', l.id));
-    });
-  };
-
   /** Accepting a claim gives the claimant a draft copy of the curated venue, under the same address. */
   const approve = (c: ClaimRow) =>
     act(c.id, async () => {
@@ -215,8 +191,6 @@ export function ProsPanel() {
     return u ? `${u.firstName} ${u.lastName}`.trim() || u.email : uid.slice(0, 8);
   };
   const pending = claims.filter((c) => c.status === 'pending');
-  const visible = filter === 'toutes' ? listings : listings.filter((l) => l.status === filter);
-  const count = (s: ListingStatus) => listings.filter((l) => l.status === s).length;
   const listingsOf = (uid: string) => listings.filter((l) => l.ownerUid === uid).length;
 
   return (
@@ -265,97 +239,6 @@ export function ProsPanel() {
               );
             })}
           </ul>
-        )}
-      </section>
-
-      <section aria-labelledby="fiches-pros">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 id="fiches-pros" className="text-3xl">
-            Fiches des professionnels ({listings.length})
-          </h2>
-          <div className="flex flex-wrap gap-2" role="group" aria-label="Filtrer par statut">
-            {(['toutes', 'published', 'draft', 'hidden'] as const).map((s) => (
-              <button
-                key={s}
-                type="button"
-                aria-pressed={filter === s}
-                onClick={() => setFilter(s)}
-                className={`rounded-full border px-3.5 py-1.5 text-sm transition-colors ${
-                  filter === s ? 'border-pine bg-pine text-white' : 'border-line bg-white text-ink hover:border-pine'
-                }`}
-              >
-                {s === 'toutes' ? `Toutes (${listings.length})` : `${STATUS_LABEL[s]}s (${count(s)})`}
-              </button>
-            ))}
-          </div>
-        </div>
-        <p className="mt-2 text-sm text-muted">
-          Les fiches sont publiées sans validation : vérifiez les nouvelles. « Masquer » retire la fiche du site et empêche son
-          propriétaire de la modifier.
-        </p>
-        {visible.length === 0 ? (
-          <p className="mt-4 text-muted">Aucune fiche.</p>
-        ) : (
-          <div className="mt-4 overflow-x-auto rounded-2xl border border-line bg-white">
-            <table className="w-full min-w-[56rem]">
-              <thead className="border-b border-line">
-                <tr>
-                  <th className={thClass}>Fiche</th>
-                  <th className={thClass}>Catégorie</th>
-                  <th className={thClass}>Propriétaire</th>
-                  <th className={thClass}>Statut</th>
-                  <th className={thClass}>Modifiée le</th>
-                  <th className={thClass}>Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-line">
-                {visible.map((l) => {
-                  const href = l.type === 'lieu' ? paths.venue(l.slug) : paths.vendorPage(l.category, l.slug);
-                  return (
-                    <tr key={l.id}>
-                      <td className={tdClass}>
-                        {l.status === 'published' ? (
-                          <a href={href} target="_blank" rel="noopener" className="link font-semibold">
-                            {l.name}
-                          </a>
-                        ) : (
-                          <span className="font-semibold">{l.name}</span>
-                        )}
-                        <span className="block text-sm text-muted">
-                          {l.commune}, {l.photos.length} photo{l.photos.length > 1 ? 's' : ''}
-                        </span>
-                      </td>
-                      <td className={tdClass}>{l.type === 'lieu' ? 'Lieu' : categoryLabel(l.category)}</td>
-                      <td className={tdClass}>
-                        {ownerLabel(l.ownerUid)}
-                        {userById.get(l.ownerUid)?.email && <span className="block text-sm text-muted">{userById.get(l.ownerUid)!.email}</span>}
-                      </td>
-                      <td className={tdClass}>
-                        <span className={`rounded-full px-2.5 py-0.5 text-xs font-semibold ${STATUS_CLASS[l.status]}`}>{STATUS_LABEL[l.status]}</span>
-                      </td>
-                      <td className={`${tdClass} tabular-nums`}>{l.updatedAt ? new Date(l.updatedAt).toLocaleDateString('fr-FR') : ''}</td>
-                      <td className={tdClass}>
-                        <div className="flex flex-wrap gap-x-3 gap-y-1 text-sm">
-                          {l.status === 'hidden' ? (
-                            <button type="button" disabled={!!busy} onClick={() => void setStatus(l, 'published')} className="link">
-                              Rétablir
-                            </button>
-                          ) : (
-                            <button type="button" disabled={!!busy} onClick={() => void setStatus(l, 'hidden')} className="link text-red-700">
-                              Masquer
-                            </button>
-                          )}
-                          <button type="button" disabled={!!busy} onClick={() => remove(l)} className="text-muted hover:text-red-700 hover:underline">
-                            Supprimer
-                          </button>
-                        </div>
-                      </td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
         )}
       </section>
 

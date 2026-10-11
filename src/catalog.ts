@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from 'react';
 import { ListingDoc } from './types';
-import { setListingVenues } from './data';
-import { setListingVendors } from './vendorListings';
+import { setListingVenues, setRemovedVenues } from './data';
+import { setListingVendors, setRemovedVendors } from './vendorListings';
 import { isDisplayable, listingToVenue, listingToVendor, toListingDoc } from './lib/listings';
 import { firebaseConfigured, getDb } from './lib/firebase';
 
@@ -13,6 +13,8 @@ import { firebaseConfigured, getDb } from './lib/firebase';
 
 let listings: ListingDoc[] = [];
 let builtAt = 0;
+/** Curated venues and vendors withdrawn from the site in /admin. */
+let removed: string[] = [];
 /** Bumped when newer listings arrive; "refreshed" turns true once Firestore has been checked. */
 let state = { version: 0, refreshed: false };
 const listeners = new Set<() => void>();
@@ -30,9 +32,16 @@ function apply(list: ListingDoc[]) {
   setListingVendors(listings.filter((l) => l.type === 'prestataire').map(listingToVendor));
 }
 
+function applyRemoved(ids: string[]) {
+  removed = ids;
+  setRemovedVenues(ids);
+  setRemovedVendors(ids);
+}
+
 /** Initial data: from the build (server side) or the snapshot embedded in the page (browser). */
-export function initCatalog(list: ListingDoc[], buildTime: number) {
+export function initCatalog(list: ListingDoc[], buildTime: number, removedIds: string[] = []) {
   builtAt = buildTime;
+  applyRemoved(removedIds);
   apply(list);
 }
 
@@ -43,6 +52,7 @@ export function initCatalog(list: ListingDoc[], buildTime: number) {
 export function catalogSnapshot(fullIds: string[] = []) {
   return {
     builtAt,
+    removed,
     listings: listings.map((l) => (fullIds.includes(l.id) ? l : { ...l, description: '', partial: true })),
   };
 }
@@ -52,8 +62,8 @@ export function loadEmbeddedCatalog() {
   const script = document.getElementById('catalog-data');
   if (!script?.textContent) return;
   try {
-    const data = JSON.parse(script.textContent) as { builtAt: number; listings: ListingDoc[] };
-    initCatalog(data.listings, data.builtAt);
+    const data = JSON.parse(script.textContent) as { builtAt: number; listings: ListingDoc[]; removed?: string[] };
+    initCatalog(data.listings, data.builtAt, data.removed ?? []);
   } catch (error) {
     console.warn('Catalogue intégré illisible', error);
   }
@@ -86,6 +96,16 @@ export async function refreshCatalog(): Promise<void> {
   let changed = false;
   try {
     const [db, fs] = await Promise.all([getDb(), import('firebase/firestore/lite')]);
+    // Curated listings withdrawn or put back since the build (a handful of documents at most).
+    try {
+      const ids = (await fs.getDocs(fs.collection(db, 'removed'))).docs.map((d) => d.id).sort();
+      if (ids.join() !== [...removed].sort().join()) {
+        applyRemoved(ids);
+        changed = true;
+      }
+    } catch (error) {
+      console.warn('Fiches retirées non vérifiées', error);
+    }
     const q = fs.query(
       fs.collection(db, 'listings'),
       fs.where('status', '==', 'published'),

@@ -628,9 +628,24 @@ export const staticVenues: Venue[] = rawVenues.map((v, i) => ({
  */
 export let venues: Venue[] = staticVenues;
 
+let listingVenues: Venue[] = [];
+/** Curated venues withdrawn from the site in /admin (Firestore "removed" collection). */
+let removedVenues = new Set<string>();
+
+function mergeVenues() {
+  const slugs = new Set(listingVenues.map((v) => v.slug));
+  venues = [...staticVenues.filter((v) => !slugs.has(v.slug) && !removedVenues.has(v.slug)), ...listingVenues];
+}
+
 export function setListingVenues(list: Venue[]) {
-  const slugs = new Set(list.map((v) => v.slug));
-  venues = [...staticVenues.filter((v) => !slugs.has(v.slug)), ...list];
+  listingVenues = list;
+  mergeVenues();
+}
+
+/** Ids of the curated listings withdrawn in /admin: venue slugs (vendors use "category.slug"). */
+export function setRemovedVenues(ids: string[]) {
+  removedVenues = new Set(ids);
+  mergeVenues();
 }
 
 export function findVenue(slug: string): Venue | undefined {

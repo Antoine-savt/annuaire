@@ -26,10 +26,27 @@ const staticVendors: Vendor[] = [];
 /** Every vendor shown on the site: the ones above, plus the listings published from professional accounts. */
 export let vendors: Vendor[] = staticVendors;
 
-export function setListingVendors(list: Vendor[]) {
-  const ids = new Set(list.map(vendorId));
-  vendors = [...staticVendors.filter((v) => !ids.has(vendorId(v))), ...list];
+let listingVendors: Vendor[] = [];
+/** Curated vendors withdrawn from the site in /admin (Firestore "removed" collection). */
+let removedVendors = new Set<string>();
+
+function mergeVendors() {
+  const ids = new Set(listingVendors.map(vendorId));
+  vendors = [...staticVendors.filter((v) => !ids.has(vendorId(v)) && !removedVendors.has(vendorId(v))), ...listingVendors];
 }
+
+export function setListingVendors(list: Vendor[]) {
+  listingVendors = list;
+  mergeVendors();
+}
+
+export function setRemovedVendors(ids: string[]) {
+  removedVendors = new Set(ids);
+  mergeVendors();
+}
+
+/** The vendors written in this file, for the dashboard. */
+export const curatedVendors = staticVendors;
 
 /** Identifier used for statistics and contact requests: "category.slug". */
 export function vendorId(v: Pick<Vendor, 'category' | 'slug'>): string {
