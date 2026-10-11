@@ -11,3 +11,11 @@
   for = "/assets/*"
   [headers.values]
     Cache-Control = "public, max-age=31536000, immutable"
+
+# The site lives on ledition-mariage.fr: the former Netlify address redirects page by page,
+# so search engines move what they already know about each page to the new domain.
+[[redirects]]
+  from = "https://ledition-mariage-var.netlify.app/*"
+  to = "https://ledition-mariage.fr/:splat"
+  status = 301
+  force = true
