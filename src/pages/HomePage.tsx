@@ -1,15 +1,16 @@
 import { useId, useMemo } from 'react';
 import { normalize, venues, venuesInZone, zones } from '../data';
 import { OUTSIDE_VAR } from '../departments';
-import { articles, formatDate } from '../articles';
+import { formatDate } from '../articles';
 import { Venue } from '../types';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { articlesIn } from '../routes';
 import { photos } from '../images';
 import { Photo } from '../components/Photo';
 import { VenueList } from '../components/VenueListItem';
 import { Faq } from '../components/Faq';
 import { homeFaq } from '../faq';
+import { formatEuros, formatNumber, Lang, translator, useLang, usePaths } from '../i18n/lang';
 
 /** Numeric filters are kept as the raw input text so fields can be left empty. */
 export interface Filters {
@@ -71,14 +72,15 @@ function matches(v: Venue, f: Filters): boolean {
 const known = <T,>(list: (T | null)[]) => list.filter((x): x is T => x !== null);
 
 /** Figures under the hero, computed at render time since professionals can add venues. */
-function heroStats() {
+function heroStats(lang: Lang) {
+  const t = translator(lang);
   const largestGroup = Math.max(...known(venues.map((v) => v.maxGuests)));
   const lowestPrice = Math.min(...known(venues.map((v) => v.priceFrom)));
   return [
-    { label: "Lieux référencés", value: String(venues.length) },
-    { label: "Secteurs du Var", value: String(zones.length) },
-    { label: "Invités max", value: largestGroup.toLocaleString("fr-FR") },
-    { label: "Location dès", value: `${lowestPrice.toLocaleString("fr-FR")} €` },
+    { label: t('Lieux référencés', 'Venues listed'), value: String(venues.length) },
+    { label: t('Secteurs du Var', 'Areas of the Var'), value: String(zones.length) },
+    { label: t('Invités max', 'Max. guests'), value: formatNumber(largestGroup, lang) },
+    { label: t('Location dès', 'Venue hire from'), value: formatEuros(lowestPrice, lang) },
   ];
 }
 
@@ -89,6 +91,10 @@ interface HomePageProps {
 
 export function HomePage({ filters, onFiltersChange }: HomePageProps) {
   const ids = useId();
+  const lang = useLang();
+  const t = translator(lang);
+  const p = usePaths();
+  const articles = articlesIn(lang);
   const set = (patch: Partial<Filters>) => onFiltersChange({ ...filters, ...patch });
 
   const results = useMemo(() => {
@@ -99,7 +105,8 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
       );
       return (!q || haystack.includes(q)) && (!filters.zone || (filters.zone === OUTSIDE_VAR ? !!v.zone.department : v.zone.slug === filters.zone)) && matches(v, filters);
     });
-  }, [filters, venues]);
+    // The venues' text is rewritten in the page language (src/i18n/content.ts), hence `lang`.
+  }, [filters, venues, lang]);
 
   const hasFilters = Object.values(filters).some(Boolean);
   const outsideCount = venues.filter((v) => v.zone.department).length;
@@ -109,9 +116,27 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
     'w-full rounded-xl border-line bg-white py-2.5 text-[0.95rem] text-ink placeholder:text-muted/70 focus:border-pine focus:ring-pine/30';
 
   const ranges: { key: RangeKey; label: string; unit: string; hint: string; step: number }[] = [
-    { key: 'guests', label: "Nombre d'invités", unit: 'invités', hint: 'Lieux pouvant accueillir ce nombre.', step: 10 },
-    { key: 'budget', label: 'Budget', unit: '€', hint: 'Prix de départ publié par le lieu.', step: 500 },
-    { key: 'sleeps', label: 'Hébergement sur place', unit: 'pers.', hint: 'Personnes pouvant dormir sur place.', step: 5 },
+    {
+      key: 'guests',
+      label: t("Nombre d'invités", 'Number of guests'),
+      unit: t('invités', 'guests'),
+      hint: t('Lieux pouvant accueillir ce nombre.', 'Venues that can host this many guests.'),
+      step: 10,
+    },
+    {
+      key: 'budget',
+      label: 'Budget',
+      unit: '€',
+      hint: t('Prix de départ publié par le lieu.', 'Starting price published by the venue.'),
+      step: 500,
+    },
+    {
+      key: 'sleeps',
+      label: t('Hébergement sur place', 'Accommodation on site'),
+      unit: t('pers.', 'people'),
+      hint: t('Personnes pouvant dormir sur place.', 'Guests who can sleep on site.'),
+      step: 5,
+    },
   ];
 
   const rangeError = (key: RangeKey) => {
@@ -125,25 +150,35 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
       {/* Hero */}
       <section className="mx-auto grid max-w-7xl items-center gap-10 px-5 pb-16 pt-6 sm:px-8 md:grid-cols-[1.1fr_0.9fr] md:gap-14 md:pb-24 md:pt-12">
         <div className="order-2 md:order-1">
-          <p className="rise text-sm font-semibold text-pine">Guide indépendant des lieux de réception, édition 2026</p>
+          <p className="rise text-sm font-semibold text-pine">
+            {t('Guide indépendant des lieux de réception, édition 2026', 'An independent guide to wedding venues, 2026 edition')}
+          </p>
           <h1 className="rise mt-3 text-[2.6rem] leading-[1.05] text-ink sm:text-6xl lg:text-[4.6rem]">
-            Les lieux de mariage du Var
+            {t('Les lieux de mariage du Var', 'Wedding venues in the Var, Provence')}
           </h1>
           <p className="rise mt-6 max-w-xl text-lg leading-relaxed text-muted [animation-delay:120ms]">
-            Châteaux viticoles, bastides et villas face à la mer : {venues.length} lieux de réception référencés et
-            comparés, de la Dracénie au littoral. Capacités, tarifs et hébergement réunis sur une seule page.
+            {t(
+              <>
+                Châteaux viticoles, bastides et villas face à la mer : {venues.length} lieux de réception référencés et
+                comparés, de la Dracénie au littoral. Capacités, tarifs et hébergement réunis sur une seule page.
+              </>,
+              <>
+                Wine-estate châteaux, Provençal bastides and villas overlooking the sea: {venues.length} wedding venues
+                listed and compared, from the Dracénie to the coast. Capacity, prices and accommodation, all on one page.
+              </>,
+            )}
           </p>
           <div className="rise mt-8 flex flex-wrap gap-3 [animation-delay:220ms]">
             <a href="#lieux" className="btn-primary">
-              Voir les {venues.length} lieux
+              {t(<>Voir les {venues.length} lieux</>, <>Browse all {venues.length} venues</>)}
             </a>
-            <Link href={paths.article(articles[0].slug)} className="btn-ghost">
-              Lire le guide pour s'organiser
+            <Link href={p.article(articles[0].slug)} className="btn-ghost">
+              {t("Lire le guide pour s'organiser", 'Read the planning guide')}
             </Link>
           </div>
 
           <dl className="rise mt-10 grid max-w-xl grid-cols-2 gap-x-6 gap-y-5 border-y border-line py-6 sm:grid-cols-4 [animation-delay:300ms]">
-            {heroStats().map((s) => (
+            {heroStats(lang).map((s) => (
               <div key={s.label}>
                 <dt className="text-xs text-muted">{s.label}</dt>
                 <dd className="mt-0.5 font-display text-2xl leading-tight text-ink">{s.value}</dd>
@@ -151,13 +186,13 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
             ))}
           </dl>
 
-          <nav aria-label="Lieux par secteur" className="rise mt-8 [animation-delay:380ms]">
-            <h2 className="mb-3 font-sans text-sm font-semibold text-ink">Par secteur</h2>
+          <nav aria-label={t('Lieux par secteur', 'Venues by area')} className="rise mt-8 [animation-delay:380ms]">
+            <h2 className="mb-3 font-sans text-sm font-semibold text-ink">{t('Par secteur', 'By area')}</h2>
             <ul className="flex flex-wrap gap-2">
               {zones.map((z) => (
                 <li key={z.slug}>
                   <Link
-                    href={paths.zone(z.slug)}
+                    href={p.zone(z.slug)}
                     className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/60 px-3.5 py-1.5 text-sm text-ink transition-colors hover:border-pine hover:text-pine"
                   >
                     {z.name}
@@ -173,7 +208,10 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
           <div className="relative h-[46vh] min-h-72 w-full overflow-hidden rounded-2xl bg-sage-soft md:h-auto md:max-h-[78vh] md:aspect-[735/905]">
             <img
               src="/images/sortie-ceremonie-mariage.jpg"
-              alt="Mariés sortant de la cérémonie sous une pluie de riz lancée par leurs invités"
+              alt={t(
+                'Mariés sortant de la cérémonie sous une pluie de riz lancée par leurs invités',
+                'Newlyweds leaving the ceremony under a shower of rice thrown by their guests',
+              )}
               width={735}
               height={905}
               fetchPriority="high"
@@ -182,14 +220,20 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
             />
             {/* A general tip, not a caption: the photo was not taken at one of the listed venues. */}
             <p className="absolute hidden rounded-xl bg-white/95 p-4 shadow-lg backdrop-blur sm:left-4 sm:top-4 sm:block sm:max-w-xs">
-              <span className="block text-xs font-semibold text-pine">Le saviez-vous ?</span>
+              <span className="block text-xs font-semibold text-pine">{t('Le saviez-vous ?', 'Did you know?')}</span>
               <span className="mt-1 block text-sm leading-snug text-muted">
-                Le lancer de riz à la sortie de la cérémonie est un vœu de prospérité et de fécondité pour les mariés.
+                {t(
+                  'Le lancer de riz à la sortie de la cérémonie est un vœu de prospérité et de fécondité pour les mariés.',
+                  'Showering the couple with rice as they leave the ceremony is a wish for prosperity and fertility.',
+                )}
               </span>
             </p>
           </div>
           <figcaption className="mt-2 text-xs text-muted">
-            La sortie de cérémonie, l'un des moments les plus attendus de la journée.
+            {t(
+              "La sortie de cérémonie, l'un des moments les plus attendus de la journée.",
+              'The ceremony exit, one of the most eagerly awaited moments of the day.',
+            )}
           </figcaption>
         </figure>
       </section>
@@ -198,36 +242,38 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
       <section id="lieux" aria-labelledby="lieux-titre" className="border-t border-line bg-white/50">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8 md:py-24">
           <h2 id="lieux-titre" className="text-4xl text-ink sm:text-5xl">
-            Trouver le lieu
+            {t('Trouver le lieu', 'Find your venue')}
           </h2>
           <p className="mt-3 max-w-xl text-muted">
-            Indiquez vos propres chiffres : nombre d'invités, budget et personnes à loger sur place. Laissez vide ce qui
-            vous importe peu.
+            {t(
+              "Indiquez vos propres chiffres : nombre d'invités, budget et personnes à loger sur place. Laissez vide ce qui vous importe peu.",
+              'Enter your own figures: number of guests, budget and how many people need to sleep on site. Leave blank anything that matters less to you.',
+            )}
           </p>
 
           <form
             role="search"
-            aria-label="Filtrer les lieux"
+            aria-label={t('Filtrer les lieux', 'Filter venues')}
             onSubmit={(e) => e.preventDefault()}
             className="mt-8 rounded-2xl border border-line bg-white p-5 sm:p-6"
           >
             <div className="grid gap-4 sm:grid-cols-[1.6fr_1fr]">
               <div>
                 <label htmlFor={`${ids}-q`} className={labelClass}>
-                  Rechercher
+                  {t('Rechercher', 'Search')}
                 </label>
                 <input
                   id={`${ids}-q`}
                   type="search"
                   value={filters.query}
                   onChange={(e) => set({ query: e.target.value })}
-                  placeholder="Nom, commune, vue mer, oliveraie…"
+                  placeholder={t('Nom, commune, vue mer, oliveraie…', 'Name, town, sea view, olive grove…')}
                   className={`${fieldClass} px-4`}
                 />
               </div>
               <div>
                 <label htmlFor={`${ids}-zone`} className={labelClass}>
-                  Secteur
+                  {t('Secteur', 'Area')}
                 </label>
                 <select
                   id={`${ids}-zone`}
@@ -235,13 +281,17 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
                   onChange={(e) => set({ zone: e.target.value })}
                   className={`${fieldClass} pl-4`}
                 >
-                  <option value="">{outsideCount ? 'Tous les secteurs' : 'Tout le Var'}</option>
+                  <option value="">{outsideCount ? t('Tous les secteurs', 'All areas') : t('Tout le Var', 'All of the Var')}</option>
                   {zones.map((z) => (
                     <option key={z.slug} value={z.slug}>
                       {z.name} ({venuesInZone(z.slug).length})
                     </option>
                   ))}
-                  {outsideCount > 0 && <option value={OUTSIDE_VAR}>Hors du Var ({outsideCount})</option>}
+                  {outsideCount > 0 && (
+                    <option value={OUTSIDE_VAR}>
+                      {t(<>Hors du Var ({outsideCount})</>, <>Outside the Var ({outsideCount})</>)}
+                    </option>
+                  )}
                 </select>
               </div>
             </div>
@@ -257,7 +307,11 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
                         const name = `${r.key}${bound}` as keyof Filters;
                         return (
                           <div key={bound} className="contents">
-                            {i === 1 && <span aria-hidden className="text-muted">à</span>}
+                            {i === 1 && (
+                              <span aria-hidden className="text-muted">
+                                {t('à', 'to')}
+                              </span>
+                            )}
                             <label className="relative block flex-1">
                               <span className="sr-only">
                                 {r.label} {bound === 'Min' ? 'minimum' : 'maximum'}
@@ -282,7 +336,7 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
                       })}
                     </div>
                     <p className={`mt-1.5 text-xs ${error ? 'text-red-700' : 'text-muted'}`}>
-                      {error ? 'Le minimum dépasse le maximum.' : r.hint}
+                      {error ? t('Le minimum dépasse le maximum.', 'The minimum is higher than the maximum.') : r.hint}
                     </p>
                   </fieldset>
                 );
@@ -292,7 +346,7 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
             {hasFilters && (
               <div className="mt-5 border-t border-line pt-4 text-right">
                 <button type="button" onClick={() => onFiltersChange(emptyFilters)} className="link text-[0.95rem]">
-                  Effacer les filtres
+                  {t('Effacer les filtres', 'Clear filters')}
                 </button>
               </div>
             )}
@@ -300,22 +354,35 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
 
           <p className="mb-6 mt-10 text-[0.95rem] text-muted" aria-live="polite">
             <strong className="font-semibold text-ink">
-              {results.length} lieu{results.length > 1 ? 'x' : ''}
+              {t(
+                <>
+                  {results.length} lieu{results.length > 1 ? 'x' : ''}
+                </>,
+                <>
+                  {results.length} venue{results.length === 1 ? '' : 's'}
+                </>,
+              )}
             </strong>{' '}
-            {hasFilters ? 'correspondent à votre recherche' : 'dans le Var'}
+            {hasFilters
+              ? t('correspondent à votre recherche', results.length === 1 ? 'matches your search' : 'match your search')
+              : t('dans le Var', 'in the Var')}
           </p>
 
           {results.length > 0 ? (
             <VenueList venues={results} />
           ) : (
             <div className="rounded-2xl border border-dashed border-line px-6 py-16 text-center">
-              <p className="font-display text-2xl text-ink">Aucun lieu ne correspond à ces critères.</p>
+              <p className="font-display text-2xl text-ink">
+                {t('Aucun lieu ne correspond à ces critères.', 'No venue matches these criteria.')}
+              </p>
               <p className="mt-2 text-muted">
-                Élargissez votre budget ou votre nombre d'invités. Les lieux sans tarif publié n'apparaissent pas quand un
-                budget est indiqué.
+                {t(
+                  "Élargissez votre budget ou votre nombre d'invités. Les lieux sans tarif publié n'apparaissent pas quand un budget est indiqué.",
+                  "Try widening your budget or number of guests. Venues that don't publish their prices are left out when a budget is set.",
+                )}
               </p>
               <button type="button" onClick={() => onFiltersChange(emptyFilters)} className="btn-ghost mt-6">
-                Effacer les filtres
+                {t('Effacer les filtres', 'Clear filters')}
               </button>
             </div>
           )}
@@ -327,29 +394,42 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
         <div className="grid items-center gap-12 md:grid-cols-2 md:gap-20">
           <div className="grid grid-cols-2 gap-4">
             <div className="arch mt-12 aspect-[3/4] bg-sage-soft">
-              <Photo id={photos.confettiCouple} alt="Mariés sous une pluie de confettis" sizes="(min-width: 768px) 22vw, 45vw" maxWidth={800} />
+              <Photo
+                id={photos.confettiCouple}
+                alt={t('Mariés sous une pluie de confettis', 'Newlyweds under a shower of confetti')}
+                sizes="(min-width: 768px) 22vw, 45vw"
+                maxWidth={800}
+              />
             </div>
             <div className="arch aspect-[3/4] bg-sage-soft">
-              <Photo id={photos.longTable} alt="Table de réception dressée en plein air" sizes="(min-width: 768px) 22vw, 45vw" maxWidth={800} />
+              <Photo
+                id={photos.longTable}
+                alt={t('Table de réception dressée en plein air', 'Wedding reception table laid outdoors')}
+                sizes="(min-width: 768px) 22vw, 45vw"
+                maxWidth={800}
+              />
             </div>
           </div>
           <div>
             <h2 id="var-titre" className="text-4xl leading-tight text-ink sm:text-5xl">
-              Se marier dans le Var
+              {t('Se marier dans le Var', 'Getting married in the Var')}
             </h2>
             <div className="mt-6 space-y-4 text-lg leading-relaxed text-muted">
               <p>
-                Le Var réunit sur un même territoire des vignobles réputés, des villages perchés, des forêts et plus de
-                400 kilomètres de côtes. Chaque secteur a son caractère : la Dracénie pour ses châteaux viticoles, le
-                Haut-Var pour ses lieux nature, le littoral pour la vue sur la mer.
+                {t(
+                  'Le Var réunit sur un même territoire des vignobles réputés, des villages perchés, des forêts et plus de 400 kilomètres de côtes. Chaque secteur a son caractère : la Dracénie pour ses châteaux viticoles, le Haut-Var pour ses lieux nature, le littoral pour la vue sur la mer.',
+                  'In one corner of Provence, the Var brings together renowned vineyards, hilltop villages, forests and more than 400 kilometres of coastline. Each area has its own character: the Dracénie for its wine-estate châteaux, the Haut-Var for venues surrounded by nature, the coast for its sea views.',
+                )}
               </p>
               <p>
-                Pour chaque lieu, nous indiquons la capacité, l'hébergement sur place, une fourchette de prix publique
-                et ce qui le rend unique, avec un lien vers son site officiel.
+                {t(
+                  "Pour chaque lieu, nous indiquons la capacité, l'hébergement sur place, une fourchette de prix publique et ce qui le rend unique, avec un lien vers son site officiel.",
+                  'For each venue, we give its capacity, accommodation on site, a published price range and what makes it special, with a link to its official website.',
+                )}
               </p>
             </div>
-            <Link href={paths.article(articles[0].slug)} className="link mt-8 inline-block font-semibold text-ink">
-              Organiser son mariage dans le Var, étape par étape
+            <Link href={p.article(articles[0].slug)} className="link mt-8 inline-block font-semibold text-ink">
+              {t('Organiser son mariage dans le Var, étape par étape', 'Planning your wedding in the Var, step by step')}
             </Link>
           </div>
         </div>
@@ -358,7 +438,7 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
       {/* FAQ */}
       <div className="border-t border-line bg-white/50">
         <div className="mx-auto max-w-4xl px-5 py-20 sm:px-8">
-          <Faq items={homeFaq()} title="Se marier dans le Var : vos questions" />
+          <Faq items={homeFaq(lang)} title={t('Se marier dans le Var : vos questions', 'Getting married in the Var: your questions')} />
         </div>
       </div>
 
@@ -367,10 +447,10 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
         <div className="mx-auto max-w-7xl px-5 py-20 sm:px-8">
           <div className="mb-10 flex flex-wrap items-end justify-between gap-4">
             <h2 id="journal-titre" className="text-4xl text-ink">
-              Le Journal
+              {t('Le Journal', 'The Journal')}
             </h2>
-            <Link href={paths.journal} className="link font-semibold">
-              Tous les articles
+            <Link href={p.journal} className="link font-semibold">
+              {t('Tous les articles', 'All articles')}
             </Link>
           </div>
           <ul className="grid gap-10 md:grid-cols-3">
@@ -390,7 +470,7 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
                     <time dateTime={a.date}>{formatDate(a.date)}</time>
                   </p>
                   <h3 className="mt-1 text-2xl leading-snug">
-                    <Link href={paths.article(a.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
+                    <Link href={p.article(a.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
                       {a.title}
                     </Link>
                   </h3>

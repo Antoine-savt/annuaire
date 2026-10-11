@@ -5,7 +5,9 @@ import { findVenue, findZone, inCommune, regionOf, venues, venuesInZone, zoneHre
 import { articles, findArticle } from './articles';
 import { imgUrl, photos, photoUrl } from './images';
 import { absoluteUrl, site } from './site';
-import { paths } from './paths';
+import { paths, pathsEn, pathsFor } from './paths';
+import { articleSlugsEn, articleSlugsFr, categorySlugsFr } from './i18n/slugs';
+import { Lang, langOf, translator } from './i18n/lang';
 import { homeFaq, listingFaq, vendorsHubFaq, venueFaq, zoneFaq } from './faq';
 import { FaqItem } from './types';
 import { plainText, wordCount } from './lib/richtext';
@@ -31,7 +33,42 @@ export type Route =
 
 export { paths };
 
+/** Public page of the English site from its address (without the "/en" prefix): French slugs are mapped back. */
+function matchEnglish(path: string): Route {
+  const rest = path === '/en' ? '/' : path.slice(3);
+  if (rest === '/') return { name: 'home' };
+  if (rest === '/vendors') return { name: 'prestataires' };
+  if (rest === '/journal') return { name: 'journal' };
+  if (rest === '/privacy') return { name: 'confidentialite' };
+  if (rest === '/saved-venues') return { name: 'saved' };
+
+  const [, section, slug, extra, more] = rest.split('/');
+  if (!slug || more) return { name: 'notFound' };
+  if (section === 'vendors') {
+    const category = findVendorCategory(categorySlugsFr[slug] ?? '');
+    if (category && !extra) return { name: 'vendor', category };
+    const vendor = category && extra ? findVendor(category.slug, extra) : undefined;
+    if (category && vendor) return { name: 'vendorPage', vendor, category };
+    return { name: 'notFound' };
+  }
+  if (extra) return { name: 'notFound' };
+  if (section === 'venues') {
+    const venue = findVenue(slug);
+    if (venue) return { name: 'venue', venue };
+  }
+  if (section === 'areas') {
+    const zone = findZone(slug);
+    if (zone) return { name: 'zone', zone };
+  }
+  if (section === 'journal') {
+    const article = articleSlugsFr[slug] ? findArticle(articleSlugsFr[slug]) : undefined;
+    if (article) return { name: 'article', article };
+  }
+  return { name: 'notFound' };
+}
+
 export function matchRoute(path: string): Route {
+  if (langOf(path) === 'en') return matchEnglish(path);
   if (path === '/') return { name: 'home' };
   if (path === paths.prestataires) return { name: 'prestataires' };
   if (path === paths.journal) return { name: 'journal' };
@@ -73,30 +110,74 @@ export function matchRoute(path: string): Route {
   return { name: 'notFound' };
 }
 
-/** Every indexable path, used for prerendering and the sitemap. */
-export function allPaths(): string[] {
+/** Articles available in a language (some articles for professionals exist in French only). */
+export const articlesIn = (lang: Lang) => (lang === 'en' ? articles.filter((a) => articleSlugsEn[a.slug]) : articles);
+
+/**
+ * Address of a page in the other language, for the language switch and the hreflang links;
+ * undefined when the page exists in one language only (professional area, some articles).
+ */
+export function routePath(route: Route, lang: Lang): string | undefined {
+  const p = pathsFor(lang);
+  switch (route.name) {
+    case 'home':
+      return p.home;
+    case 'venue':
+      return p.venue(route.venue.slug);
+    case 'zone':
+      return p.zone(route.zone.slug);
+    case 'journal':
+      return p.journal;
+    case 'article':
+      return lang === 'en' && !articleSlugsEn[route.article.slug] ? undefined : p.article(route.article.slug);
+    case 'prestataires':
+      return p.prestataires;
+    case 'vendor':
+      return p.vendor(route.category.slug);
+    case 'vendorPage':
+      return p.vendorPage(route.category.slug, route.vendor.slug);
+    case 'confidentialite':
+      return p.confidentialite;
+    case 'saved':
+      return p.saved;
+    default:
+      return undefined;
+  }
+}
+
+/** Indexable paths of one language. */
+function publicPaths(lang: Lang): string[] {
+  const p = pathsFor(lang);
   return [
-    paths.home,
-    ...zones.map((z) => paths.zone(z.slug)),
-    ...venues.map((v) => paths.venue(v.slug)),
-    paths.journal,
-    ...articles.map((a) => paths.article(a.slug)),
-    paths.prestataires,
-    ...vendorCategories.map((c) => paths.vendor(c.slug)),
-    ...vendors.map((v) => paths.vendorPage(v.category, v.slug)),
-    paths.referencer,
-    paths.confidentialite,
-    paths.terms,
+    p.home,
+    ...zones.map((z) => p.zone(z.slug)),
+    ...venues.map((v) => p.venue(v.slug)),
+    p.journal,
+    ...articlesIn(lang).map((a) => p.article(a.slug)),
+    p.prestataires,
+    ...vendorCategories.map((c) => p.vendor(c.slug)),
+    ...vendors.map((v) => p.vendorPage(v.category, v.slug)),
+    ...(lang === 'fr' ? [paths.referencer] : []),
+    p.confidentialite,
+    ...(lang === 'fr' ? [paths.terms] : []),
   ];
 }
 
+/** Every indexable path, in both languages, used for prerendering and the sitemap. */
+export function allPaths(): string[] {
+  return [...publicPaths('fr'), ...publicPaths('en')];
+}
+
 /** Pages generated at build time but kept out of the sitemap (personal or private). */
-export const unlistedPaths = [paths.admin, paths.saved, paths.login, paths.account, paths.listingEditor];
+export const unlistedPaths = [paths.admin, paths.saved, pathsEn.saved, paths.login, paths.account, paths.listingEditor];
 
 export interface Seo {
   title: string;
   description: string;
   path: string;
+  lang: Lang;
+  /** Same page in each language, for the hreflang links. */
+  alternates: Partial<Record<Lang, string>>;
   image: string;
   type: 'website' | 'article';
   /** ISO dates for articles (article:published_time / modified_time). */
@@ -139,12 +220,12 @@ export function lastModified(path: string): string | undefined {
   const route = matchRoute(path);
   if (route.name === 'article') return route.article.updated ?? route.article.date;
   if (route.name === 'journal') {
-    return articles.map((a) => a.updated ?? a.date).sort().reverse()[0];
+    return articlesIn(langOf(path)).map((a) => a.updated ?? a.date).sort().reverse()[0];
   }
   return undefined;
 }
 
-function venueList(list: Venue[]) {
+function venueList(list: Venue[], lang: Lang) {
   return {
     '@context': 'https://schema.org',
     '@type': 'ItemList',
@@ -152,7 +233,7 @@ function venueList(list: Venue[]) {
       '@type': 'ListItem',
       position: i + 1,
       name: v.nom_du_lieu,
-      url: absoluteUrl(paths.venue(v.slug)),
+      url: absoluteUrl(pathsFor(lang).venue(v.slug)),
     })),
   };
 }
@@ -169,40 +250,67 @@ function clamp(text: string, max = 158): string {
   return text.slice(0, text.lastIndexOf(' ', max - 1)).replace(/[,;:]$/, '') + '…';
 }
 
-const home = { name: 'Accueil', path: '/' };
-
-const lcFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
+/** "à Lorgues" / "in Lorgues". */
+const placeIn = (commune: string, lang: Lang) => (lang === 'en' ? `in ${commune}` : inCommune(commune));
 
 export function getSeo(route: Route, path: string): Seo {
-  const base = { path, image: DEFAULT_IMAGE, type: 'website' as const };
+  const lang = langOf(path);
+  const t = translator(lang);
+  const p = pathsFor(lang);
+  const inLanguage = lang === 'en' ? 'en-GB' : 'fr-FR';
+  const home = { name: t('Accueil', 'Home'), path: p.home };
+  const base = {
+    path,
+    lang,
+    alternates: { fr: routePath(route, 'fr'), en: routePath(route, 'en') },
+    image: DEFAULT_IMAGE,
+    type: 'website' as const,
+  };
 
   switch (route.name) {
     case 'home':
       return {
         ...base,
-        title: `Lieux de mariage dans le Var : châteaux et domaines | ${site.name}`,
-        description: `${venues.length} lieux de réception pour un mariage dans le Var, à comparer par secteur, capacité, budget et hébergement : châteaux, bastides et domaines viticoles.`,
+        title: t(
+          `Lieux de mariage dans le Var : châteaux et domaines | ${site.name}`,
+          `Wedding venues in the Var, Provence | ${site.name}`,
+        ),
+        description: t(
+          `${venues.length} lieux de réception pour un mariage dans le Var, à comparer par secteur, capacité, budget et hébergement : châteaux, bastides et domaines viticoles.`,
+          `${venues.length} wedding venues in the Var, Provence, to compare by area, capacity, budget and accommodation: châteaux, bastides and wine estates.`,
+        ),
         jsonLd: [
           {
             '@context': 'https://schema.org',
             '@type': 'WebSite',
             name: site.name,
-            alternateName: `${site.name} – ${site.tagline}`,
-            url: absoluteUrl('/'),
-            inLanguage: 'fr-FR',
+            alternateName: `${site.name} – ${t(site.tagline, 'Wedding venues in the Var')}`,
+            url: absoluteUrl(p.home),
+            inLanguage,
           },
-          venueList(venues),
-          faqPage(homeFaq()),
+          venueList(venues, lang),
+          faqPage(homeFaq(lang)),
         ],
       };
 
     case 'venue': {
       const v = route.venue;
+      const area = zoneHref(v.zone, lang);
       return {
         ...base,
         image: photoUrl(v.image, 1200),
-        title: withBrand(`${v.nom_du_lieu} : mariage ${inCommune(v.commune)} (${regionOf(v)})`),
-        description: clamp(`${v.nom_du_lieu}, lieu de mariage ${inCommune(v.commune)} (${regionOf(v)}). ${v.summary} ${v.maxGuests ? `${v.guestsShort} invités` : 'Capacité sur demande'}, ${v.priceShort.toLowerCase()}.`),
+        title: withBrand(
+          t(
+            `${v.nom_du_lieu} : mariage ${inCommune(v.commune)} (${regionOf(v)})`,
+            `${v.nom_du_lieu}: wedding venue, ${v.commune}`,
+          ),
+        ),
+        description: clamp(
+          t(
+            `${v.nom_du_lieu}, lieu de mariage ${inCommune(v.commune)} (${regionOf(v)}). ${v.summary} ${v.maxGuests ? `${v.guestsShort} invités` : 'Capacité sur demande'}, ${v.priceShort.toLowerCase()}.`,
+            `${v.nom_du_lieu}, wedding venue in ${v.commune} (${regionOf(v)}, Provence). ${v.summary} ${v.maxGuests ? `${v.guestsShort} guests` : 'Capacity on request'}, ${v.priceShort.toLowerCase()}.`,
+          ),
+        ),
         jsonLd: [
           {
             '@context': 'https://schema.org',
@@ -218,8 +326,8 @@ export function getSeo(route: Route, path: string): Seo {
             },
             ...(v.maxGuests ? { maximumAttendeeCapacity: v.maxGuests } : {}),
           },
-          breadcrumb([home, ...(zoneHref(v.zone) ? [{ name: v.zone.name, path: zoneHref(v.zone)! }] : []), { name: v.nom_du_lieu, path }]),
-          faqPage(venueFaq(v)),
+          breadcrumb([home, ...(area ? [{ name: v.zone.name, path: area }] : []), { name: v.nom_du_lieu, path }]),
+          faqPage(venueFaq(v, lang)),
         ],
       };
     }
@@ -227,21 +335,27 @@ export function getSeo(route: Route, path: string): Seo {
     case 'zone': {
       const z = route.zone;
       const list = venuesInZone(z.slug);
+      const s = list.length > 1;
       return {
         ...base,
         image: list[0] ? photoUrl(list[0].image, 1200) : DEFAULT_IMAGE,
-        title: `Lieux de mariage ${z.where} (Var) | ${site.name}`,
-        description: `${list.length} lieu${list.length > 1 ? 'x' : ''} de réception pour un mariage ${z.where} (Var) : capacités, prix, hébergement et conseils pour choisir.`,
-        jsonLd: [venueList(list), breadcrumb([home, { name: z.name, path }]), faqPage(zoneFaq(z))],
+        title: t(`Lieux de mariage ${z.where} (Var) | ${site.name}`, `Wedding venues ${z.where} (Var) | ${site.name}`),
+        description: t(
+          `${list.length} lieu${s ? 'x' : ''} de réception pour un mariage ${z.where} (Var) : capacités, prix, hébergement et conseils pour choisir.`,
+          `${list.length} wedding venue${s ? 's' : ''} ${z.where}, in the Var (Provence): capacity, prices, accommodation and advice on choosing.`,
+        ),
+        jsonLd: [venueList(list, lang), breadcrumb([home, { name: z.name, path }]), faqPage(zoneFaq(z, lang))],
       };
     }
 
     case 'journal':
       return {
         ...base,
-        title: `Le Journal : conseils pour se marier dans le Var | ${site.name}`,
-        description:
+        title: t(`Le Journal : conseils pour se marier dans le Var | ${site.name}`, `Journal: advice for a wedding in the Var | ${site.name}`),
+        description: t(
           'Conseils pratiques et inspirations pour organiser un mariage dans le Var : choisir son lieu, sa saison, ses prestataires.',
+          'Practical advice and inspiration for planning a wedding in the Var, Provence: choosing your venue, your season and your vendors.',
+        ),
         jsonLd: [breadcrumb([home, { name: 'Journal', path }])],
       };
 
@@ -266,31 +380,28 @@ export function getSeo(route: Route, path: string): Seo {
             dateModified: a.updated ?? a.date,
             articleSection: a.category,
             wordCount: wordCount(a.body),
-            inLanguage: 'fr-FR',
+            inLanguage,
             author: { '@type': 'Organization', name: site.name },
             publisher: { '@type': 'Organization', name: site.name },
             mainEntityOfPage: absoluteUrl(path),
           },
-          breadcrumb([home, { name: 'Journal', path: paths.journal }, { name: a.title, path }]),
+          breadcrumb([home, { name: 'Journal', path: p.journal }, { name: a.title, path }]),
           ...(a.faq.length ? [faqPage(a.faq)] : []),
         ],
       };
     }
 
-    case 'prestataires':
+    case 'prestataires': {
+      const name = t('Prestataires de mariage dans le Var', 'Wedding vendors in the Var');
       return {
         ...base,
-        title: withBrand('Prestataires de mariage dans le Var'),
-        description:
+        title: withBrand(name),
+        description: t(
           'Photographes, traiteurs, DJ, fleuristes, wedding planners… Les prestataires de mariage dans le Var, quand les réserver et quoi leur demander.',
+          'Photographers, caterers, DJs, florists, wedding planners… Wedding vendors in the Var, Provence: when to book them and what to ask.',
+        ),
         jsonLd: [
-          {
-            '@context': 'https://schema.org',
-            '@type': 'CollectionPage',
-            name: 'Prestataires de mariage dans le Var',
-            url: absoluteUrl(path),
-            inLanguage: 'fr-FR',
-          },
+          { '@context': 'https://schema.org', '@type': 'CollectionPage', name, url: absoluteUrl(path), inLanguage },
           {
             '@context': 'https://schema.org',
             '@type': 'ItemList',
@@ -298,13 +409,14 @@ export function getSeo(route: Route, path: string): Seo {
               '@type': 'ListItem',
               position: i + 1,
               name: c.title,
-              url: absoluteUrl(paths.vendor(c.slug)),
+              url: absoluteUrl(p.vendor(c.slug)),
             })),
           },
-          breadcrumb([home, { name: 'Prestataires', path }]),
-          faqPage(vendorsHubFaq),
+          breadcrumb([home, { name: t('Prestataires', 'Vendors'), path }]),
+          faqPage(vendorsHubFaq(lang)),
         ],
       };
+    }
 
     case 'vendor': {
       const c = route.category;
@@ -320,14 +432,14 @@ export function getSeo(route: Route, path: string): Seo {
             name: c.title,
             description: c.description,
             url: absoluteUrl(path),
-            inLanguage: 'fr-FR',
+            inLanguage,
             about: {
               '@type': 'Service',
               serviceType: c.title,
               areaServed: { '@type': 'AdministrativeArea', name: 'Var' },
             },
           },
-          breadcrumb([home, { name: 'Prestataires', path: paths.prestataires }, { name: c.name, path }]),
+          breadcrumb([home, { name: t('Prestataires', 'Vendors'), path: p.prestataires }, { name: c.name, path }]),
           faqPage(c.faq),
           ...(vendorsIn(c.slug).length
             ? [
@@ -354,9 +466,12 @@ export function getSeo(route: Route, path: string): Seo {
     case 'confidentialite':
       return {
         ...base,
-        title: `Confidentialité et données personnelles | ${site.name}`,
-        description: `Quelles données ${site.name} collecte, pourquoi, combien de temps et comment exercer vos droits.`,
-        jsonLd: [breadcrumb([home, { name: 'Confidentialité', path }])],
+        title: t(`Confidentialité et données personnelles | ${site.name}`, `Privacy and personal data | ${site.name}`),
+        description: t(
+          `Quelles données ${site.name} collecte, pourquoi, combien de temps et comment exercer vos droits.`,
+          `What data ${site.name} collects, why, for how long, and how to exercise your rights.`,
+        ),
+        jsonLd: [breadcrumb([home, { name: t('Confidentialité', 'Privacy'), path }])],
       };
 
     case 'referencer':
@@ -386,8 +501,8 @@ export function getSeo(route: Route, path: string): Seo {
       return {
         ...base,
         image,
-        title: withBrand(`${v.name}, ${c.pro} ${inCommune(v.commune)}`),
-        description: clamp(`${v.name}, ${c.pro} ${inCommune(v.commune)} (Var). ${v.summary} ${v.priceFrom ?? ''}`.trim()),
+        title: withBrand(`${v.name}, ${c.pro} ${placeIn(v.commune, lang)}`),
+        description: clamp(`${v.name}, ${c.pro} ${placeIn(v.commune, lang)} (Var). ${v.summary} ${v.priceFrom ?? ''}`.trim()),
         jsonLd: [
           {
             '@context': 'https://schema.org',
@@ -400,8 +515,8 @@ export function getSeo(route: Route, path: string): Seo {
           },
           breadcrumb([
             home,
-            { name: 'Prestataires', path: paths.prestataires },
-            { name: c.name, path: paths.vendor(c.slug) },
+            { name: t('Prestataires', 'Vendors'), path: p.prestataires },
+            { name: c.name, path: p.vendor(c.slug) },
             { name: v.name, path },
           ]),
         ],
@@ -428,8 +543,11 @@ export function getSeo(route: Route, path: string): Seo {
     case 'saved':
       return {
         ...base,
-        title: withBrand('Mes lieux enregistrés'),
-        description: 'Votre sélection de lieux de mariage dans le Var, à comparer et à partager.',
+        title: withBrand(t('Mes lieux enregistrés', 'My saved venues')),
+        description: t(
+          'Votre sélection de lieux de mariage dans le Var, à comparer et à partager.',
+          'Your shortlist of wedding venues in the Var, to compare and share.',
+        ),
         noindex: true,
         jsonLd: [],
       };
@@ -446,8 +564,8 @@ export function getSeo(route: Route, path: string): Seo {
     case 'notFound':
       return {
         ...base,
-        title: `Page introuvable | ${site.name}`,
-        description: "Cette page n'existe pas ou a été déplacée.",
+        title: t(`Page introuvable | ${site.name}`, `Page not found | ${site.name}`),
+        description: t("Cette page n'existe pas ou a été déplacée.", 'This page does not exist or has moved.'),
         noindex: true,
         jsonLd: [],
       };
@@ -458,16 +576,31 @@ function esc(value: string): string {
   return value.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+const OG_LOCALE: Record<Lang, string> = { fr: 'fr_FR', en: 'en_GB' };
+
 /** Head tags (everything except <title>), each marked data-head so the client can swap them on navigation. */
 export function headTags(seo: Seo): string {
   const url = absoluteUrl(seo.path);
+  const { fr, en } = seo.alternates;
+  // Both languages of the page, so search engines show each visitor the right one.
+  const hreflang =
+    site.url && !seo.noindex && fr && en
+      ? [
+          `<link data-head rel="alternate" hreflang="fr" href="${esc(absoluteUrl(fr))}">`,
+          `<link data-head rel="alternate" hreflang="en" href="${esc(absoluteUrl(en))}">`,
+          `<link data-head rel="alternate" hreflang="x-default" href="${esc(absoluteUrl(fr))}">`,
+        ]
+      : [];
+  const other: Lang = seo.lang === 'en' ? 'fr' : 'en';
   const tags = [
     `<meta data-head name="description" content="${esc(seo.description)}">`,
     `<meta data-head name="robots" content="${seo.noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large'}">`,
     site.url && !seo.noindex ? `<link data-head rel="canonical" href="${esc(url)}">` : '',
+    ...hreflang,
     `<meta data-head property="og:type" content="${seo.type}">`,
     `<meta data-head property="og:site_name" content="${esc(site.name)}">`,
-    `<meta data-head property="og:locale" content="${site.locale}">`,
+    `<meta data-head property="og:locale" content="${OG_LOCALE[seo.lang]}">`,
+    seo.alternates[other] ? `<meta data-head property="og:locale:alternate" content="${OG_LOCALE[other]}">` : '',
     `<meta data-head property="og:title" content="${esc(seo.title)}">`,
     `<meta data-head property="og:description" content="${esc(seo.description)}">`,
     site.url ? `<meta data-head property="og:url" content="${esc(url)}">` : '',
@@ -485,9 +618,10 @@ export function headTags(seo: Seo): string {
   return tags.filter(Boolean).join('\n    ');
 }
 
-/** Client-side: replace the head tags after a navigation. */
+/** Client-side: replace the head tags (and the page language) after a navigation. */
 export function applyHead(seo: Seo) {
   document.title = seo.title;
+  document.documentElement.lang = seo.lang;
   document.head.querySelectorAll('[data-head]').forEach((el) => el.remove());
   document.head.insertAdjacentHTML('beforeend', headTags(seo));
 }

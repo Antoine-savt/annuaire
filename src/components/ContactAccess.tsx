@@ -4,8 +4,8 @@ import { telHref } from '../data';
 import { isUnlocked, LeadInput, savedContact, submitLead } from '../lib/leads';
 import { track } from '../lib/track';
 import { Link } from '../router';
-import { paths } from '../routes';
 import { site } from '../site';
+import { translator, useLang, usePaths } from '../i18n/lang';
 
 interface ContactAccessProps {
   target: ContactTarget;
@@ -14,7 +14,8 @@ interface ContactAccessProps {
 }
 
 /** "Obtenir les coordonnées" button: the phone and website of a venue or vendor are shown only after a short form. */
-export function ContactAccess({ target, className = 'btn-primary', label = 'Obtenir les coordonnées' }: ContactAccessProps) {
+export function ContactAccess({ target, className = 'btn-primary', label }: ContactAccessProps) {
+  const t = translator(useLang());
   const [open, setOpen] = useState(false);
 
   const openDialog = () => {
@@ -25,7 +26,7 @@ export function ContactAccess({ target, className = 'btn-primary', label = 'Obte
   return (
     <>
       <button type="button" onClick={openDialog} className={className} aria-haspopup="dialog">
-        {label}
+        {label ?? t('Obtenir les coordonnées', 'Get contact details')}
       </button>
       {open && <ContactDialog target={target} onClose={() => setOpen(false)} />}
     </>
@@ -36,7 +37,10 @@ const fieldClass =
   'mt-1.5 w-full rounded-xl border-line bg-white px-4 py-2.5 text-[0.95rem] text-ink placeholder:text-muted/70 focus:border-pine focus:ring-pine/30';
 
 function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: () => void }) {
-  const noun = target.kind === 'venue' ? 'lieu' : 'prestataire';
+  const lang = useLang();
+  const t = translator(lang);
+  const p = usePaths();
+  const noun = target.kind === 'venue' ? t('lieu', 'venue') : t('prestataire', 'vendor');
   const ids = useId();
   const dialogRef = useRef<HTMLDialogElement>(null);
   const [step, setStep] = useState<'form' | 'sending' | 'revealed'>(() => (isUnlocked(target.id) ? 'revealed' : 'form'));
@@ -68,13 +72,18 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
       setStep('revealed');
     } catch (err) {
       console.error(err);
-      setError("La demande n'a pas pu être envoyée. Vérifiez votre connexion et réessayez.");
+      setError(
+        t(
+          "La demande n'a pas pu être envoyée. Vérifiez votre connexion et réessayez.",
+          'Your request could not be sent. Please check your connection and try again.',
+        ),
+      );
       setStep('form');
     }
   };
 
   const website = target.website?.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
-  const websiteLabel = target.website?.includes('instagram.com') ? 'Instagram' : 'Site web';
+  const websiteLabel = target.website?.includes('instagram.com') ? 'Instagram' : t('Site web', 'Website');
 
   return (
     <dialog
@@ -93,23 +102,25 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
             </h2>
           </div>
           <button type="button" onClick={onClose} className="rounded-full border border-line px-3 py-1 text-sm text-muted hover:text-ink">
-            Fermer
+            {t('Fermer', 'Close')}
           </button>
         </div>
 
         {step === 'revealed' ? (
           <div className="mt-6">
-            <p className="text-[0.95rem] text-muted">Voici les coordonnées du {noun}.</p>
+            <p className="text-[0.95rem] text-muted">
+              {t(<>Voici les coordonnées du {noun}.</>, <>Here are the {noun}&rsquo;s contact details.</>)}
+            </p>
             <dl className="mt-4 divide-y divide-line rounded-xl border border-line bg-white">
               <div className="p-4">
-                <dt className="text-xs font-semibold text-muted">Téléphone</dt>
+                <dt className="text-xs font-semibold text-muted">{t('Téléphone', 'Phone')}</dt>
                 <dd className="mt-1">
                   <a
                     href={telHref(target.phone)}
                     onClick={() => void track('phone_click', target.id, target.owner)}
                     className="font-display text-2xl text-pine hover:underline"
                   >
-                    {target.phone.replace('+33 ', '0')}
+                    {t(target.phone.replace('+33 ', '0'), target.phone)}
                   </a>
                 </dd>
               </div>
@@ -125,27 +136,43 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                       className="link text-lg"
                     >
                       {website}
-                      <span className="sr-only"> (nouvel onglet)</span>
+                      <span className="sr-only">{t(' (nouvel onglet)', ' (opens in a new tab)')}</span>
                     </a>
                   </dd>
                 </div>
               )}
             </dl>
             <p className="mt-4 rounded-xl bg-sage-soft px-4 py-3 text-[0.95rem]">
-              En les contactant, dites que vous les avez trouvés sur {site.name} : cela les aide à savoir d'où viennent
-              leurs demandes.
+              {t(
+                <>
+                  En les contactant, dites que vous les avez trouvés sur {site.name} : cela les aide à savoir d'où
+                  viennent leurs demandes.
+                </>,
+                <>
+                  When you get in touch, mention that you found them on {site.name}: it helps them know where their
+                  enquiries come from.
+                </>,
+              )}
             </p>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="mt-6">
             <p className="text-[0.95rem] leading-relaxed text-muted">
-              Indiquez quelques informations pour afficher le téléphone et le site du {noun}. Vous les contactez ensuite
-              directement.
+              {t(
+                <>
+                  Indiquez quelques informations pour afficher le téléphone et le site du {noun}. Vous les contactez
+                  ensuite directement.
+                </>,
+                <>
+                  Share a few details to see the {noun}&rsquo;s phone number and website. You then contact them
+                  directly.
+                </>,
+              )}
             </p>
 
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
               <label className="block text-sm font-semibold">
-                Prénom
+                {t('Prénom', 'First name')}
                 <input
                   required
                   autoComplete="given-name"
@@ -155,7 +182,7 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 />
               </label>
               <label className="block text-sm font-semibold">
-                E-mail
+                {t('E-mail', 'Email')}
                 <input
                   required
                   type="email"
@@ -166,7 +193,7 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 />
               </label>
               <label className="block text-sm font-semibold">
-                Date du mariage <span className="font-normal text-muted">(facultatif)</span>
+                {t('Date du mariage', 'Wedding date')} <span className="font-normal text-muted">{t('(facultatif)', '(optional)')}</span>
                 <input
                   type="date"
                   value={form.weddingDate}
@@ -175,7 +202,7 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 />
               </label>
               <label className="block text-sm font-semibold">
-                Nombre d'invités <span className="font-normal text-muted">(facultatif)</span>
+                {t("Nombre d'invités", 'Number of guests')} <span className="font-normal text-muted">{t('(facultatif)', '(optional)')}</span>
                 <input
                   type="number"
                   inputMode="numeric"
@@ -187,7 +214,7 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 />
               </label>
               <label className="block text-sm font-semibold sm:col-span-2">
-                Téléphone <span className="font-normal text-muted">(facultatif)</span>
+                {t('Téléphone', 'Phone')} <span className="font-normal text-muted">{t('(facultatif)', '(optional)')}</span>
                 <input
                   type="tel"
                   autoComplete="tel"
@@ -205,10 +232,18 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 className="mt-0.5 h-[1.05rem] w-[1.05rem] shrink-0 rounded border-ink/30 text-pine focus:ring-pine/40"
               />
               <span>
-                J'accepte que {site.name} conserve ces informations pour mesurer l'intérêt pour ce {noun}. Elles ne
-                lui sont pas transmises et ne sont pas revendues.{' '}
-                <Link href={paths.confidentialite} onClick={onClose} className="link text-ink">
-                  En savoir plus
+                {t(
+                  <>
+                    J'accepte que {site.name} conserve ces informations pour mesurer l'intérêt pour ce {noun}. Elles ne
+                    lui sont pas transmises et ne sont pas revendues.
+                  </>,
+                  <>
+                    I agree that {site.name} may keep this information to measure interest in this {noun}. It is not
+                    passed on to the {noun} and is never sold.
+                  </>,
+                )}{' '}
+                <Link href={p.confidentialite} onClick={onClose} className="link text-ink">
+                  {t('En savoir plus', 'Learn more')}
                 </Link>
               </span>
             </label>
@@ -220,7 +255,7 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
             )}
 
             <button type="submit" disabled={step === 'sending'} className="btn-primary mt-6 w-full disabled:opacity-60">
-              {step === 'sending' ? 'Envoi…' : 'Afficher les coordonnées'}
+              {step === 'sending' ? t('Envoi…', 'Sending…') : t('Afficher les coordonnées', 'Show contact details')}
             </button>
           </form>
         )}

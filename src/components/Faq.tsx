@@ -1,9 +1,12 @@
 import { FaqItem } from '../types';
 import { inline } from '../lib/richtext';
+import { useT } from '../i18n/lang';
 
 /** Visible questions and answers (also published as FAQPage structured data by the page's SEO). */
-export function Faq({ items, title = 'Questions fréquentes', id = 'questions' }: { items: FaqItem[]; title?: string; id?: string }) {
+export function Faq({ items, title, id = 'questions' }: { items: FaqItem[]; title?: string; id?: string }) {
+  const t = useT();
   if (items.length === 0) return null;
+  title ??= t('Questions fréquentes', 'Frequently asked questions');
   return (
     <section aria-labelledby={id}>
       <h2 id={id} className="text-3xl leading-tight text-ink sm:text-4xl">

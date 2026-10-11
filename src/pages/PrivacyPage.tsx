@@ -3,18 +3,143 @@ import { site } from '../site';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Link } from '../router';
 import { paths } from '../routes';
+import { useLang } from '../i18n/lang';
+
+type Section = { title: string; body: ReactNode };
+
+/**
+ * English version of the privacy notice: a faithful translation of the French text below (same
+ * data, purposes, legal bases and retention periods). The professional area is French only, so the
+ * French names of its forms and buttons are kept, with a translation.
+ */
+function englishSections(contact: ReactNode): Section[] {
+  const publisher = site.publisher || `the publisher of the ${site.name} website`;
+  return [
+    {
+      title: 'Who collects your data',
+      body: (
+        <p>
+          Your data is collected by {publisher}, the data controller. For any question: {contact}.
+        </p>
+      ),
+    },
+    {
+      title: 'When you request a venue’s contact details',
+      body: (
+        <>
+          <p>
+            To show you a venue’s phone number and website, we ask for your first name and email address and, optionally,
+            your phone number, your wedding date and the number of guests. We also record the venue concerned and the date
+            of the request.
+          </p>
+          <p>
+            This information is used to measure couples’ interest in each venue and to improve the directory. It is not
+            passed on to the venues, nor sold or transferred to third parties. Venues may receive overall statistics
+            (number of requests, wedding months requested), never your contact details.
+          </p>
+          <p>
+            Legal basis: your consent, given by ticking the box on the form. Retention period: {site.leadRetentionMonths}{' '}
+            months at most, after which it is deleted.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: 'When you ask to be listed',
+      body: (
+        <p>
+          The listing forms, for reception venues and vendors alike, collect information about your venue or business and
+          your professional contact details (name, position, email, phone). This information is used solely to review your
+          request, to get back to you and to prepare your listing. Legal basis: your consent. Retention period: 3 years
+          after our last exchange.
+        </p>
+      ),
+    },
+    {
+      title: 'When you ask us to create your portfolio',
+      body: (
+        <p>
+          The “Déléguez la création de votre portfolio” form (have your portfolio created for you) collects your name, your
+          company, your trade, your email, your phone number and, if you provide them, your current website and the
+          description of your project. This information is used solely to get back to you with a proposal. Legal basis:
+          your consent. Retention period: 3 years after our last exchange.
+        </p>
+      ),
+    },
+    {
+      title: 'If you create a professional account',
+      body: (
+        <>
+          <p>
+            The account stores your first name, your last name, your email and, if you provide them, your phone number,
+            your company, your position and your profile photo, as well as the date on which you accepted the{' '}
+            <Link href={paths.terms} lang="fr" hrefLang="fr" className="link">
+              terms of use
+            </Link>{' '}
+            (in French). The listings you publish and their photos are public by nature; your profile, however, is not.
+          </p>
+          <p>
+            This data is used to manage your account, to display your listings, to show you their statistics and to contact
+            you about your listings and the upcoming paid offer. Legal basis: the performance of the terms of use you
+            accept. Retention period: for as long as your account exists. You can delete it at any time from your account
+            area: your profile, listings and photos are then erased. An account that has been inactive for 3 years is
+            deleted.
+          </p>
+          <p>
+            Sign-in is handled by Firebase Authentication (Google); if you choose “Continuer avec Google” (Continue with
+            Google), Google sends us your name, your email and your profile photo.
+          </p>
+        </>
+      ),
+    },
+    {
+      title: 'Visitor statistics',
+      body: (
+        <p>
+          We anonymously count visits to the site, views of the listings, venues saved to “Saved venues” and
+          clicks on contact details. A random identifier is kept in your browser for the duration of the session (session
+          storage, cleared when the tab is closed) so that the same visit is not counted twice. No advertising cookies, no
+          tracking on other websites.
+        </p>
+      ),
+    },
+    {
+      title: 'Data hosting',
+      body: (
+        <p>
+          The data is stored on Google Cloud (Firebase service), which acts as a processor. Your browser also keeps your
+          “Saved venues” selection, the listings you have already unlocked and the contact details you have entered, so you
+          do not have to type them again; you can erase them by clearing the site’s data in your browser.
+        </p>
+      ),
+    },
+    {
+      title: 'Your rights',
+      body: (
+        <p>
+          You may at any time access your data, rectify it, delete it or withdraw your consent by writing to {contact}. If
+          you believe your rights are not being respected, you may lodge a complaint with the CNIL, the French data
+          protection authority (cnil.fr).
+        </p>
+      ),
+    },
+  ];
+}
 
 export function PrivacyPage() {
+  const lang = useLang();
   const publisher = site.publisher || `l'éditeur du site ${site.name}`;
   const contact = site.contactEmail ? (
     <a href={`mailto:${site.contactEmail}`} className="link">
       {site.contactEmail}
     </a>
+  ) : lang === 'en' ? (
+    'the contact address shown on the site'
   ) : (
     "l'adresse de contact indiquée sur le site"
   );
 
-  const sections: { title: string; body: ReactNode }[] = [
+  const sectionsFr: Section[] = [
     {
       title: 'Qui collecte vos données',
       body: (
@@ -124,16 +249,23 @@ export function PrivacyPage() {
       ),
     },
   ];
+  const sections = lang === 'en' ? englishSections(contact) : sectionsFr;
 
   return (
     <>
       <div className="mx-auto max-w-3xl px-5 pt-6 sm:px-8">
-        <Breadcrumbs items={[{ label: 'Confidentialité' }]} />
+        <Breadcrumbs items={[{ label: lang === 'en' ? 'Privacy' : 'Confidentialité' }]} />
       </div>
       <article className="mx-auto max-w-3xl px-5 pb-24 pt-10 sm:px-8">
-        <h1 className="text-[2.4rem] leading-tight text-ink sm:text-5xl">Confidentialité et données personnelles</h1>
+        <h1 className="text-[2.4rem] leading-tight text-ink sm:text-5xl">
+          {lang === 'en' ? 'Privacy and personal data' : 'Confidentialité et données personnelles'}
+        </h1>
         <p className="mt-5 text-lg leading-relaxed text-muted">
-          Ce que {site.name} collecte, pourquoi, combien de temps, et comment exercer vos droits.
+          {lang === 'en' ? (
+            <>What {site.name} collects, why, for how long, and how to exercise your rights.</>
+          ) : (
+            <>Ce que {site.name} collecte, pourquoi, combien de temps, et comment exercer vos droits.</>
+          )}
         </p>
         {sections.map((s) => (
           <section key={s.title} className="mt-10">

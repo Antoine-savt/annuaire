@@ -1,11 +1,14 @@
 import { Venue } from '../types';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { formatNumber, Lang, translator, useLang, usePaths } from '../i18n/lang';
 import { Photo } from './Photo';
 import { SaveButton } from './SaveButton';
 
-export function capacityLabel(venue: Venue): string {
-  return venue.maxGuests ? `Jusqu'à ${venue.maxGuests.toLocaleString('fr-FR')} invités` : 'Capacité sur demande';
+export function capacityLabel(venue: Venue, lang: Lang = 'fr'): string {
+  const t = translator(lang);
+  return venue.maxGuests
+    ? t(`Jusqu'à ${formatNumber(venue.maxGuests, lang)} invités`, `Up to ${formatNumber(venue.maxGuests, lang)} guests`)
+    : t('Capacité sur demande', 'Capacity on request');
 }
 
 interface VenueCardProps {
@@ -15,7 +18,11 @@ interface VenueCardProps {
 
 /** Compact card used for suggestions (related venues, venues mentioned in articles). */
 export function VenueCard({ venue, headingLevel: Heading = 'h3' }: VenueCardProps) {
-  const guests = venue.maxGuests ? `${venue.guestsShort} invités` : 'Capacité sur demande';
+  const t = translator(useLang());
+  const p = usePaths();
+  const guests = venue.maxGuests
+    ? t(`${venue.guestsShort} invités`, `${venue.guestsShort} guests`)
+    : t('Capacité sur demande', 'Capacity on request');
 
   return (
     <article className="group relative flex w-full flex-col overflow-hidden rounded-2xl border border-line bg-white">
@@ -36,7 +43,7 @@ export function VenueCard({ venue, headingLevel: Heading = 'h3' }: VenueCardProp
           {venue.commune}, {venue.zone.name}
         </p>
         <Heading className="mt-1 text-[1.6rem] leading-tight text-ink">
-          <Link href={paths.venue(venue.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
+          <Link href={p.venue(venue.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
             {venue.nom_du_lieu}
           </Link>
         </Heading>

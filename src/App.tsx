@@ -19,6 +19,8 @@ import { SavedPage } from './pages/SavedPage';
 import { SavedShortcut } from './components/SavedShortcut';
 import { refreshCatalog, useCatalogState } from './catalog';
 import { track } from './lib/track';
+import { setContentLanguage } from './i18n/content';
+import { langOf, useLang } from './i18n/lang';
 
 // The statistics page and the professional area (with the Firebase sign-in code) load only when opened.
 const AdminPage = lazy(() => import('./pages/AdminPage'));
@@ -27,7 +29,7 @@ const AccountPage = lazy(() => import('./pages/account/AccountPage'));
 const ListingEditorPage = lazy(() => import('./pages/account/ListingEditorPage'));
 
 /** Pages of listings published after the build only exist once the browser has fetched them. */
-const LISTING_PATH = /^\/(lieux|prestataires\/[^/]+)\/[^/]+$/;
+const LISTING_PATH = /^(\/en)?\/(lieux|venues|prestataires\/[^/]+|vendors\/[^/]+)\/[^/]+$/;
 
 /** The dashboard and the professional area are not counted as visits of the site. */
 const PRIVATE_ROUTES: Route['name'][] = ['admin', 'login', 'account', 'listingEditor'];
@@ -36,6 +38,8 @@ export default function App() {
   const { path } = useRouter();
   // Re-render when listings published since the build arrive.
   const catalog = useCatalogState();
+  // Shared content in the language of this page, before anything reads it.
+  setContentLanguage(langOf(path));
   const route = matchRoute(path);
   // Kept here so filters survive a round trip to a venue page.
   const [filters, setFilters] = useState<Filters>(emptyFilters);
@@ -72,7 +76,8 @@ export default function App() {
 }
 
 function Loading() {
-  return <p className="mx-auto max-w-6xl px-5 py-16 text-muted sm:px-8">Chargement…</p>;
+  const lang = useLang();
+  return <p className="mx-auto max-w-6xl px-5 py-16 text-muted sm:px-8">{lang === 'en' ? 'Loading…' : 'Chargement…'}</p>;
 }
 
 function Lazy({ children }: { children: ReactNode }) {

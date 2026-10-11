@@ -4,7 +4,7 @@ import { vendorsIn, vendorTarget } from '../vendorListings';
 import { track } from '../lib/track';
 import { checkListing, useCatalogState } from '../catalog';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { useLang, usePaths, useT } from '../i18n/lang';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ContactAccess } from '../components/ContactAccess';
 import { Photo } from '../components/Photo';
@@ -19,6 +19,11 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
   const others = vendorsIn(c.slug).filter((x) => x.slug !== v.slug).slice(0, 6);
 
   const { refreshed } = useCatalogState();
+  const lang = useLang();
+  const t = useT();
+  const p = usePaths();
+  // "Music and DJs" → "music and DJs": only the first letter is lowered in English.
+  const lowerName = lang === 'en' ? c.name.charAt(0).toLowerCase() + c.name.slice(1) : c.name.toLowerCase();
 
   useEffect(() => {
     if (!refreshed) return;
@@ -31,8 +36,8 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
       <div className="mx-auto max-w-6xl px-5 pt-6 sm:px-8">
         <Breadcrumbs
           items={[
-            { label: 'Prestataires', href: paths.prestataires },
-            { label: c.name, href: paths.vendor(c.slug) },
+            { label: t('Prestataires', 'Vendors'), href: p.prestataires },
+            { label: c.name, href: p.vendor(c.slug) },
             { label: v.name },
           ]}
         />
@@ -51,13 +56,13 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
               )}
             </div>
             {photos.length > 1 && (
-              <ul className="mt-3 grid grid-cols-5 gap-2" aria-label="Choisir une photo">
+              <ul className="mt-3 grid grid-cols-5 gap-2" aria-label={t('Choisir une photo', 'Choose a photo')}>
                 {photos.slice(0, 10).map((id, i) => (
                   <li key={id}>
                     <button
                       type="button"
                       onClick={() => setPhoto(i)}
-                      aria-label={`Afficher la photo ${i + 1}`}
+                      aria-label={t(`Afficher la photo ${i + 1}`, `Show photo ${i + 1}`)}
                       aria-pressed={i === photo}
                       className={`block aspect-square w-full overflow-hidden rounded-lg transition ${
                         i === photo ? 'ring-2 ring-pine ring-offset-2 ring-offset-paper' : 'opacity-70 hover:opacity-100'
@@ -73,14 +78,16 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
 
           <div>
             <p className="text-muted">
-              <Link href={paths.vendor(c.slug)} className="hover:text-ink hover:underline">
+              <Link href={p.vendor(c.slug)} className="hover:text-ink hover:underline">
                 {c.name}
               </Link>
               , {v.commune} ({v.zone})
             </p>
             <h1 className="mt-1 text-[2.5rem] leading-[1.05] text-ink sm:text-[3.2rem]">{v.name}</h1>
             {v.ownerUid && (
-              <p className="mt-3 inline-block rounded-full bg-sage-soft px-3 py-1 text-sm text-pine-dark">Fiche gérée par le prestataire</p>
+              <p className="mt-3 inline-block rounded-full bg-sage-soft px-3 py-1 text-sm text-pine-dark">
+                {t('Fiche gérée par le prestataire', 'Listing managed by the vendor')}
+              </p>
             )}
             <p className="mt-4 text-lg leading-relaxed text-ink/85">{v.summary}</p>
             {v.tags.length > 0 && (
@@ -88,11 +95,24 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
                 <Tags tags={v.tags} />
               </div>
             )}
-            {v.priceFrom && <p className="mt-5 text-[1.05rem] font-semibold text-ink">Tarifs : {v.priceFrom}</p>}
+            {v.priceFrom && (
+              <p className="mt-5 text-[1.05rem] font-semibold text-ink">
+                {t('Tarifs : ', 'Prices: ')}
+                {v.priceFrom}
+              </p>
+            )}
 
             <div className="mt-7 rounded-2xl border border-line bg-white p-5">
-              <p className="font-semibold text-ink">Contacter {v.name}</p>
-              <p className="mt-1 text-[0.95rem] text-muted">Téléphone et site disponibles en quelques secondes, gratuitement.</p>
+              <p className="font-semibold text-ink">
+                {t('Contacter ', 'Contact ')}
+                {v.name}
+              </p>
+              <p className="mt-1 text-[0.95rem] text-muted">
+                {t(
+                  'Téléphone et site disponibles en quelques secondes, gratuitement.',
+                  'Phone number and website in a few seconds, free of charge.',
+                )}
+              </p>
               <ContactAccess target={target} className="btn-primary mt-4 w-full sm:w-auto" />
             </div>
             {v.portfolio && (
@@ -103,8 +123,8 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
                 onClick={() => void track('portfolio_click', target.id, target.owner)}
                 className="btn-ghost mt-4 w-full sm:w-auto"
               >
-                Voir le portfolio
-                <span className="sr-only"> (nouvel onglet)</span>
+                {t('Voir le portfolio', 'View the portfolio')}
+                <span className="sr-only">{t(' (nouvel onglet)', ' (opens in a new tab)')}</span>
               </a>
             )}
           </div>
@@ -114,7 +134,7 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
           <section aria-labelledby="presentation" className="border-t border-line bg-white/60">
             <div className="mx-auto max-w-3xl px-5 py-16 sm:px-8">
               <h2 id="presentation" className="text-3xl text-ink">
-                Présentation
+                {t('Présentation', 'About')}
               </h2>
               <p className="mt-4 whitespace-pre-line text-[1.075rem] leading-[1.8] text-ink/85">{v.description}</p>
             </div>
@@ -125,13 +145,15 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
       <nav aria-labelledby="autres" className="border-t border-line">
         <div className="mx-auto max-w-6xl px-5 py-16 sm:px-8">
           <h2 id="autres" className="mb-6 text-3xl text-ink">
-            {others.length ? `Autres ${c.name.toLowerCase()} dans le Var` : `Bien choisir : nos conseils`}
+            {others.length
+              ? t(`Autres ${c.name.toLowerCase()} dans le Var`, `More ${lowerName} in the Var`)
+              : t(`Bien choisir : nos conseils`, 'Choosing well: our advice')}
           </h2>
           <ul className="flex flex-wrap gap-2">
             {others.map((x) => (
               <li key={x.slug}>
                 <Link
-                  href={paths.vendorPage(x.category, x.slug)}
+                  href={p.vendorPage(x.category, x.slug)}
                   className="inline-flex rounded-full border border-line bg-white/60 px-4 py-2 text-ink transition-colors hover:border-pine hover:text-pine"
                 >
                   {x.name}
@@ -139,8 +161,8 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
               </li>
             ))}
             <li>
-              <Link href={paths.vendor(c.slug)} className="inline-flex rounded-full px-4 py-2 font-semibold text-pine hover:underline">
-                Tous les {c.name.toLowerCase()} et nos conseils
+              <Link href={p.vendor(c.slug)} className="inline-flex rounded-full px-4 py-2 font-semibold text-pine hover:underline">
+                {t(<>Tous les {c.name.toLowerCase()} et nos conseils</>, <>All {lowerName} and our advice</>)}
               </Link>
             </li>
           </ul>

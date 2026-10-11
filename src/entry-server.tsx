@@ -7,11 +7,14 @@ import { site } from './site';
 import { catalogSnapshot, initCatalog } from './catalog';
 import { toListingDoc } from './lib/listings';
 import { vendorId } from './vendorListings';
+import { setContentLanguage } from './i18n/content';
+import { langOf } from './i18n/lang';
 
 export { allPaths, lastModified, site, unlistedPaths };
 
 /** Render one path to static HTML plus its head tags (used by scripts/prerender.mjs). */
 export function render(path: string) {
+  setContentLanguage(langOf(path));
   const html = renderToString(
     <StrictMode>
       <Router initialPath={path}>
@@ -20,7 +23,7 @@ export function render(path: string) {
     </StrictMode>,
   );
   const seo = getSeo(matchRoute(path), path);
-  return { html, title: seo.title, description: seo.description, noindex: Boolean(seo.noindex), head: headTags(seo) };
+  return { html, lang: seo.lang, title: seo.title, description: seo.description, noindex: Boolean(seo.noindex), head: headTags(seo) };
 }
 
 type RestValue = {

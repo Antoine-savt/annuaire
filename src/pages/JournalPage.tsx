@@ -1,12 +1,16 @@
-import { articles, formatDate } from '../articles';
+import { formatDate } from '../articles';
 import { readingMinutes } from '../lib/richtext';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { articlesIn } from '../routes';
+import { useLang, usePaths, useT } from '../i18n/lang';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Photo } from '../components/Photo';
 
 export function JournalPage() {
-  const [featured, ...others] = articles;
+  const lang = useLang();
+  const t = useT();
+  const p = usePaths();
+  const [featured, ...others] = articlesIn(lang);
   const rest = [...others].sort((a, b) => b.date.localeCompare(a.date));
 
   return (
@@ -16,9 +20,12 @@ export function JournalPage() {
       </div>
 
       <header className="mx-auto max-w-7xl px-5 pb-12 pt-10 sm:px-8">
-        <h1 className="text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">Le Journal</h1>
+        <h1 className="text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">{t('Le Journal', 'The Journal')}</h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">
-          Conseils pratiques pour organiser un mariage dans le Var : choisir son lieu, sa saison et ses prestataires.
+          {t(
+            'Conseils pratiques pour organiser un mariage dans le Var : choisir son lieu, sa saison et ses prestataires.',
+            'Practical advice for planning a wedding in the Var: choosing your venue, your season and your suppliers.',
+          )}
         </p>
       </header>
 
@@ -38,12 +45,14 @@ export function JournalPage() {
               {featured.category}, <time dateTime={featured.date}>{formatDate(featured.date)}</time>
             </p>
             <h2 className="mt-2 text-4xl leading-tight text-ink">
-              <Link href={paths.article(featured.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
+              <Link href={p.article(featured.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
                 {featured.title}
               </Link>
             </h2>
             <p className="mt-4 text-lg leading-relaxed text-muted">{featured.excerpt}</p>
-            <p className="mt-6 font-semibold text-pine">Lire l'article ({readingMinutes(featured.body)} min)</p>
+            <p className="mt-6 font-semibold text-pine">
+              {t("Lire l'article", 'Read the article')} ({readingMinutes(featured.body)} min)
+            </p>
           </div>
         </article>
 
@@ -64,7 +73,7 @@ export function JournalPage() {
                   {a.category}, <time dateTime={a.date}>{formatDate(a.date)}</time>
                 </p>
                 <h2 className="mt-1 text-2xl leading-snug text-ink">
-                  <Link href={paths.article(a.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
+                  <Link href={p.article(a.slug)} className="after:absolute after:inset-0 group-hover:text-pine">
                     {a.title}
                   </Link>
                 </h2>

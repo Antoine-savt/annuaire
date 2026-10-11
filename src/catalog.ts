@@ -38,6 +38,14 @@ function applyRemoved(ids: string[]) {
   setRemovedVendors(ids);
 }
 
+/**
+ * Rebuild the professionals' listings after a change of language (their computed facts are translated).
+ * Called while a page renders: no notification, the page renders with the new objects anyway.
+ */
+export function relocalizeCatalog() {
+  apply(listings);
+}
+
 /** Initial data: from the build (server side) or the snapshot embedded in the page (browser). */
 export function initCatalog(list: ListingDoc[], buildTime: number, removedIds: string[] = []) {
   builtAt = buildTime;

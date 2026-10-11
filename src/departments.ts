@@ -1,4 +1,5 @@
 import { Zone } from './types';
+import { contentLang } from './i18n/current';
 
 /*
  * French departments, for the venues outside the Var. A venue's area is either a sector of the Var
@@ -126,5 +127,7 @@ export const departmentZoneSlug = (code: string) => `${PREFIX}${code}`;
 export function departmentZone(slug: string): Zone | undefined {
   if (!slug.startsWith(PREFIX)) return undefined;
   const d = departments.find((x) => x.code === slug.slice(PREFIX.length));
-  return d && { slug, name: d.name, where: d.where, intro: '', body: '', articles: [], department: d.code };
+  if (!d) return undefined;
+  const where = contentLang() === 'en' ? `in ${d.name}` : d.where;
+  return { slug, name: d.name, where, intro: '', body: '', articles: [], department: d.code };
 }

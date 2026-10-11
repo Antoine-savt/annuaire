@@ -1,5 +1,5 @@
 import { ContactTarget, Venue, Zone } from './types';
-import { paths } from './paths';
+import { paths, pathsFor } from './paths';
 import { photos } from './images';
 
 export const zones: Zone[] = [
@@ -662,8 +662,8 @@ export function regionOf(v: Venue): string {
 }
 
 /** Page of the venue's sector, or none for a venue outside the Var. */
-export function zoneHref(zone: Zone): string | undefined {
-  return zone.department ? undefined : paths.zone(zone.slug);
+export function zoneHref(zone: Zone, lang: 'fr' | 'en' = 'fr'): string | undefined {
+  return zone.department ? undefined : pathsFor(lang).zone(zone.slug);
 }
 
 export function venuesInZone(zoneSlug: string): Venue[] {

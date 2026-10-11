@@ -1,16 +1,17 @@
 import { Venue } from '../types';
 import { zoneHref } from '../data';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { translator, useLang, usePaths } from '../i18n/lang';
 import { VenueGallery } from './VenueGallery';
 import { SaveButton } from './SaveButton';
 
 /** The three figures that let you size up a venue at a glance. */
 export function KeyFigures({ venue, className = '' }: { venue: Venue; className?: string }) {
+  const t = translator(useLang());
   const figures = [
-    { label: 'Invités', value: venue.guestsShort },
-    { label: 'Hébergement', value: venue.lodgingShort },
-    { label: 'Prix', value: venue.priceShort },
+    { label: t('Invités', 'Guests'), value: venue.guestsShort },
+    { label: t('Hébergement', 'Accommodation'), value: venue.lodgingShort },
+    { label: t('Prix', 'Price'), value: venue.priceShort },
   ];
   return (
     <dl className={`grid grid-cols-3 divide-x divide-line border-y border-line ${className}`}>
@@ -43,7 +44,10 @@ interface VenueListItemProps {
 
 /** Full-width directory entry: photo on the left, a quick portrait of the venue on the right. */
 export function VenueListItem({ venue, headingLevel: Heading = 'h3' }: VenueListItemProps) {
-  const href = paths.venue(venue.slug);
+  const lang = useLang();
+  const t = translator(lang);
+  const href = usePaths().venue(venue.slug);
+  const area = zoneHref(venue.zone, lang);
 
   return (
     <article className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,2fr)_minmax(0,3fr)]">
@@ -53,17 +57,17 @@ export function VenueListItem({ venue, headingLevel: Heading = 'h3' }: VenueList
         <div className="flex items-start justify-between gap-4">
           <p className="text-sm text-muted">
             {venue.commune},{' '}
-            {zoneHref(venue.zone) ? (
-              <Link href={zoneHref(venue.zone)!} className="hover:text-pine hover:underline">
+            {area ? (
+              <Link href={area} className="hover:text-pine hover:underline">
                 {venue.zone.name}
               </Link>
             ) : (
               venue.zone.name
             )}
           </p>
-          <p className="shrink-0 text-sm font-semibold text-ink" title="Budget indicatif de location">
-            <span className="sr-only">Budget : </span>
-            {venue.budget ?? 'Sur devis'}
+          <p className="shrink-0 text-sm font-semibold text-ink" title={t('Budget indicatif de location', 'Indicative venue hire budget')}>
+            <span className="sr-only">{t('Budget : ', 'Budget: ')}</span>
+            {venue.budget ?? t('Sur devis', 'On request')}
           </p>
         </div>
 
@@ -84,10 +88,10 @@ export function VenueListItem({ venue, headingLevel: Heading = 'h3' }: VenueList
         <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
           {/* Contact details are requested from the listing page, so every request follows a view of it. */}
           <Link href={href} className="btn-primary">
-            Obtenir les coordonnées
+            {t('Obtenir les coordonnées', 'Get contact details')}
           </Link>
           <Link href={href} className="btn-ghost">
-            Voir la fiche
+            {t('Voir la fiche', 'View venue')}
           </Link>
           <SaveButton slug={venue.slug} name={venue.nom_du_lieu} />
         </div>

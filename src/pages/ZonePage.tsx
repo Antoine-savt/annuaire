@@ -1,18 +1,27 @@
 import { Zone } from '../types';
 import { venuesInZone, zones } from '../data';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { articlesIn } from '../routes';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { VenueList } from '../components/VenueListItem';
 import { Faq } from '../components/Faq';
 import { findArticle } from '../articles';
 import { zoneFaq } from '../faq';
 import { parseBlocks, RichText } from '../lib/richtext';
+import { translator, useLang, usePaths } from '../i18n/lang';
 
 export function ZonePage({ zone }: { zone: Zone }) {
   const list = venuesInZone(zone.slug);
   const otherZones = zones.filter((z) => z.slug !== zone.slug);
-  const guides = zone.articles.map(findArticle).filter((a) => a !== undefined);
+  const lang = useLang();
+  const t = translator(lang);
+  const p = usePaths();
+  // Only the guides published in the page language.
+  const available = new Set(articlesIn(lang).map((a) => a.slug));
+  const guides = zone.articles
+    .filter((slug) => available.has(slug))
+    .map(findArticle)
+    .filter((a) => a !== undefined);
 
   return (
     <>
@@ -21,14 +30,23 @@ export function ZonePage({ zone }: { zone: Zone }) {
       </div>
 
       <header className="mx-auto max-w-7xl px-5 pb-12 pt-10 sm:px-8 md:pb-16">
-        <h1 className="max-w-4xl text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">Lieux de mariage {zone.where}</h1>
+        <h1 className="max-w-4xl text-[2.6rem] leading-[1.05] text-ink sm:text-6xl">
+          {t(<>Lieux de mariage {zone.where}</>, <>Wedding venues {zone.where}</>)}
+        </h1>
         <p className="mt-6 max-w-2xl text-lg leading-relaxed text-muted">{zone.intro}</p>
         <p className="mt-6 font-semibold text-ink">
-          {list.length} lieu{list.length > 1 ? 'x' : ''} sélectionné{list.length > 1 ? 's' : ''}
+          {t(
+            <>
+              {list.length} lieu{list.length > 1 ? 'x' : ''} sélectionné{list.length > 1 ? 's' : ''}
+            </>,
+            <>
+              {list.length} venue{list.length === 1 ? '' : 's'} in our selection
+            </>,
+          )}
         </p>
       </header>
 
-      <section aria-label={`Lieux ${zone.where}`} className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
+      <section aria-label={t(`Lieux ${zone.where}`, `Venues ${zone.where}`)} className="mx-auto max-w-7xl px-5 pb-20 sm:px-8">
         <VenueList venues={list} headingLevel="h2" />
       </section>
 
@@ -37,20 +55,20 @@ export function ZonePage({ zone }: { zone: Zone }) {
           <div className="max-w-3xl">
             <RichText blocks={parseBlocks(zone.body)} />
             <div className="mt-14">
-              <Faq items={zoneFaq(zone)} />
+              <Faq items={zoneFaq(zone, lang)} title={t('Questions fréquentes', 'Frequently asked questions')} />
             </div>
           </div>
 
           {guides.length > 0 && (
             <aside aria-labelledby="guides" className="lg:sticky lg:top-28 lg:self-start">
               <h2 id="guides" className="text-2xl text-ink">
-                Pour préparer votre mariage
+                {t('Pour préparer votre mariage', 'Planning your wedding')}
               </h2>
               <ul className="mt-4 space-y-3">
                 {guides.map((a) => (
                   <li key={a.slug}>
                     <Link
-                      href={paths.article(a.slug)}
+                      href={p.article(a.slug)}
                       className="block rounded-xl border border-line bg-white p-4 transition-colors hover:border-pine"
                     >
                       <span className="text-sm text-muted">{a.category}</span>
@@ -67,13 +85,13 @@ export function ZonePage({ zone }: { zone: Zone }) {
       <nav aria-labelledby="autres-secteurs" className="border-t border-line">
         <div className="mx-auto max-w-7xl px-5 py-16 sm:px-8">
           <h2 id="autres-secteurs" className="mb-6 text-3xl text-ink">
-            Les autres secteurs du Var
+            {t('Les autres secteurs du Var', 'Other areas of the Var')}
           </h2>
           <ul className="flex flex-wrap gap-2">
             {otherZones.map((z) => (
               <li key={z.slug}>
                 <Link
-                  href={paths.zone(z.slug)}
+                  href={p.zone(z.slug)}
                   className="inline-flex items-center gap-1.5 rounded-full border border-line bg-white/60 px-4 py-2 text-ink transition-colors hover:border-pine hover:text-pine"
                 >
                   {z.name}
@@ -82,8 +100,8 @@ export function ZonePage({ zone }: { zone: Zone }) {
               </li>
             ))}
             <li>
-              <Link href="/#lieux" className="inline-flex rounded-full px-4 py-2 font-semibold text-pine hover:underline">
-                Tous les lieux
+              <Link href={`${p.home}#lieux`} className="inline-flex rounded-full px-4 py-2 font-semibold text-pine hover:underline">
+                {t('Tous les lieux', 'All venues')}
               </Link>
             </li>
           </ul>

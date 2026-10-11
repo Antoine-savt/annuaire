@@ -2,7 +2,7 @@ import { Vendor } from '../types';
 import { Photo } from './Photo';
 import { Tags } from './VenueListItem';
 import { Link } from '../router';
-import { paths } from '../routes';
+import { usePaths, useT } from '../i18n/lang';
 
 function VendorImage({ vendor }: { vendor: Vendor }) {
   const alt = vendor.imageAlt ?? vendor.name;
@@ -22,7 +22,8 @@ function VendorImage({ vendor }: { vendor: Vendor }) {
 
 /** A vendor in its category list; the contact form is on its page, as for the venues. */
 export function VendorCard({ vendor }: { vendor: Vendor }) {
-  const href = paths.vendorPage(vendor.category, vendor.slug);
+  const t = useT();
+  const href = usePaths().vendorPage(vendor.category, vendor.slug);
 
   return (
     <article className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
@@ -49,10 +50,10 @@ export function VendorCard({ vendor }: { vendor: Vendor }) {
         )}
         <div className="mt-5 flex flex-wrap items-center gap-3 md:mt-auto md:pt-5">
           <Link href={href} className="btn-primary">
-            Obtenir les coordonnées
+            {t('Obtenir les coordonnées', 'Get contact details')}
           </Link>
           <Link href={href} className="btn-ghost">
-            Voir la fiche
+            {t('Voir la fiche', 'View listing')}
           </Link>
         </div>
       </div>

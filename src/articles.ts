@@ -1,5 +1,7 @@
 import { Article } from './types';
 import { photos } from './images';
+import { contentLang } from './i18n/current';
+import { articleSlugsEn } from './i18n/slugs';
 
 /*
  * Article bodies use a small Markdown subset (see src/lib/richtext.tsx):
@@ -969,16 +971,17 @@ export function findArticle(slug: string): Article | undefined {
   return articles.find((a) => a.slug === slug);
 }
 
-/** Articles to suggest after one: newest first, the current one excluded. */
+/** Articles to suggest after one: newest first, the current one excluded, only those available in the content language. */
 export function relatedArticles(slug: string, count = 3): Article[] {
+  const english = contentLang() === 'en';
   return articles
-    .filter((a) => a.slug !== slug)
+    .filter((a) => a.slug !== slug && (!english || articleSlugsEn[a.slug] !== undefined))
     .sort((a, b) => b.date.localeCompare(a.date))
     .slice(0, count);
 }
 
 export function formatDate(iso: string): string {
-  return new Date(`${iso}T12:00:00Z`).toLocaleDateString('fr-FR', {
+  return new Date(`${iso}T12:00:00Z`).toLocaleDateString(contentLang() === 'en' ? 'en-GB' : 'fr-FR', {
     day: 'numeric',
     month: 'long',
     year: 'numeric',

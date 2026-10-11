@@ -2,8 +2,8 @@ import { Budget, ListingDoc, Venue, Vendor } from '../types';
 import { findZone, zones } from '../data';
 import { departmentZone } from '../departments';
 import { slugify } from './richtext';
-
-const euros = (n: number) => `${n.toLocaleString('fr-FR')} €`;
+import { contentLang } from '../i18n/current';
+import { formatEuros, translator } from '../i18n/lang';
 
 /** Same bands as the curated venues: under 4 000 €, up to 10 000 €, above. */
 function budgetFor(price: number | null): Budget | null {
@@ -13,12 +13,21 @@ function budgetFor(price: number | null): Budget | null {
   return '€€€';
 }
 
-/** A venue listing from a professional account, shaped like the curated venues. */
+/**
+ * A venue listing from a professional account, shaped like the curated venues. The facts computed
+ * here follow the content language; the texts written by the professional stay as written.
+ */
 export function listingToVenue(l: ListingDoc): Venue {
+  const lang = contentLang();
+  const t = translator(lang);
   const zone = findZone(l.zone) ?? departmentZone(l.zone) ?? zones[0];
   const guestsShort =
-    l.guestsMin && l.guestsMax ? `${l.guestsMin} à ${l.guestsMax}` : l.guestsMax ? `Jusqu'à ${l.guestsMax}` : 'Sur demande';
-  const priceShort = l.priceFrom ? `Dès ${euros(l.priceFrom)}` : 'Sur devis';
+    l.guestsMin && l.guestsMax
+      ? t(`${l.guestsMin} à ${l.guestsMax}`, `${l.guestsMin} to ${l.guestsMax}`)
+      : l.guestsMax
+        ? t(`Jusqu'à ${l.guestsMax}`, `Up to ${l.guestsMax}`)
+        : t('Sur demande', 'On request');
+  const priceShort = l.priceFrom ? t('Dès ', 'From ') + formatEuros(l.priceFrom, lang) : t('Sur devis', 'On request');
   const photos = l.photos.length ? l.photos : [];
   return {
     slug: l.slug,
@@ -27,20 +36,20 @@ export function listingToVenue(l: ListingDoc): Venue {
     zone,
     site_web_officiel: l.website,
     description: l.description || l.summary,
-    capacite_accueil: l.guestsMax ? `${guestsShort} invités` : 'Capacité sur demande',
-    hebergement_sur_place: l.sleeps > 0 ? `Oui (${l.sleeps} couchages)` : 'Non',
-    type_de_cadre: l.venueType || 'Lieu de réception',
+    capacite_accueil: l.guestsMax ? `${guestsShort} ${t('invités', 'guests')}` : t('Capacité sur demande', 'Capacity on request'),
+    hebergement_sur_place: l.sleeps > 0 ? t(`Oui (${l.sleeps} couchages)`, `Yes (sleeps ${l.sleeps})`) : t('Non', 'No'),
+    type_de_cadre: l.venueType || t('Lieu de réception', 'Wedding venue'),
     fourchette_de_prix: l.priceDetails ? `${priceShort} (${l.priceDetails})` : priceShort,
     element_differenciant: l.highlight || l.summary,
     contact: l.phone,
-    sources: 'informations fournies par le lieu',
+    sources: t('informations fournies par le lieu', 'information provided by the venue'),
     image: photos[0] ?? '',
     imageAlt: `${l.name}, ${l.commune}`,
     gallery: photos,
     summary: l.summary,
     tags: l.tags.slice(0, 3),
     guestsShort,
-    lodgingShort: l.sleeps > 0 ? `${l.sleeps} couchages` : 'Non',
+    lodgingShort: l.sleeps > 0 ? t(`${l.sleeps} couchages`, `Sleeps ${l.sleeps}`) : t('Non', 'No'),
     priceShort,
     minGuests: l.guestsMin,
     maxGuests: l.guestsMax,

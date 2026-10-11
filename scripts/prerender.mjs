@@ -19,7 +19,7 @@ const problems = [];
 const known = new Set();
 
 function page(urlPath) {
-  const { html, title, description, noindex, head } = render(urlPath);
+  const { html, lang, title, description, noindex, head } = render(urlPath);
   if (!noindex) {
     if (title.length > 65) problems.push(`Titre long (${title.length} car.) sur ${urlPath} : ${title}`);
     if (description.length > 165) problems.push(`Description longue (${description.length} car.) sur ${urlPath}`);
@@ -31,6 +31,7 @@ function page(urlPath) {
   // Same catalog in the browser as in this HTML, so React can hydrate it. "<" is escaped: the data comes from users.
   const catalog = JSON.stringify(catalogFor(urlPath)).replace(/</g, '\\u003c');
   return template
+    .replace(/<html lang="[a-z]+"/, `<html lang="${lang}"`)
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${escapedTitle}</title>`)
     .replace('<!--head-->', head)
     .replace(

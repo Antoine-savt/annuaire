@@ -1,11 +1,14 @@
 import { Link } from '../router';
+import { usePaths, useT } from '../i18n/lang';
 
 export function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
+  const t = useT();
+  const p = usePaths();
   return (
-    <nav aria-label="Fil d'Ariane" className="text-sm text-muted">
+    <nav aria-label={t("Fil d'Ariane", 'Breadcrumb')} className="text-sm text-muted">
       <ol className="flex flex-wrap items-center gap-2">
         <li>
-          <Link href="/" className="hover:text-ink">Accueil</Link>
+          <Link href={p.home} className="hover:text-ink">{t('Accueil', 'Home')}</Link>
         </li>
         {items.map((item) => (
           <li key={item.label} className="flex items-center gap-2">

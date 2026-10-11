@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Venue } from '../types';
 import { Link, useRouter } from '../router';
+import { translator, useLang } from '../i18n/lang';
 import { Photo } from './Photo';
 
 function Chevron({ direction }: { direction: 'left' | 'right' }) {
@@ -19,6 +20,7 @@ const arrowClass =
  */
 export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
   const { navigate } = useRouter();
+  const t = translator(useLang());
   const [index, setIndex] = useState(0);
   const photos = venue.gallery;
   const last = photos.length - 1;
@@ -30,8 +32,8 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
     <div
       className="relative aspect-[16/10] overflow-hidden bg-sage-soft md:aspect-auto md:min-h-80"
       role="group"
-      aria-roledescription="carrousel"
-      aria-label={`Photos de ${venue.nom_du_lieu}`}
+      aria-roledescription={t('carrousel', 'carousel')}
+      aria-label={t(`Photos de ${venue.nom_du_lieu}`, `Photos of ${venue.nom_du_lieu}`)}
     >
       {photos.map((id, i) =>
         // Render the visible photo and preload the next one.
@@ -39,7 +41,11 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
           <div key={id} aria-hidden={i !== index} className={`absolute inset-0 transition-opacity duration-300 ${i === index ? 'opacity-100' : 'opacity-0'}`}>
             <Photo
               id={id}
-              alt={i === 0 ? venue.imageAlt : `${venue.nom_du_lieu}, photo ${i + 1} sur ${photos.length}${venue.illustrative ? ' (illustration)' : ''}`}
+              alt={
+                i === 0
+                  ? venue.imageAlt
+                  : `${venue.nom_du_lieu}, photo ${i + 1} ${t('sur', 'of')} ${photos.length}${venue.illustrative ? t(' (illustration)', ' (illustrative)') : ''}`
+              }
               sizes="(min-width: 1280px) 420px, (min-width: 768px) 40vw, 100vw"
               maxWidth={1200}
             />
@@ -50,7 +56,7 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
       <Link href={href} tabIndex={-1} aria-hidden className="absolute inset-0" />
 
       {index > 0 && (
-        <button type="button" onClick={() => setIndex(index - 1)} className={`${arrowClass} left-3`} aria-label="Photo précédente">
+        <button type="button" onClick={() => setIndex(index - 1)} className={`${arrowClass} left-3`} aria-label={t('Photo précédente', 'Previous photo')}>
           <Chevron direction="left" />
         </button>
       )}
@@ -61,11 +67,11 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
           onClick={next}
           className="absolute right-3 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-pine py-2.5 pl-4 pr-3 text-sm font-semibold text-white shadow-md transition hover:bg-pine-dark"
         >
-          Voir la fiche
+          {t('Voir la fiche', 'View venue')}
           <Chevron direction="right" />
         </button>
       ) : (
-        <button type="button" onClick={next} className={`${arrowClass} right-3`} aria-label="Photo suivante">
+        <button type="button" onClick={next} className={`${arrowClass} right-3`} aria-label={t('Photo suivante', 'Next photo')}>
           <Chevron direction="right" />
         </button>
       )}

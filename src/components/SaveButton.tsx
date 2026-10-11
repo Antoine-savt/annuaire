@@ -1,4 +1,5 @@
 import { toggleSaved, useSaved } from '../lib/saved';
+import { useT } from '../i18n/lang';
 
 interface SaveButtonProps {
   slug: string;
@@ -11,6 +12,7 @@ interface SaveButtonProps {
 /** Adds a venue to the couple's selection ("Mes lieux"), or removes it. */
 export function SaveButton({ slug, name, variant = 'solid', className = '' }: SaveButtonProps) {
   const saved = useSaved().includes(slug);
+  const t = useT();
 
   const base =
     variant === 'overlay'
@@ -26,11 +28,15 @@ export function SaveButton({ slug, name, variant = 'solid', className = '' }: Sa
     <button
       type="button"
       aria-pressed={saved}
-      aria-label={saved ? `Retirer ${name} de mes lieux` : `Enregistrer ${name} dans mes lieux`}
+      aria-label={
+        saved
+          ? t(`Retirer ${name} de mes lieux`, `Remove ${name} from saved venues`)
+          : t(`Enregistrer ${name} dans mes lieux`, `Add ${name} to your saved venues`)
+      }
       onClick={() => toggleSaved(slug)}
       className={`${base} ${look} ${className}`}
     >
-      {saved ? 'Enregistré' : 'Enregistrer'}
+      {saved ? t('Enregistré', 'Saved') : t('Enregistrer', 'Save')}
     </button>
   );
 }
