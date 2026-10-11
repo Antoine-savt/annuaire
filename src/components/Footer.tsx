@@ -92,7 +92,7 @@ export function Footer() {
               {lang === 'fr' && (
                 <li>
                   <a href={siteChateauUrl('pied-de-page')} target="_blank" rel="noopener" className="transition-colors hover:text-white">
-                    Création de site pour lieux de réception
+                    Site-Chateau.fr, sites de lieux de réception
                   </a>
                 </li>
               )}

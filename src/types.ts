@@ -214,4 +214,6 @@ export interface Article {
   faq: FaqItem[];
   /** Slugs of venues mentioned in the article. */
   venues: string[];
+  /** Organisations the article presents, for the structured data (e.g. a partner). */
+  mentions?: { name: string; url: string }[];
 }

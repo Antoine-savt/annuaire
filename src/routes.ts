@@ -384,6 +384,9 @@ export function getSeo(route: Route, path: string): Seo {
             author: { '@type': 'Organization', name: site.name },
             publisher: { '@type': 'Organization', name: site.name },
             mainEntityOfPage: absoluteUrl(path),
+            ...(a.mentions?.length
+              ? { mentions: a.mentions.map((m) => ({ '@type': 'Organization', name: m.name, url: m.url })) }
+              : {}),
           },
           breadcrumb([home, { name: 'Journal', path: p.journal }, { name: a.title, path }]),
           ...(a.faq.length ? [faqPage(a.faq)] : []),

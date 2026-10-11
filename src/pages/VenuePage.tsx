@@ -7,6 +7,7 @@ import { Photo } from '../components/Photo';
 import { VenueGrid } from '../components/VenueGrid';
 import { KeyFigures, Tags } from '../components/VenueListItem';
 import { ContactAccess } from '../components/ContactAccess';
+import { isSiteChateauClient, SiteChateauCredit } from '../components/SiteChateauOffer';
 import { SaveButton } from '../components/SaveButton';
 import { Link } from '../router';
 import { track } from '../lib/track';
@@ -120,6 +121,7 @@ export function VenuePage({ venue }: { venue: Venue }) {
                 )}
               </p>
               <ContactAccess target={venueTarget(venue)} className="btn-primary mt-4 w-full sm:w-auto" />
+              {isSiteChateauClient(venue.site_web_officiel) && <SiteChateauCredit lang={lang} />}
             </div>
             <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2">
               <SaveButton slug={venue.slug} name={venue.nom_du_lieu} />

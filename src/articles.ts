@@ -888,6 +888,7 @@ Notre [rétroplanning](/journal/retroplanning-mariage) détaille la suite, étap
     seoTitle: 'Attirer plus de mariages dans son lieu de réception',
     category: 'Professionnels',
     date: '2026-10-10',
+    updated: '2026-10-12',
     excerpt:
       "Les couples comparent des dizaines de lieux en ligne avant d'en visiter trois ou quatre. Pour un château, un domaine ou une bastide du Var, tout se joue avant le premier appel : voici ce qu'ils regardent, et comment y répondre.",
     image: photos.chandelierHall,
@@ -941,14 +942,14 @@ Les couples contactent plusieurs lieux en même temps. Répondre dans la journé
 
 ## Être présent là où les couples cherchent
 
-- **Votre site internet** : une page mariage claire, rapide et lisible sur téléphone, avec les informations clés et un contact visible.
+- **Votre site internet** : une page mariage claire, rapide et lisible sur téléphone, avec les informations clés et un contact visible. Notre guide du [site internet d'un lieu de réception](/journal/site-internet-lieu-reception-mariage) détaille les pages indispensables.
 - **Votre fiche Google** : photos à jour, horaires de visite, réponses aux avis.
 - **Les annuaires spécialisés** : chacun est une porte d'entrée de plus vers votre lieu. [Référencez votre lieu sur L'Édition](/referencer-mon-lieu), l'annuaire consacré aux mariages dans le Var.
 - **Les avis des couples** : demandez-les après chaque mariage, ils pèsent lourd dans la décision des suivants.
 
 ## Mesurer d'où viennent vos demandes
 
-Demandez à chaque couple comment il vous a trouvé, et notez-le. Au bout d'une saison, vous saurez quels canaux vous apportent des mariages et lesquels ne vous coûtent que du temps. Sur notre annuaire, nous mesurons les visiteurs de votre fiche et les demandes de coordonnées, et nous vous transmettons ces chiffres sur demande.
+Demandez à chaque couple comment il vous a trouvé, et notez-le. Au bout d'une saison, vous saurez quels canaux vous apportent des mariages et lesquels ne vous coûtent que du temps. Sur notre annuaire, nous mesurons les visiteurs de votre fiche et les demandes de coordonnées : vous retrouvez ces chiffres dans votre espace professionnel.
 `,
     faq: [
       {
@@ -962,6 +963,95 @@ Demandez à chaque couple comment il vous a trouvé, et notez-le. Au bout d'une 
       {
         q: 'Quelles photos publier pour attirer des couples ?',
         a: "Des photos des espaces installés (cérémonie, dîner, salle de repli, chambres) et de vrais mariages, avec l'accord des couples et le crédit du photographe.",
+      },
+    ],
+  },
+  {
+    slug: 'site-internet-lieu-reception-mariage',
+    description:
+      "Château, domaine ou bastide : les pages, les informations et les réglages qui font du site de votre lieu de réception une source de demandes de mariage.",
+    title: 'Site internet d’un lieu de réception : ce que les couples doivent y trouver',
+    seoTitle: 'Site internet de lieu de réception : le guide',
+    category: 'Professionnels',
+    date: '2026-10-12',
+    excerpt:
+      "Un annuaire fait découvrir votre lieu ; votre site doit convaincre. Les pages indispensables, les informations que les couples cherchent et les réglages qui comptent pour Google, pour un château, un domaine ou une bastide.",
+    image: photos.villaArches,
+    imageAlt: 'Arcades d’une villa provençale ouvertes sur un jardin',
+    venues: [],
+    mentions: [{ name: 'Site-Château.fr', url: 'https://site-chateau.fr/' }],
+    body: `
+Un annuaire comme L'Édition fait découvrir votre lieu à des couples qui ne le connaissaient pas. Mais avant de vous écrire ou de vous appeler, la plupart iront voir votre site internet : c'est là qu'ils vérifient que le lieu leur ressemble, qu'il peut les accueillir et qu'il entre dans leur budget. Ce guide s'adresse aux propriétaires et gérants de châteaux, de domaines et de bastides : ce que votre site doit contenir pour transformer ces visites en demandes de mariage.
+
+## Une page consacrée aux mariages
+
+Beaucoup de domaines présentent sur une même page le vin, les gîtes, les séminaires et les mariages. Les couples s'y perdent. Une page dédiée au mariage, accessible dès le menu, permet de répondre directement à leurs questions et de se positionner sur les recherches comme « lieu de mariage » suivi du nom de votre commune.
+
+Elle doit reprendre les informations que les couples comparent d'un lieu à l'autre :
+
+- **la capacité**, assise et debout, en intérieur et en extérieur ;
+- **un prix de départ**, et ce qu'il comprend ;
+- **l'hébergement** sur place, avec le nombre de couchages ;
+- **les espaces** : cérémonie, cocktail, dîner, salle de repli ;
+- **l'accès** depuis les gares et les aéroports les plus proches.
+
+## Les pages indispensables
+
+Au-delà de la page mariage, un site de lieu de réception tient en quelques pages bien construites : l'accueil, les espaces et leurs capacités, l'hébergement, une galerie de photos de vrais mariages, l'accès, et une page de contact avec un formulaire de demande. Si vous accueillez aussi des séminaires ou des touristes, donnez à chaque activité sa propre page plutôt que de tout mélanger. Notre studio partenaire Site-Château.fr détaille [les pages indispensables d'un site de château](https://site-chateau.fr/guides/7-pages-indispensables-site-chateau), et comment organiser [un site pour un domaine à plusieurs activités](https://site-chateau.fr/guides/site-internet-domaine-multi-activites-mariages-seminaires-gites).
+
+## Un formulaire de demande qui qualifie
+
+Un simple « Contactez-nous » vous apporte des messages incomplets, et autant d'échanges pour obtenir la date et le nombre d'invités. Demandez directement ce dont vous avez besoin pour répondre :
+
+- la date souhaitée, ou au moins la saison et l'année ;
+- le nombre d'invités ;
+- le type de réception : cérémonie sur place, dîner, week-end complet ;
+- un budget indicatif, si vous le souhaitez.
+
+Vous gagnez du temps, et le couple reçoit plus vite une réponse précise. C'est le même principe que sur L'Édition, où les couples indiquent leur date et leur nombre d'invités avant d'obtenir vos coordonnées.
+
+## Pensé pour le téléphone
+
+Les couples découvrent souvent un lieu sur leur téléphone, sur Instagram, dans les résultats de Google ou depuis un annuaire. Le site doit s'afficher vite, avec des photos légères, un menu simple et un bouton d'appel ou de demande toujours visible. Testez-le vous-même sur un téléphone, en 4G, comme le ferait un couple dans le train.
+
+## Être trouvé sur Google
+
+Quelques réglages font une grande différence pour un lieu de réception :
+
+- un titre de page qui dit ce que vous êtes et où : « Château de… : lieu de mariage à… » ;
+- un texte qui nomme votre commune, votre secteur et le type de lieu ;
+- une fiche Google à jour, avec le même nom, la même adresse et le même téléphone que sur le site ;
+- des photos nommées et décrites, plutôt que « IMG_0412.jpg » ;
+- des liens depuis les annuaires et les sites qui parlent de vous.
+
+> Sur votre fiche L'Édition, renseignez l'adresse de votre site : les couples y accèdent directement depuis vos coordonnées. Et ajoutez sur votre site un lien vers votre fiche : les deux se renforcent.
+
+## Des photos et des disponibilités à jour
+
+Une galerie de vrais mariages, avec l'accord des couples et le crédit du photographe, convainc davantage que des photos du lieu vide. Ajoutez les espaces installés, la salle de repli et les chambres. Si vous le pouvez, affichez vos dates déjà réservées pour la saison : les couples savent tout de suite si leur date est libre, et vous évitez les demandes inutiles.
+
+## Combien coûte un site de lieu de réception ?
+
+Tout dépend de ce que vous attendez : un site vitrine de quelques pages, un calendrier de disponibilités, une billetterie pour les visites, des pages en anglais pour les couples étrangers. Pour vous faire une idée, consultez ce guide sur [le coût d'un site internet de château ou de domaine](https://site-chateau.fr/guides/combien-coute-site-internet-chateau-domaine) et les [formules de création de site pour château et domaine](https://site-chateau.fr/tarifs) de notre studio partenaire.
+
+> Votre lieu n'a pas encore de site, ou il a vieilli ? [Site-Château.fr](https://site-chateau.fr/) conçoit des sites pour les châteaux, domaines et lieux de réception. Un exemple dans le Var : [le site du Château de la Présidente](https://site-chateau.fr/realisations/chateau-de-la-presidente).
+
+## Et ensuite
+
+Un site ne suffit pas s'il n'est pas vu. Multipliez les portes d'entrée : votre fiche Google, Instagram, et les annuaires spécialisés. [Référencez votre lieu sur L'Édition](/referencer-mon-lieu) : la fiche est gratuite pendant le lancement, et vous suivez dans votre espace le nombre de couples qui la consultent et demandent vos coordonnées. Pour le reste, nos [conseils pour attirer plus de couples](/journal/attirer-couples-lieu-reception-mariage) complètent ce guide.
+`,
+    faq: [
+      {
+        q: 'Un lieu de réception a-t-il besoin de son propre site internet ?',
+        a: "Oui. Les annuaires font découvrir votre lieu, mais la plupart des couples consultent ensuite votre site pour vérifier les espaces, la capacité et les prix avant de vous contacter. C'est aussi votre principale chance d'apparaître sur Google pour le nom de votre commune.",
+      },
+      {
+        q: 'Quelles informations mettre sur le site d’un lieu de mariage ?',
+        a: "La capacité en intérieur et en extérieur, un prix de départ et ce qu'il comprend, l'hébergement, les espaces de cérémonie, de cocktail et de dîner, l'accès, des photos de vrais mariages et un formulaire de demande qui demande la date et le nombre d'invités.",
+      },
+      {
+        q: 'Qui peut créer le site de mon château ou de mon domaine ?',
+        a: "Une agence spécialisée connaît les attentes des couples et les réglages qui comptent pour Google. Notre studio partenaire [Site-Château.fr](https://site-chateau.fr/) conçoit des sites pour les châteaux, domaines et lieux de réception.",
       },
     ],
   },
