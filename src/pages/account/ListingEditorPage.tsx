@@ -22,6 +22,7 @@ import { paths } from '../../routes';
 import { KeyFigures, Tags } from '../../components/VenueListItem';
 import { Photo } from '../../components/Photo';
 import { PortfolioOffer } from '../../components/PortfolioOffer';
+import { SiteChateauLine } from '../../components/SiteChateauOffer';
 
 const MAX_PHOTOS = 8;
 const VAR_WIDE = 'Tout le Var';
@@ -685,6 +686,7 @@ export default function ListingEditorPage() {
                   placeholder="www.votre-site.fr"
                   className={fieldClass}
                 />
+                {isVenue && <SiteChateauLine placement="editeur-fiche" />}
               </label>
               <label className={labelClass}>
                 Instagram <span className="font-normal text-muted">(facultatif)</span>

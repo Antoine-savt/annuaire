@@ -1,6 +1,7 @@
 import { categoryLabel, findVendorCategory } from '../vendors';
 import { paths } from '../paths';
 import { site } from '../site';
+import { siteChateauUrl } from '../components/SiteChateauOffer';
 
 /*
  * Prospecting in /admin ("Prospection" tab): venues and vendors to call and e-mail so they create
@@ -195,6 +196,14 @@ export function mailTemplates(p: Prospect, signature: string): MailTemplate[] {
       ? `\n\nSi vous n'avez pas encore de portfolio, ${site.name} peut aussi le créer pour vous, à tarif réduit pour les professionnels référencés.`
       : '';
 
+  // Venues without a website: the partner studio can build one.
+  const website =
+    p.kind === 'lieu' && !p.website.trim()
+      ? `
+
+Et si votre lieu n'a pas encore de site internet, notre studio partenaire Site-Chateau.fr conçoit des sites pour les châteaux, domaines et lieux de réception : ${siteChateauUrl('mail-prospection')}`
+      : '';
+
   const subjectName = p.name || site.name;
 
   return [
@@ -208,7 +217,7 @@ Suite à notre appel, voici ${linkFor}
 
 ${link}
 
-${benefits}${portfolio}
+${benefits}${portfolio}${website}
 
 Je reste disponible pour toute question, ou pour vous aider à remplir la fiche.
 
@@ -227,7 +236,7 @@ Nous serions ravis de vous y présenter. Voici ${linkFor}
 
 ${link}
 
-${benefits}${portfolio}
+${benefits}${portfolio}${website}
 
 Je peux aussi vous appeler pour en parler quelques minutes, à votre convenance.
 

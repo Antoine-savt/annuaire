@@ -32,6 +32,7 @@ import { forgetPro, rememberPro } from '../../lib/proHint';
 import { Link, useRouter } from '../../router';
 import { paths } from '../../routes';
 import { PricingNotice } from '../../components/PricingNotice';
+import { SiteChateauCard } from '../../components/SiteChateauOffer';
 import { Photo } from '../../components/Photo';
 import { SignOutButton } from '../../components/SignOutButton';
 
@@ -570,6 +571,7 @@ export default function AccountPage() {
         </div>
         <aside className="space-y-6 lg:pt-14">
           <PricingNotice />
+          {(profile?.intents.includes('lieu') || listings.some((l) => l.type === 'lieu')) && <SiteChateauCard placement="compte" />}
           <div className={cardClass}>
             <h3 className="font-sans text-lg font-semibold text-ink">Sécurité et compte</h3>
             {passwordAccount && (

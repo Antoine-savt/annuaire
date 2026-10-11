@@ -4,6 +4,7 @@ import { venuesInZone, zones } from '../data';
 import { site } from '../site';
 import { vendorCategories } from '../vendors';
 import { useLang, usePaths, useT } from '../i18n/lang';
+import { siteChateauUrl } from './SiteChateauOffer';
 
 export function Footer() {
   const lang = useLang();
@@ -88,6 +89,13 @@ export function Footer() {
               <li><Link href={paths.referencer} hrefLang={proLang} className="font-semibold text-white transition-colors hover:text-white/80">{t('Référencer mon lieu', 'List your venue (in French)')}</Link></li>
               <li><Link href={`${p.prestataires}#referencer`} className="transition-colors hover:text-white">{t('Référencer mon activité', 'List your vendor business')}</Link></li>
               <li><Link href={paths.login} hrefLang={proLang} className="transition-colors hover:text-white">{t('Espace professionnel', 'For professionals (in French)')}</Link></li>
+              {lang === 'fr' && (
+                <li>
+                  <a href={siteChateauUrl('pied-de-page')} target="_blank" rel="noopener" className="transition-colors hover:text-white">
+                    Création de site pour lieux de réception
+                  </a>
+                </li>
+              )}
               <li><Link href={p.confidentialite} className="transition-colors hover:text-white">{t('Confidentialité', 'Privacy')}</Link></li>
               <li><Link href={paths.terms} hrefLang={proLang} className="transition-colors hover:text-white">{t('Conditions professionnels', 'Terms for professionals (in French)')}</Link></li>
               {site.contactEmail && (

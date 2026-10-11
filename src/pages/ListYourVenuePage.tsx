@@ -8,6 +8,7 @@ import { site } from '../site';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Faq } from '../components/Faq';
 import { PricingNotice } from '../components/PricingNotice';
+import { SiteChateauCard, SiteChateauLine } from '../components/SiteChateauOffer';
 import { SelfServeCta, signupHref } from '../components/SelfServeCta';
 
 const benefits = [
@@ -139,6 +140,7 @@ export function ListYourVenuePage() {
           </Link>
           .
         </p>
+        <SiteChateauCard placement="referencer" className="mt-8 max-w-3xl" />
       </section>
 
       <section id="formulaire" aria-labelledby="formulaire-titre" className="border-t border-line bg-sage-soft/60">
@@ -246,6 +248,7 @@ export function ListYourVenuePage() {
                 <label className={labelClass}>
                   Site web {optional}
                   <input type="url" value={form.website} onChange={(e) => update({ website: e.target.value })} placeholder="https://" className={fieldClass} />
+                  <SiteChateauLine placement="formulaire-referencement" />
                 </label>
               </div>
 
