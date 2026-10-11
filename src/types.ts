@@ -70,6 +70,8 @@ export interface Vendor {
   photos?: string[];
   /** Account that manages this listing. */
   ownerUid?: string;
+  /** Last update of a listing from a professional account (milliseconds), for the sitemap. */
+  updatedAt?: number;
 }
 
 /** Who a couple asks contact details for: a venue or a vendor. */
@@ -190,6 +192,8 @@ export interface Venue {
   budget: Budget | null;
   /** Account that manages this listing (venues created or claimed by their owner). */
   ownerUid?: string;
+  /** Last update of a listing from a professional account (milliseconds), for the sitemap. */
+  updatedAt?: number;
   /** True for directory venues whose photos are stock images, not the venue itself. */
   illustrative?: boolean;
 }

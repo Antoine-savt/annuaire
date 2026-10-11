@@ -8,7 +8,7 @@ const root = path.resolve(import.meta.dirname, '..');
 const dist = path.join(root, 'dist');
 const ssrDir = path.join(root, '.ssr');
 
-const { render, allPaths, lastModified, unlistedPaths, site, prepareCatalog, catalogFor } = await import(
+const { render, allPaths, sitemapFor, unlistedPaths, site, prepareCatalog, catalogFor } = await import(
   pathToFileURL(path.join(ssrDir, 'entry-server.js')).href
 );
 // Listings published from professional accounts get their own static pages too.
@@ -59,13 +59,32 @@ for (const entry of known) {
 }
 
 if (site.url) {
-  const today = new Date().toISOString().slice(0, 10);
-  const urls = paths
-    .map((p) => `  <url><loc>${site.url}${p}</loc><lastmod>${lastModified(p) ?? today}</lastmod></url>`)
-    .join('\n');
+  // One <url> per page, with its real last edit (no date when unknown rather than "today"), the same page
+  // in the other language (hreflang, on both sides as Google requires) and its own photos.
+  const xml = (value) => value.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+  const urls = paths.map((p) => {
+    const { lastmod, alternates, images } = sitemapFor(p);
+    const lines = [`    <loc>${xml(site.url + p)}</loc>`];
+    if (lastmod) lines.push(`    <lastmod>${lastmod}</lastmod>`);
+    if (alternates.fr && alternates.en) {
+      lines.push(
+        `    <xhtml:link rel="alternate" hreflang="fr" href="${xml(site.url + alternates.fr)}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="en" href="${xml(site.url + alternates.en)}"/>`,
+        `    <xhtml:link rel="alternate" hreflang="x-default" href="${xml(site.url + alternates.fr)}"/>`,
+      );
+    }
+    for (const image of images) {
+      lines.push(`    <image:image><image:loc>${xml(image.loc)}</image:loc><image:title>${xml(image.title)}</image:title></image:image>`);
+    }
+    return ['  <url>', ...lines, '  </url>'].join('\n');
+  });
   fs.writeFileSync(
     path.join(dist, 'sitemap.xml'),
-    `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls}\n</urlset>\n`,
+    `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml" xmlns:image="http://www.google.com/schemas/sitemap-image/1.1">
+${urls.join('\n')}
+</urlset>
+`,
   );
 }
 fs.writeFileSync(

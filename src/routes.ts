@@ -215,14 +215,59 @@ function faqPage(items: FaqItem[]) {
   };
 }
 
-/** Last modification date of a page, for the sitemap. */
-export function lastModified(path: string): string | undefined {
+/**
+ * Last edit of the content written in the code (curated venues, areas, vendor categories, fixed pages).
+ * Change it when editing that content: search engines trust a sitemap whose dates only move when pages do.
+ */
+const CURATED_UPDATED = '2026-10-12';
+
+const isoDay = (ms?: number) => (ms ? new Date(ms).toISOString().slice(0, 10) : undefined);
+const latest = (dates: (string | undefined)[]) => dates.filter((d): d is string => !!d).sort().reverse()[0];
+const venueDate = (v: Venue) => isoDay(v.updatedAt) ?? CURATED_UPDATED;
+const vendorDate = (v: Vendor) => isoDay(v.updatedAt) ?? CURATED_UPDATED;
+const articleDate = (a: Article) => a.updated ?? a.date;
+
+export interface SitemapEntry {
+  lastmod?: string;
+  /** Same page in each language (hreflang). */
+  alternates: Partial<Record<Lang, string>>;
+  /** Photos of the page, for Google Images. */
+  images: { loc: string; title: string }[];
+}
+
+/** What the sitemap says about a page: real last edit, other language, own photos. */
+export function sitemapEntry(path: string): SitemapEntry {
+  const lang = langOf(path);
   const route = matchRoute(path);
-  if (route.name === 'article') return route.article.updated ?? route.article.date;
-  if (route.name === 'journal') {
-    return articlesIn(langOf(path)).map((a) => a.updated ?? a.date).sort().reverse()[0];
+  const alternates = { fr: routePath(route, 'fr'), en: routePath(route, 'en') };
+  const entry = (lastmod: string | undefined, images: SitemapEntry['images'] = []) => ({ lastmod, alternates, images });
+  switch (route.name) {
+    case 'home':
+      return entry(latest([...venues.map(venueDate), ...articlesIn(lang).map(articleDate)]));
+    case 'venue': {
+      const v = route.venue;
+      // Curated venues show illustrative stock photos: only real photos of the venue are declared.
+      const photos = v.illustrative ? [] : v.gallery.map((id) => ({ loc: photoUrl(id, 1600), title: v.nom_du_lieu }));
+      return entry(venueDate(v), photos);
+    }
+    case 'zone':
+      return entry(latest([CURATED_UPDATED, ...venuesInZone(route.zone.slug).map(venueDate)]));
+    case 'journal':
+      return entry(latest(articlesIn(lang).map(articleDate)));
+    case 'article':
+      return entry(articleDate(route.article), [{ loc: imgUrl(route.article.image, 1200), title: route.article.title }]);
+    case 'prestataires':
+      return entry(latest([CURATED_UPDATED, ...vendors.map(vendorDate)]));
+    case 'vendor':
+      return entry(latest([CURATED_UPDATED, ...vendorsIn(route.category.slug).map(vendorDate)]));
+    case 'vendorPage': {
+      const v = route.vendor;
+      const photos = v.ownerUid ? (v.photos ?? []).map((url) => ({ loc: photoUrl(url, 1600), title: v.name })) : [];
+      return entry(vendorDate(v), photos);
+    }
+    default:
+      return entry(CURATED_UPDATED);
   }
-  return undefined;
 }
 
 function venueList(list: Venue[], lang: Lang) {

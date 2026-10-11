@@ -58,6 +58,7 @@ export function listingToVenue(l: ListingDoc): Venue {
     hasAccommodation: l.sleeps > 0,
     budget: budgetFor(l.priceFrom),
     ownerUid: l.ownerUid,
+    updatedAt: l.updatedAt,
     illustrative: false,
   };
 }
@@ -82,6 +83,7 @@ export function listingToVendor(l: ListingDoc): Vendor {
     description: l.description,
     photos: l.photos,
     ownerUid: l.ownerUid,
+    updatedAt: l.updatedAt,
   };
 }
 

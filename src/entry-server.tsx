@@ -2,7 +2,7 @@ import { StrictMode } from 'react';
 import { renderToString } from 'react-dom/server';
 import App from './App';
 import { Router } from './router';
-import { allPaths, getSeo, headTags, lastModified, matchRoute, unlistedPaths } from './routes';
+import { allPaths, getSeo, headTags, matchRoute, sitemapEntry, unlistedPaths } from './routes';
 import { site } from './site';
 import { catalogSnapshot, initCatalog } from './catalog';
 import { toListingDoc } from './lib/listings';
@@ -10,7 +10,13 @@ import { vendorId } from './vendorListings';
 import { setContentLanguage } from './i18n/content';
 import { langOf } from './i18n/lang';
 
-export { allPaths, lastModified, site, unlistedPaths };
+export { allPaths, site, unlistedPaths };
+
+/** Sitemap details of a page, with the content in the page's language (titles of the photos). */
+export function sitemapFor(path: string) {
+  setContentLanguage(langOf(path));
+  return sitemapEntry(path);
+}
 
 /** Render one path to static HTML plus its head tags (used by scripts/prerender.mjs). */
 export function render(path: string) {
