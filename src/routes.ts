@@ -190,6 +190,12 @@ export interface Seo {
 // The hero photo is served locally, so it can only be shared when the public URL is known.
 const DEFAULT_IMAGE = site.url ? absoluteUrl('/images/sortie-ceremonie-mariage.jpg') : imgUrl(photos.ceremonyAisle, 1200);
 
+/** Absolute URL of a photo for search engines and sharing: photos served from public/ get the site's address. */
+function seoPhoto(id: string, width: number): string {
+  const url = photoUrl(id, width);
+  return url.startsWith('/') && !url.startsWith('//') ? absoluteUrl(url) : url;
+}
+
 function breadcrumb(items: { name: string; path: string }[]) {
   return {
     '@context': 'https://schema.org',
@@ -246,8 +252,8 @@ export function sitemapEntry(path: string): SitemapEntry {
       return entry(latest([...venues.map(venueDate), ...articlesIn(lang).map(articleDate)]));
     case 'venue': {
       const v = route.venue;
-      // Curated venues show illustrative stock photos: only real photos of the venue are declared.
-      const photos = v.illustrative ? [] : v.gallery.map((id) => ({ loc: photoUrl(id, 1600), title: v.nom_du_lieu }));
+      // Curated venues without their own photos show illustrative stock photos: only real photos of the venue are declared.
+      const photos = v.illustrative ? [] : v.gallery.map((id) => ({ loc: seoPhoto(id, 1600), title: v.nom_du_lieu }));
       return entry(venueDate(v), photos);
     }
     case 'zone':
@@ -262,7 +268,7 @@ export function sitemapEntry(path: string): SitemapEntry {
       return entry(latest([CURATED_UPDATED, ...vendorsIn(route.category.slug).map(vendorDate)]));
     case 'vendorPage': {
       const v = route.vendor;
-      const photos = v.ownerUid ? (v.photos ?? []).map((url) => ({ loc: photoUrl(url, 1600), title: v.name })) : [];
+      const photos = v.ownerUid ? (v.photos ?? []).map((url) => ({ loc: seoPhoto(url, 1600), title: v.name })) : [];
       return entry(vendorDate(v), photos);
     }
     default:
@@ -343,7 +349,7 @@ export function getSeo(route: Route, path: string): Seo {
       const area = zoneHref(v.zone, lang);
       return {
         ...base,
-        image: photoUrl(v.image, 1200),
+        image: seoPhoto(v.image, 1200),
         title: withBrand(
           t(
             `${v.nom_du_lieu} : mariage ${inCommune(v.commune)} (${regionOf(v)})`,
@@ -362,7 +368,7 @@ export function getSeo(route: Route, path: string): Seo {
             '@type': 'EventVenue',
             name: v.nom_du_lieu,
             description: v.description,
-            image: photoUrl(v.image, 1200),
+            image: seoPhoto(v.image, 1200),
             address: {
               '@type': 'PostalAddress',
               addressLocality: v.commune,
@@ -383,7 +389,7 @@ export function getSeo(route: Route, path: string): Seo {
       const s = list.length > 1;
       return {
         ...base,
-        image: list[0] ? photoUrl(list[0].image, 1200) : DEFAULT_IMAGE,
+        image: list[0] ? seoPhoto(list[0].image, 1200) : DEFAULT_IMAGE,
         title: t(`Lieux de mariage ${z.where} (Var) | ${site.name}`, `Wedding venues ${z.where} (Var) | ${site.name}`),
         description: t(
           `${list.length} lieu${s ? 'x' : ''} de réception pour un mariage ${z.where} (Var) : capacités, prix, hébergement et conseils pour choisir.`,
@@ -545,7 +551,7 @@ export function getSeo(route: Route, path: string): Seo {
 
     case 'vendorPage': {
       const { vendor: v, category: c } = route;
-      const image = v.image ? photoUrl(v.image, 1200) : photoUrl(c.image, 1200);
+      const image = v.image ? seoPhoto(v.image, 1200) : seoPhoto(c.image, 1200);
       return {
         ...base,
         image,

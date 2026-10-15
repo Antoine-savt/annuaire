@@ -99,12 +99,16 @@ export function HomePage({ filters, onFiltersChange }: HomePageProps) {
 
   const results = useMemo(() => {
     const q = normalize(filters.query.trim());
-    return venues.filter((v) => {
+    const found = venues.filter((v) => {
       const haystack = normalize(
         `${v.nom_du_lieu} ${v.commune} ${v.zone.name} ${v.type_de_cadre} ${v.summary} ${v.tags.join(' ')} ${v.description}`,
       );
       return (!q || haystack.includes(q)) && (!filters.zone || (filters.zone === OUTSIDE_VAR ? !!v.zone.department : v.zone.slug === filters.zone)) && matches(v, filters);
     });
+    if (!q) return found;
+    // Venues named after the search come first, then those in the town searched; the rest keeps the ranking.
+    const closeness = (v: Venue) => (normalize(v.nom_du_lieu).includes(q) ? 0 : normalize(v.commune).includes(q) ? 1 : 2);
+    return [...found].sort((a, b) => closeness(a) - closeness(b));
     // The venues' text is rewritten in the page language (src/i18n/content.ts), hence `lang`.
   }, [filters, venues, lang]);
 

@@ -120,7 +120,6 @@ export function Footer() {
               '. Prices and capacities are indicative: please confirm them with each venue.',
             )}
           </p>
-          <p>{t("Photos d'illustration : Unsplash.", 'Illustrative photos: Unsplash.')}</p>
         </div>
       </div>
     </footer>

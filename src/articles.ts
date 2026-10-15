@@ -15,7 +15,7 @@ export const articles: Article[] = [
     title: 'Organiser son mariage dans le Var : le guide complet',
     category: 'Organisation',
     date: '2026-09-10',
-    updated: '2026-10-10',
+    updated: '2026-10-13',
     excerpt:
       "Choisir son secteur, fixer le budget, comparer les lieux, réserver au bon moment : toutes les étapes pour organiser un mariage dans le Var, des vignobles de la Dracénie au littoral.",
     image: photos.gardenCeremony,
@@ -62,7 +62,7 @@ Côté budget, distinguez trois types d'offres :
 - le **forfait mariage**, qui regroupe lieu, repas, boissons et parfois mobilier, facturé au nombre d'invités ;
 - la **privatisation avec séjour**, qui inclut l'hébergement de vos proches sur plusieurs nuits.
 
-Dans notre sélection, les prix de départ publiés vont d'environ 1 000 € pour une location de salle à plus de 37 000 € pour une privatisation avec séjour. Notre article sur [le prix d'un lieu de mariage dans le Var](/journal/prix-lieu-mariage-var) détaille ce que recouvrent ces chiffres.
+Dans notre sélection, les prix de départ publiés vont de moins de 4 000 € pour une location à 34 000 € pour une privatisation avec séjour. Notre article sur [le prix d'un lieu de mariage dans le Var](/journal/prix-lieu-mariage-var) détaille ce que recouvrent ces chiffres.
 
 ## Les critères pour comparer les lieux
 
@@ -133,13 +133,14 @@ Visitez toujours le lieu avant de signer, idéalement à l'heure prévue pour vo
   },
   {
     slug: 'prix-lieu-mariage-var',
-    description: "Prix des lieux de mariage dans le Var : de 1 000 € à plus de 37 000 € selon la formule. Ce qui est inclus, les frais à prévoir et nos conseils.",
+    description: "Prix des lieux de mariage dans le Var : de moins de 4 000 € à plus de 34 000 € selon la formule. Ce qui est inclus, les frais à prévoir et nos conseils.",
     title: 'Combien coûte un lieu de mariage dans le Var ?',
     seoTitle: 'Prix d’un lieu de mariage dans le Var',
     category: 'Budget',
     date: '2026-10-06',
+    updated: '2026-10-13',
     excerpt:
-      "Location seule, forfait par invité ou privatisation avec séjour : les prix de départ vont de 1 000 € à plus de 37 000 € dans notre sélection. Ce que recouvrent ces chiffres, les frais à anticiper et nos conseils pour payer moins.",
+      "Location seule, forfait par invité ou privatisation avec séjour : les prix de départ vont de moins de 4 000 € à 34 000 € dans notre sélection. Ce que recouvrent ces chiffres, les frais à anticiper et nos conseils pour payer moins.",
     image: photos.tableRed,
     imageAlt: 'Table de banquet dressée pour un dîner de mariage',
     venues: ['chateau-sainte-roseline', 'bastide-saint-julien', 'chateau-mentone', 'chateau-de-nans', 'chateau-de-robernier', 'domaine-rocabella'],
@@ -164,20 +165,19 @@ Le lieu est privatisé sur plusieurs jours, avec l'hébergement d'une partie des
 
 Voici les prix de départ publiés par les lieux, du plus accessible au plus élevé. Ils sont indicatifs et à confirmer auprès de chaque lieu.
 
-- [Château Sainte Roseline](/lieux/chateau-sainte-roseline) : location de salle de 1 000 € à 1 800 €, forfait mariage dès 7 000 €
-- [Bastide Saint Julien](/lieux/bastide-saint-julien) : location estimée dès 3 000 €
-- [Domaine Souviou](/lieux/domaine-souviou) : location estimée dès 3 000 €
+- [Château Maravenne](/lieux/chateau-maravenne) : location de 3 900 € à 6 800 € selon la date
 - [Château de Font du Broc](/lieux/chateau-de-font-du-broc) : dès 3 960 € pour la location d'une salle vide
 - [Château Mentone](/lieux/chateau-mentone) : location seule dès 4 000 €, forfaits de 365 € à 465 € par personne
-- [Château Maravenne](/lieux/chateau-maravenne) : location des espaces dès 4 300 €
-- [Château de Nans](/lieux/chateau-de-nans) : privatisation de 4 760 € à 6 800 € selon le jour
-- [Château de Robernier](/lieux/chateau-de-robernier) : dès 10 500 €
-- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) : location estimée dès 12 500 €
-- [Château Pimõ](/lieux/chateau-pimo) : dès 15 000 € pour une privatisation de trois jours
-- [Château de Berne](/lieux/chateau-de-berne) : formule dès 19 500 €, privatisation totale dès 95 500 €
-- [Domaine Rocabella](/lieux/domaine-rocabella) : dès 37 440 €, séjour de deux nuits pour 32 personnes inclus
+- [Château de Nans](/lieux/chateau-de-nans) : privatisation de 4 760 € à 6 800 € HT selon le jour
+- [Château Sainte Roseline](/lieux/chateau-sainte-roseline) : location du lieu à 5 600 €, menus dès 95 € par invité
+- [Château Pimõ](/lieux/chateau-pimo) : location de 5 980 € à 11 980 € selon la saison et le nombre de nuits
+- [Bastide Saint Julien](/lieux/bastide-saint-julien) : location de 6 000 € à 12 500 € selon la période
+- [Château de Robernier](/lieux/chateau-de-robernier) : dès 10 500 € en haute saison
+- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) : location dès 13 530 €
+- [Château de Berne](/lieux/chateau-de-berne) : formule mariage dès 24 500 € TTC avec 10 chambres pour 2 nuits, privatisation totale dès 95 500 €
+- [Domaine Rocabella](/lieux/domaine-rocabella) : dès 34 000 € pour une privatisation avec séjour, forfaits de 43 758 € à 99 000 € pour 120 invités
 
-Trois lieux communiquent leurs tarifs uniquement sur devis : le [Château Saint Ange](/lieux/chateau-saint-ange), [La Bastide de Montferrat](/lieux/bastide-de-montferrat) et [Les Pins Penchés](/lieux/les-pins-penches), qui affichent des menus à partir de 70 € par personne.
+Deux lieux affichent plutôt un prix par personne : [La Bastide de Montferrat](/lieux/bastide-de-montferrat), avec une formule tout compris dès 139 € par personne, et [Les Pins Penchés](/lieux/les-pins-penches), avec des formules de 120 € à 200 € par personne pour 60 invités minimum. Le [Château Saint Ange](/lieux/chateau-saint-ange) et le [Domaine Souviou](/lieux/domaine-souviou) communiquent leurs tarifs uniquement sur devis.
 
 > Attention : comparer ces prix n'a de sens qu'à prestations égales. Une salle vide louée 4 000 € peut revenir plus cher, au final, qu'un forfait tout compris.
 
@@ -221,7 +221,7 @@ Sur notre annuaire, vous pouvez indiquer un budget minimum et maximum pour [filt
     faq: [
       {
         q: 'Quel budget prévoir pour un lieu de mariage dans le Var ?',
-        a: "Dans notre sélection, les prix de départ vont d'environ 1 000 € pour une salle à plus de 37 000 € pour une privatisation avec séjour. La plupart des locations de domaines se situent entre 3 000 € et 15 000 €, hors traiteur.",
+        a: "Dans notre sélection, les prix de départ vont de moins de 4 000 € pour une location à 34 000 € pour une privatisation avec séjour. La plupart des locations de domaines se situent entre 3 000 € et 15 000 €, hors traiteur.",
       },
       {
         q: 'Le prix d’un lieu de mariage inclut-il le repas ?',
@@ -239,10 +239,11 @@ Sur notre annuaire, vous pouvez indiquer un budget minimum et maximum pour [filt
   },
   {
     slug: 'lieu-mariage-hebergement-var',
-    description: "Les lieux de mariage du Var qui logent vos invités, de 8 chambres à 86 couchages, et comment organiser un mariage sur tout un week-end.",
+    description: "Les lieux de mariage du Var qui logent vos invités, de 5 chambres à 90 couchages, et comment organiser un mariage sur tout un week-end.",
     title: 'Lieux de mariage avec hébergement dans le Var',
     category: 'Lieux',
     date: '2026-10-01',
+    updated: '2026-10-13',
     excerpt:
       "Loger ses invités sur place évite les trajets de nuit et prolonge la fête. Les lieux de notre sélection qui disposent de chambres ou de gîtes, du plus grand au plus intime, et comment organiser un mariage sur tout un week-end.",
     image: photos.villaArches,
@@ -262,18 +263,17 @@ Dans le Var, beaucoup de lieux de réception sont isolés dans les vignes, la fo
 
 Voici les lieux de notre sélection classés selon le nombre de personnes qu'ils peuvent loger, d'après les informations publiées.
 
-- [Domaine Rocabella](/lieux/domaine-rocabella), au Pradet : environ 86 couchages dans 28 suites et chambres, face à la mer
+- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), à Villecroze : jusqu'à 90 couchages, dans 8 suites et gîtes pour 50 personnes et des tipis pour 40
+- [Domaine Rocabella](/lieux/domaine-rocabella), au Pradet : de 32 à 80 personnes dans ses villas, face à la mer
 - [Château Mentone](/lieux/chateau-mentone), à Saint-Antonin-du-Var : jusqu'à 54 couchages en chambres et gîtes
-- [Château Pimõ](/lieux/chateau-pimo), à Draguignan : 50 couchages en suites et tentes nomades
-- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), à Villecroze : environ 50 couchages dans 7 à 8 gîtes
 - [La Bastide de Montferrat](/lieux/bastide-de-montferrat) : 40 couchages dans 20 chambres
 - [Château de Nans](/lieux/chateau-de-nans), à Nans-les-Pins : jusqu'à 36 couchages
 - [Château de Berne](/lieux/chateau-de-berne), à Lorgues : un hôtel cinq étoiles de 34 chambres et des villas
-- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : 29 personnes en chambres d'hôtes et gîtes
-- [Château de Robernier](/lieux/chateau-de-robernier), à Montfort-sur-Argens : 15 chambres, 24 couchages
-- [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle : 10 chambres, 24 couchages
+- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : 25 couchages dans 5 chambres d'hôtes et 3 appartements
+- [Château de Robernier](/lieux/chateau-de-robernier), à Montfort-sur-Argens : 12 chambres, 24 couchages
+- [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle : 5 chambres, 12 couchages
+- [Château Pimõ](/lieux/chateau-pimo), à Draguignan : 5 chambres et suites, 10 couchages
 - [Château Saint Ange](/lieux/chateau-saint-ange), à Draguignan : 8 chambres
-- [Château Sainte Roseline](/lieux/chateau-sainte-roseline), aux Arcs-sur-Argens : un appartement privé et 7 chambres via forfait
 
 Dans notre annuaire, le filtre « Hébergement sur place » permet d'indiquer le nombre de personnes à loger pour [ne voir que les lieux adaptés](/#lieux).
 
@@ -285,11 +285,11 @@ Au [Château de Berne](/lieux/chateau-de-berne) ou au [Domaine Rocabella](/lieux
 
 ### La grande maison de famille
 
-À [La Bastide de Montferrat](/lieux/bastide-de-montferrat), le lieu est privatisé et l'esprit est celui d'une grande maison partagée. Idéal pour un mariage chaleureux entre proches.
+À [La Bastide de Montferrat](/lieux/bastide-de-montferrat), le lieu est privatisé et l'esprit est celui d'une grande maison partagée. Idéal pour un mariage chaleureux entre proches. Le [Château Pimõ](/lieux/chateau-pimo), demeure du XVIIIe siècle privatisée avec ses cinq chambres et suites, joue la même carte en plus intime.
 
 ### Les gîtes et l'hébergement insolite
 
-Au [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), les invités dorment dans des gîtes autour de l'ancienne ferme templière. Au [Château Pimõ](/lieux/chateau-pimo), des tentes nomades complètent les suites pour un week-end façon glamping chic.
+Au [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), les invités dorment dans des suites et des gîtes autour de l'ancienne ferme templière, et des tipis complètent l'hébergement pour un week-end façon glamping chic, jusqu'à 90 personnes au total.
 
 ## Qui loger sur place ?
 
@@ -311,12 +311,12 @@ Vérifiez avec le lieu ce qui est inclus : nombre de nuits, horaires d'arrivée 
 
 ## Si le lieu ne loge pas vos invités
 
-Le [Château de Font du Broc](/lieux/chateau-de-font-du-broc), [Les Pins Penchés](/lieux/les-pins-penches) et le [Domaine Souviou](/lieux/domaine-souviou) n'ont pas d'hébergement sur place. Ce n'est pas rédhibitoire : préparez une liste d'hôtels, de gîtes et de chambres d'hôtes proches, réservez des blocs de chambres à l'avance et organisez des navettes en fin de soirée. Les Pins Penchés, à Toulon, profitent de l'offre hôtelière de la ville.
+Le [Château de Font du Broc](/lieux/chateau-de-font-du-broc), [Les Pins Penchés](/lieux/les-pins-penches) et le [Domaine Souviou](/lieux/domaine-souviou) n'ont pas d'hébergement sur place, et le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) ne dispose que d'un appartement privé pour les mariés, le soir des noces. Ce n'est pas rédhibitoire : préparez une liste d'hôtels, de gîtes et de chambres d'hôtes proches, réservez des blocs de chambres à l'avance et organisez des navettes en fin de soirée. Les Pins Penchés, à Toulon, profitent de l'offre hôtelière de la ville.
 `,
     faq: [
       {
         q: 'Quel lieu de mariage du Var loge le plus d’invités ?',
-        a: "Dans notre sélection, le [Domaine Rocabella](/lieux/domaine-rocabella) (environ 86 couchages), le [Château Mentone](/lieux/chateau-mentone) (jusqu'à 54), puis le [Château Pimõ](/lieux/chateau-pimo) et le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) (environ 50 chacun).",
+        a: "Dans notre sélection, le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) (jusqu'à 90 couchages, tipis compris), le [Domaine Rocabella](/lieux/domaine-rocabella) (de 32 à 80 personnes), puis le [Château Mentone](/lieux/chateau-mentone) (jusqu'à 54) et [La Bastide de Montferrat](/lieux/bastide-de-montferrat) (40).",
       },
       {
         q: 'Faut-il loger tous les invités sur place ?',
@@ -334,6 +334,7 @@ Le [Château de Font du Broc](/lieux/chateau-de-font-du-broc), [Les Pins Penché
     title: 'Organiser une cérémonie laïque en Provence',
     category: 'Organisation',
     date: '2026-09-24',
+    updated: '2026-10-13',
     excerpt:
       "Sans valeur légale mais libre dans sa forme, la cérémonie laïque est devenue un moment central des mariages en Provence. Déroulé, officiant, durée, lieux et plan B : le guide pour l'organiser dans le Var.",
     image: photos.hillsideArch,
@@ -378,7 +379,7 @@ Beaucoup de lieux du Var disposent d'un espace pensé pour la cérémonie :
 - un **théâtre de verdure** face aux îles d'Or au [Château Maravenne](/lieux/chateau-maravenne) ;
 - une **scène au-dessus d'un lac** au [Château de Berne](/lieux/chateau-de-berne) ;
 - un **cloître du XIIe siècle** au [Château Sainte Roseline](/lieux/chateau-sainte-roseline) ;
-- une **oliveraie** de plus de 1 000 arbres au [Château Saint Ange](/lieux/chateau-saint-ange), ou de 7 000 arbres au [Domaine Souviou](/lieux/domaine-souviou) ;
+- une **oliveraie** d'un millier d'arbres au [Château Saint Ange](/lieux/chateau-saint-ange), ou de 7 000 arbres au [Domaine Souviou](/lieux/domaine-souviou) ;
 - une **cour intérieure historique** au [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde).
 
 Lors de la visite, regardez où sera le soleil à l'heure de la cérémonie : ni les invités ni vous ne devez l'avoir dans les yeux.
@@ -430,6 +431,7 @@ Pour la suite de l'organisation, notre [guide complet](/journal/organiser-mariag
     seoTitle: 'Lieux de mariage pour 200 invités et plus dans le Var',
     category: 'Lieux',
     date: '2026-09-17',
+    updated: '2026-10-13',
     excerpt:
       "Organiser une réception pour 200, 300 ou 400 invités demande un lieu capable de tous les accueillir assis, même en cas de pluie. Les lieux de notre sélection qui le permettent, et la logistique à prévoir.",
     image: photos.chandelierHall,
@@ -441,19 +443,18 @@ Au-delà de 200 invités, le choix du lieu se resserre. Il ne suffit pas d'un gr
 ## Les lieux pour plus de 300 invités
 
 - [Château de Font du Broc](/lieux/chateau-de-font-du-broc), aux Arcs-sur-Argens : de 100 à 650 invités assis, avec une salle équestre monumentale et une cave à barriques. C'est le plus grand de notre sélection. Pas d'hébergement sur place.
-- [Château Sainte Roseline](/lieux/chateau-sainte-roseline), aux Arcs-sur-Argens : de 30 à 400 invités, dont 250 dans la Salle des Vendanges.
 - [Les Pins Penchés](/lieux/les-pins-penches), à Toulon : jusqu'à 400 personnes assises, face à la rade.
-- [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle : de 160 à 350 invités, avec un grand salon de 500 m².
-- [Château de Robernier](/lieux/chateau-de-robernier), à Montfort-sur-Argens : de 100 à 300 invités en intérieur, et bien davantage en extérieur dans la cour d'honneur.
+- [Château de Robernier](/lieux/chateau-de-robernier), à Montfort-sur-Argens : jusqu'à 300 invités assis en intérieur, et jusqu'à 1 000 en cocktail en extérieur, dans la cour d'honneur.
 
 ## Les lieux pour 200 à 300 invités
 
 - [Domaine Souviou](/lieux/domaine-souviou), au Beausset : de 20 à 300 invités, sur l'esplanade et dans le Pavillon du Moulin.
-- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), à Villecroze : jusqu'à 250 invités, avec environ 50 couchages.
-- [Château Mentone](/lieux/chateau-mentone), à Saint-Antonin-du-Var : de 60 à 250 invités, dîner dans la Magnanerie.
+- [Château Sainte Roseline](/lieux/chateau-sainte-roseline), aux Arcs-sur-Argens : de 50 à 250 invités assis, dont 220 dans la Salle des Vendanges, et 350 en cocktail.
+- [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle : jusqu'à 250 invités assis, avec un salon de 490 m² qui peut en recevoir 400.
+- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), à Villecroze : de 10 à 250 invités, avec jusqu'à 90 couchages.
+- [Château Mentone](/lieux/chateau-mentone), à Saint-Antonin-du-Var : de 60 à 200 invités assis et 250 en cocktail, dîner dans la Magnanerie.
 - [Château de Nans](/lieux/chateau-de-nans), à Nans-les-Pins : jusqu'à 250 invités dans l'Orangerie.
-- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : jusqu'à 250 invités en extérieur, 160 assis en intérieur.
-- [Château de Berne](/lieux/chateau-de-berne), à Lorgues : de 120 à 200 invités.
+- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : jusqu'à 160 invités assis et 250 en cocktail dans la salle voûtée.
 
 Pour voir tous les lieux adaptés à votre nombre exact d'invités, utilisez les [filtres de l'annuaire](/#lieux).
 
@@ -497,7 +498,7 @@ Avec beaucoup d'invités, le traiteur devient le premier poste de dépense, loin
     faq: [
       {
         q: 'Quel lieu du Var peut accueillir plus de 300 invités pour un mariage ?',
-        a: "Dans notre sélection : le [Château de Font du Broc](/lieux/chateau-de-font-du-broc) (jusqu'à 650 assis), le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) et [Les Pins Penchés](/lieux/les-pins-penches) (jusqu'à 400), et la [Bastide Saint Julien](/lieux/bastide-saint-julien) (jusqu'à 350).",
+        a: "Dans notre sélection : le [Château de Font du Broc](/lieux/chateau-de-font-du-broc) (jusqu'à 650 assis), [Les Pins Penchés](/lieux/les-pins-penches) (jusqu'à 400 assis) et le [Château de Robernier](/lieux/chateau-de-robernier) (jusqu'à 300 assis en intérieur et 1 000 en cocktail en extérieur).",
       },
       {
         q: 'Comment organiser le transport de 200 invités ?',
@@ -616,7 +617,7 @@ Pour une vue d'ensemble, notre [guide complet](/journal/organiser-mariage-var-gu
     seoTitle: 'Châteaux viticoles pour un mariage dans le Var',
     category: 'Lieux',
     date: '2026-08-28',
-    updated: '2026-10-10',
+    updated: '2026-10-13',
     excerpt:
       "Chais voûtés, allées de platanes et vignes à perte de vue : les domaines viticoles varois sont des cadres naturels pour un mariage. Tour d'horizon des adresses qui accueillent des réceptions, et des points à vérifier.",
     image: photos.wineGrapes,
@@ -649,11 +650,11 @@ La [Dracénie](/secteurs/dracenie) réunit une grande partie des domaines vitico
 
 ### Château de Berne, à Lorgues
 
-Le [Château de Berne](/lieux/chateau-de-berne) est un domaine viticole certifié bio, membre de Relais & Châteaux. Son offre clé en main s'appuie sur un hôtel cinq étoiles de 34 chambres et des villas. Il accueille de 120 à 200 invités, avec une « Scène sur l'eau » perchée au-dessus d'un lac pour les cérémonies. C'est l'une des adresses les plus haut de gamme de notre sélection, avec des formules à partir de 19 500 €.
+Le [Château de Berne](/lieux/chateau-de-berne) est un domaine viticole certifié bio, membre de Relais & Châteaux. Son offre clé en main s'appuie sur un hôtel cinq étoiles de 34 chambres et des villas. Il accueille jusqu'à 120 invités, avec une « Scène sur l'eau » perchée au-dessus d'un lac pour les cérémonies. C'est l'une des adresses les plus haut de gamme de notre sélection, avec une formule mariage à partir de 24 500 € TTC, dix chambres pour deux nuits comprises.
 
 ### Château Sainte Roseline, aux Arcs-sur-Argens
 
-Cru Classé des Côtes de Provence, le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) se distingue par son cloître du XIIe siècle classé monument historique, sa grande allée de platanes et sa Salle des Barriques. Il reçoit de 30 à 400 invités, et sa Salle des Vendanges en accueille jusqu'à 250. Les salles se louent à partir de 1 000 €, et un forfait mariage existe à partir de 7 000 €.
+Cru Classé des Côtes de Provence, le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) se distingue par son cloître du XIIe siècle classé monument historique, sa grande allée de platanes et sa Salle des Barriques. Il reçoit de 50 à 250 invités assis, dont 220 dans sa Salle des Vendanges, et 350 en cocktail. Selon les tarifs publiés sur Mariages.net, le lieu se loue 5 600 €, avec des menus à partir de 95 € par invité.
 
 ### Château de Font du Broc, aux Arcs-sur-Argens
 
@@ -661,17 +662,17 @@ Domaine viticole doublé d'un haras, le [Château de Font du Broc](/lieux/chatea
 
 ### Château Pimõ, à Draguignan
 
-À l'opposé, le [Château Pimõ](/lieux/chateau-pimo) mise sur l'intimité : jusqu'à 50 invités, logés dans des suites et des tentes nomades au milieu des vignes et des oliviers, pour une privatisation de trois jours.
+À l'opposé, le [Château Pimõ](/lieux/chateau-pimo) mise sur l'intimité : une demeure du XVIIIe siècle privatisée en entier au milieu des vignes et des oliviers, pour 30 à 120 invités, avec une roseraie, une tente nomade pour le dîner et un spa dans l'ancien lavoir. Ses cinq chambres et suites offrent dix couchages, et la location va de 5 980 € à 11 980 € selon la saison et le nombre de nuits.
 
 ## En Provence Verte, entre vignes et forêts
 
 ### Château Mentone, à Saint-Antonin-du-Var
 
-Conduit en biodynamie, le [Château Mentone](/lieux/chateau-mentone) accueille les dîners dans sa Magnanerie et loge jusqu'à 54 personnes. Il reçoit de 60 à 250 invités, en location seule à partir de 4 000 € ou en forfaits par personne.
+Certifié bio depuis 2008, le [Château Mentone](/lieux/chateau-mentone) accueille les dîners dans sa Magnanerie et loge jusqu'à 54 personnes. Il reçoit de 60 à 200 invités assis et 250 en cocktail, en location seule à partir de 4 000 € ou en forfaits de 365 € à 465 € par personne.
 
 ### Château de Robernier, à Montfort-sur-Argens
 
-Avec ses tours du XVIe siècle au milieu des vignes, le [Château de Robernier](/lieux/chateau-de-robernier) a tout du château de conte de fées. Sa cour d'honneur et ses salons sont faits pour les grandes réceptions : de 100 à 300 invités en intérieur, et bien davantage en extérieur.
+Avec ses tours du XVIe siècle au milieu des vignes, le [Château de Robernier](/lieux/chateau-de-robernier) a tout du château de conte de fées. Sa cour d'honneur et ses salons sont faits pour les grandes réceptions : jusqu'à 300 invités assis en intérieur, et jusqu'à 1 000 en cocktail en extérieur.
 
 ## Sur le littoral, la vigne face à la mer
 
@@ -704,7 +705,7 @@ Pour comparer les budgets, consultez notre article sur [le prix d'un lieu de mar
     faq: [
       {
         q: 'Quel est le prix d’un mariage dans un château viticole du Var ?',
-        a: "Dans notre sélection, les locations de salle commencent autour de 1 000 €, les forfaits mariage autour de 7 000 €, et les offres haut de gamme avec hôtel dépassent 19 000 €. Le traiteur et l'hébergement s'ajoutent selon les formules.",
+        a: "Dans notre sélection, les locations commencent autour de 4 000 €, les forfaits mariage se comptent par personne (de 365 € à 465 € au Château Mentone), et les offres haut de gamme avec hôtel commencent à 24 500 €. Le traiteur et l'hébergement s'ajoutent selon les formules.",
       },
       {
         q: 'Peut-on se marier dans un domaine viticole pendant les vendanges ?',
@@ -716,7 +717,7 @@ Pour comparer les budgets, consultez notre article sur [le prix d'un lieu de mar
       },
       {
         q: 'Quel domaine viticole du Var peut accueillir un grand mariage ?',
-        a: "Le [Château de Font du Broc](/lieux/chateau-de-font-du-broc) (jusqu'à 650 invités assis), le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) (jusqu'à 400) et le [Château de Robernier](/lieux/chateau-de-robernier) (jusqu'à 300 en intérieur) sont les plus grands de notre sélection.",
+        a: "Le [Château de Font du Broc](/lieux/chateau-de-font-du-broc) (jusqu'à 650 invités assis), le [Château de Robernier](/lieux/chateau-de-robernier) (jusqu'à 300 assis en intérieur, 1 000 en cocktail), le [Domaine Souviou](/lieux/domaine-souviou) (jusqu'à 300) et le [Château Sainte Roseline](/lieux/chateau-sainte-roseline) (jusqu'à 250 assis, 350 en cocktail) sont les plus grands de notre sélection.",
       },
     ],
   },
@@ -727,7 +728,7 @@ Pour comparer les budgets, consultez notre article sur [le prix d'un lieu de mar
     seoTitle: 'Mariage en bord de mer dans le Var : les lieux',
     category: 'Inspiration',
     date: '2026-08-15',
-    updated: '2026-10-10',
+    updated: '2026-10-13',
     excerpt:
       "Du Pradet à La Londe-les-Maures, le littoral varois offre des lieux de réception face à la Méditerranée. Villa Belle Époque, château dominant la rade ou domaine viticole : comment choisir, et les contraintes à anticiper.",
     image: photos.coastVillage,
@@ -742,19 +743,19 @@ Le Var compte plus de 400 kilomètres de côtes, îles comprises. De Bandol à S
 
 ## La villa face à la mer
 
-Au Pradet, le [Domaine Rocabella](/lieux/domaine-rocabella) est une villa Belle Époque avec piscines, jardins et accès à des criques privées. Son offre inclut l'hébergement des proches, avec environ 86 couchages : c'est le choix d'un mariage-séjour de plusieurs jours, pour 150 invités au maximum. Le budget est en conséquence, à partir d'environ 37 000 € avec deux nuits pour 32 personnes.
+Au Pradet, le [Domaine Rocabella](/lieux/domaine-rocabella) est une villa Belle Époque avec piscines, jardins et accès à des criques privées. Son offre inclut l'hébergement des proches, de 32 à 80 personnes : c'est le choix d'un mariage-séjour de plusieurs jours, pour 150 invités au maximum. Le budget est en conséquence : à partir de 34 000 €, et des forfaits de 43 758 € à 99 000 € pour 120 invités.
 
 **Pour qui ?** Les couples qui veulent réunir leurs proches tout un week-end, dans un cadre privatisé, sans gérer de transport entre le lieu et les hôtels.
 
 ## Le château qui domine la rade
 
-À Toulon, [Les Pins Penchés](/lieux/les-pins-penches) sont un château du XVIIe siècle entouré d'un parc de palmiers qui descend vers la mer. Le lieu reçoit jusqu'à 400 invités assis et propose des menus à partir de 70 € par personne, les frais de location étant établis sur devis. Il n'y a pas d'hébergement sur place, mais la ville offre de nombreux hôtels.
+À Toulon, [Les Pins Penchés](/lieux/les-pins-penches) sont un château du XVIIe siècle entouré d'un parc de palmiers qui descend vers la mer. Le lieu reçoit de 60 à 400 invités assis et propose des formules de 120 € à 200 € par personne, pour 60 invités minimum, les frais de privatisation variant selon la date. Il n'y a pas d'hébergement sur place, mais la ville offre de nombreux hôtels.
 
 **Pour qui ?** Les grands mariages, qui ont besoin d'espace et d'une restauration intégrée, avec une vue spectaculaire sur la rade.
 
 ## Le domaine viticole avec vue
 
-Pour un compromis entre l'esprit provençal et l'horizon marin, le [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures, propose un théâtre de verdure avec vue sur Porquerolles et des salles voûtées pour le dîner. Il reçoit jusqu'à 160 invités assis, 250 en extérieur, et loge 29 personnes en chambres d'hôtes et gîtes.
+Pour un compromis entre l'esprit provençal et l'horizon marin, le [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures, propose un théâtre de verdure avec vue sur Porquerolles et des salles voûtées pour le dîner. Il reçoit de 20 à 160 invités assis, 250 en cocktail, et loge 25 personnes en chambres d'hôtes et appartements.
 
 **Pour qui ?** Les couples qui veulent la mer en toile de fond sans renoncer aux vignes et à la pierre.
 
@@ -787,7 +788,7 @@ Le coucher de soleil sur la mer est un moment fort. Selon l'orientation du lieu,
     faq: [
       {
         q: 'Combien coûte un mariage en bord de mer dans le Var ?',
-        a: "Dans notre sélection, comptez des menus à partir de 70 € par personne aux [Pins Penchés](/lieux/les-pins-penches), une location à partir de 4 300 € au [Château Maravenne](/lieux/chateau-maravenne), et à partir d'environ 37 000 € pour une privatisation avec séjour au [Domaine Rocabella](/lieux/domaine-rocabella).",
+        a: "Dans notre sélection, comptez des formules de 120 € à 200 € par personne aux [Pins Penchés](/lieux/les-pins-penches), une location de 3 900 € à 6 800 € au [Château Maravenne](/lieux/chateau-maravenne), et à partir de 34 000 € pour une privatisation avec séjour au [Domaine Rocabella](/lieux/domaine-rocabella).",
       },
       {
         q: 'Peut-on faire une cérémonie laïque sur une plage du Var ?',

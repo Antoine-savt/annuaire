@@ -172,12 +172,23 @@ export interface Venue {
   type_de_cadre: string;
   fourchette_de_prix: string;
   element_differenciant: string;
+  /** Practical details for couples, shown on the venue page when known. */
+  espaces?: string;
+  ceremonie_laique?: string;
+  traiteur?: string;
+  /** Length and terms of the hire (weekend, nights, opening season). */
+  duree_location?: string;
+  fin_de_soiree?: string;
+  acces?: string;
+  stationnement?: string;
   contact: string;
   sources: string;
   image: string;
   imageAlt: string;
-  /** Five photos: the main image first, then illustrative extras. */
+  /** The venue's photos, the cover first (illustrative stock photos for curated venues without their own). */
   gallery: string[];
+  /** Where the venue's photos come from, e.g. its website "chateauberne.com"; unset when the venue supplied them. */
+  photoCredit?: string;
 
   /** Smallest group the venue accepts, when published. */
   minGuests: number | null;

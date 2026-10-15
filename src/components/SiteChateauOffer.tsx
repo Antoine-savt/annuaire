@@ -16,7 +16,7 @@ export const siteChateauUrl = (placement: string, page = '') =>
  * Websites built by Site-Chateau.fr for venues listed on L'Édition (host names, without "www.").
  * Their venue page credits the studio. Add a host here when a client's venue is in the directory.
  */
-const CLIENT_HOSTS: string[] = [];
+const CLIENT_HOSTS: string[] = ['lemasdefontbelle.fr', 'chateau-de-la-presidente.fr'];
 
 /** Whether a venue's website was built by Site-Chateau.fr. */
 export function isSiteChateauClient(website: string): boolean {

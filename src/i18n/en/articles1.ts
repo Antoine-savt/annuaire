@@ -52,7 +52,7 @@ When it comes to budget, there are three types of offer:
 - the **wedding package**, which combines venue, meal, drinks and sometimes furniture, charged per guest;
 - **exclusive use with a stay**, which includes accommodation for your loved ones over several nights.
 
-In our selection, published starting prices range from around €1,000 for hiring a room to over €37,000 for exclusive use with a stay. Our article on [wedding venue prices in the Var](/en/journal/wedding-venue-prices-var) explains what lies behind these figures.
+In our selection, published starting prices range from under €4,000 for venue hire to €34,000 for exclusive use with a stay. Our article on [wedding venue prices in the Var](/en/journal/wedding-venue-prices-var) explains what lies behind these figures.
 
 ## What to compare between venues
 
@@ -127,9 +127,9 @@ Always visit the venue before signing, ideally at the time planned for your cere
     seoTitle: 'Wedding venue prices in the Var',
     category: 'Budget',
     excerpt:
-      'Venue hire only, a per-guest package or exclusive use with a stay: starting prices in our selection range from €1,000 to over €37,000. What these figures cover, the extra costs to plan for and our tips for paying less.',
+      'Venue hire only, a per-guest package or exclusive use with a stay: starting prices in our selection range from under €4,000 to €34,000. What these figures cover, the extra costs to plan for and our tips for paying less.',
     description:
-      'Wedding venue prices in the Var: from €1,000 to over €37,000 depending on the formula. What is included, extra costs to plan for and our advice.',
+      'Wedding venue prices in the Var: from under €4,000 to over €34,000 depending on the formula. What is included, extra costs to plan for and our advice.',
     imageAlt: 'Banquet table laid for a wedding dinner',
     body: `
 It is often the first question couples ask, and the hardest to answer: how much does a wedding venue cost in the Var? The answer depends less on how prestigious the venue is than on what the price includes. Here is how to read the rates, based on the prices published by the venues in our selection.
@@ -152,20 +152,19 @@ The venue is yours exclusively for several days, with accommodation for some of 
 
 Here are the starting prices published by the venues, from the most affordable to the highest. They are a guide only and should be confirmed with each venue.
 
-- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline): room hire from €1,000 to €1,800, wedding package from €7,000
-- [Bastide Saint Julien](/en/venues/bastide-saint-julien): hire estimated from €3,000
-- [Domaine Souviou](/en/venues/domaine-souviou): hire estimated from €3,000
+- [Château Maravenne](/en/venues/chateau-maravenne): hire from €3,900 to €6,800 depending on the date
 - [Château de Font du Broc](/en/venues/chateau-de-font-du-broc): from €3,960 to hire an empty room
 - [Château Mentone](/en/venues/chateau-mentone): venue hire only from €4,000, packages from €365 to €465 per person
-- [Château Maravenne](/en/venues/chateau-maravenne): hire of the spaces from €4,300
-- [Château de Nans](/en/venues/chateau-de-nans): exclusive use from €4,760 to €6,800 depending on the day
-- [Château de Robernier](/en/venues/chateau-de-robernier): from €10,500
-- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde): hire estimated from €12,500
-- [Château Pimõ](/en/venues/chateau-pimo): from €15,000 for three days' exclusive use
-- [Château de Berne](/en/venues/chateau-de-berne): packages from €19,500, full exclusive use from €95,500
-- [Domaine Rocabella](/en/venues/domaine-rocabella): from €37,440, including a two-night stay for 32 people
+- [Château de Nans](/en/venues/chateau-de-nans): exclusive use from €4,760 to €6,800 excl. VAT depending on the day
+- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline): venue hire at €5,600, menus from €95 per guest
+- [Château Pimõ](/en/venues/chateau-pimo): hire from €5,980 to €11,980 depending on the season and the number of nights
+- [Bastide Saint Julien](/en/venues/bastide-saint-julien): hire from €6,000 to €12,500 depending on the period
+- [Château de Robernier](/en/venues/chateau-de-robernier): from €10,500 in high season
+- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde): hire from €13,530
+- [Château de Berne](/en/venues/chateau-de-berne): wedding package from €24,500 incl. VAT with 10 rooms for 2 nights, full exclusive use from €95,500
+- [Domaine Rocabella](/en/venues/domaine-rocabella): from €34,000 for exclusive use with a stay, packages from €43,758 to €99,000 for 120 guests
 
-Three venues share their rates on request only: [Château Saint Ange](/en/venues/chateau-saint-ange), [La Bastide de Montferrat](/en/venues/bastide-de-montferrat) and [Les Pins Penchés](/en/venues/les-pins-penches), which lists menus from €70 per person.
+Two venues quote a price per person instead: [La Bastide de Montferrat](/en/venues/bastide-de-montferrat), with an all-inclusive package from €139 per person, and [Les Pins Penchés](/en/venues/les-pins-penches), with packages from €120 to €200 per person for a minimum of 60 guests. [Château Saint Ange](/en/venues/chateau-saint-ange) and [Domaine Souviou](/en/venues/domaine-souviou) share their rates on request only.
 
 > A word of caution: comparing these prices only makes sense for like-for-like services. An empty room hired for €4,000 can end up costing more than an all-inclusive package.
 
@@ -209,7 +208,7 @@ On our directory, you can enter a minimum and maximum budget to [filter venues](
     faq: [
       {
         q: 'What budget should we plan for a wedding venue in the Var?',
-        a: 'In our selection, starting prices range from around €1,000 for a room to over €37,000 for exclusive use with a stay. Most estate hires fall between €3,000 and €15,000, excluding catering.',
+        a: 'In our selection, starting prices range from under €4,000 for venue hire to €34,000 for exclusive use with a stay. Most estate hires fall between €3,000 and €15,000, excluding catering.',
       },
       {
         q: 'Does the price of a wedding venue include the meal?',
@@ -232,7 +231,7 @@ On our directory, you can enter a minimum and maximum budget to [filter venues](
     excerpt:
       'Having your guests stay on site spares them night-time drives and keeps the party going. The venues in our selection with rooms or holiday cottages, from the largest to the most intimate, and how to plan a wedding over a whole weekend.',
     description:
-      'Var wedding venues that can accommodate your guests, from 8 rooms to 86 beds, and how to plan a wedding over a whole weekend.',
+      'Var wedding venues that can accommodate your guests, from 5 rooms to 90 beds, and how to plan a wedding over a whole weekend.',
     imageAlt: 'Arcaded bastide and swimming pool at nightfall',
     body: `
 In the Var, many reception venues are tucked away among vineyards, forests or hills. That is a large part of their charm, but it raises a practical question: where will your guests sleep? A venue with on-site accommodation solves the problem and turns the day into a weekend. Here are the venues in our selection that put guests up, and our advice for getting organised.
@@ -248,18 +247,17 @@ In the Var, many reception venues are tucked away among vineyards, forests or hi
 
 Here are the venues in our selection ranked by the number of people they can accommodate, based on the information they publish.
 
-- [Domaine Rocabella](/en/venues/domaine-rocabella), in Le Pradet: around 86 beds in 28 suites and rooms, facing the sea
+- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), in Villecroze: up to 90 beds, in 8 suites and holiday cottages for 50 people and tipis for 40
+- [Domaine Rocabella](/en/venues/domaine-rocabella), in Le Pradet: 32 to 80 people in its villas, facing the sea
 - [Château Mentone](/en/venues/chateau-mentone), in Saint-Antonin-du-Var: up to 54 beds in rooms and holiday cottages
-- [Château Pimõ](/en/venues/chateau-pimo), in Draguignan: 50 beds in suites and nomad tents
-- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), in Villecroze: around 50 beds in 7 to 8 holiday cottages
 - [La Bastide de Montferrat](/en/venues/bastide-de-montferrat): 40 beds in 20 rooms
 - [Château de Nans](/en/venues/chateau-de-nans), in Nans-les-Pins: up to 36 beds
 - [Château de Berne](/en/venues/chateau-de-berne), in Lorgues: a 34-room five-star hotel and villas
-- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: 29 people in guest rooms and holiday cottages
-- [Château de Robernier](/en/venues/chateau-de-robernier), in Montfort-sur-Argens: 15 rooms, 24 beds
-- [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle: 10 rooms, 24 beds
+- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: 25 beds in 5 guest rooms and 3 apartments
+- [Château de Robernier](/en/venues/chateau-de-robernier), in Montfort-sur-Argens: 12 rooms, 24 beds
+- [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle: 5 rooms, 12 beds
+- [Château Pimõ](/en/venues/chateau-pimo), in Draguignan: 5 rooms and suites, 10 beds
 - [Château Saint Ange](/en/venues/chateau-saint-ange), in Draguignan: 8 rooms
-- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline), in Les Arcs-sur-Argens: a private apartment and 7 rooms as part of a package
 
 In our directory, the "Accommodation on site" filter lets you enter the number of people to accommodate so that you [only see the venues that fit](/en#lieux).
 
@@ -271,11 +269,11 @@ At [Château de Berne](/en/venues/chateau-de-berne) or [Domaine Rocabella](/en/v
 
 ### The big family house
 
-At [La Bastide de Montferrat](/en/venues/bastide-de-montferrat), the venue is yours exclusively and the feel is that of a large shared house. Ideal for a warm wedding among close friends and family.
+At [La Bastide de Montferrat](/en/venues/bastide-de-montferrat), the venue is yours exclusively and the feel is that of a large shared house. Ideal for a warm wedding among close friends and family. [Château Pimõ](/en/venues/chateau-pimo), an 18th-century house hired exclusively with its five rooms and suites, offers the same spirit on a more intimate scale.
 
 ### Holiday cottages and unusual stays
 
-At [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), guests sleep in holiday cottages around the former Templar farm. At [Château Pimõ](/en/venues/chateau-pimo), nomad tents complement the suites for a chic glamping-style weekend.
+At [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), guests sleep in suites and holiday cottages around the former Templar farm, and tipis round out the accommodation for a chic glamping-style weekend, for up to 90 people in all.
 
 ## Who should stay on site?
 
@@ -297,12 +295,12 @@ Check with the venue what is included: number of nights, check-in and check-out 
 
 ## If the venue does not accommodate your guests
 
-[Château de Font du Broc](/en/venues/chateau-de-font-du-broc), [Les Pins Penchés](/en/venues/les-pins-penches) and [Domaine Souviou](/en/venues/domaine-souviou) have no accommodation on site. That is not a deal-breaker: prepare a list of nearby hotels, holiday cottages and B&Bs, book blocks of rooms in advance and arrange shuttles at the end of the evening. Les Pins Penchés, in Toulon, benefits from the city's range of hotels.
+[Château de Font du Broc](/en/venues/chateau-de-font-du-broc), [Les Pins Penchés](/en/venues/les-pins-penches) and [Domaine Souviou](/en/venues/domaine-souviou) have no accommodation on site, and [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) only has a private apartment for the couple on the wedding night. That is not a deal-breaker: prepare a list of nearby hotels, holiday cottages and B&Bs, book blocks of rooms in advance and arrange shuttles at the end of the evening. Les Pins Penchés, in Toulon, benefits from the city's range of hotels.
 `,
     faq: [
       {
         q: 'Which wedding venue in the Var accommodates the most guests?',
-        a: "In our selection, [Domaine Rocabella](/en/venues/domaine-rocabella) (around 86 beds), [Château Mentone](/en/venues/chateau-mentone) (up to 54), followed by [Château Pimõ](/en/venues/chateau-pimo) and [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) (around 50 each).",
+        a: "In our selection, [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) (up to 90 beds, tipis included), [Domaine Rocabella](/en/venues/domaine-rocabella) (32 to 80 people), followed by [Château Mentone](/en/venues/chateau-mentone) (up to 54) and [La Bastide de Montferrat](/en/venues/bastide-de-montferrat) (40).",
       },
       {
         q: 'Do all the guests need to stay on site?',
@@ -362,7 +360,7 @@ Many venues in the Var have a space designed for the ceremony:
 - an **open-air theatre** facing the Îles d'Or at [Château Maravenne](/en/venues/chateau-maravenne);
 - a **stage above a lake** at [Château de Berne](/en/venues/chateau-de-berne);
 - a **12th-century cloister** at [Château Sainte Roseline](/en/venues/chateau-sainte-roseline);
-- an **olive grove** of more than 1,000 trees at [Château Saint Ange](/en/venues/chateau-saint-ange), or of 7,000 trees at [Domaine Souviou](/en/venues/domaine-souviou);
+- an **olive grove** of around 1,000 trees at [Château Saint Ange](/en/venues/chateau-saint-ange), or of 7,000 trees at [Domaine Souviou](/en/venues/domaine-souviou);
 - a **historic inner courtyard** at [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde).
 
 When you visit, check where the sun will be at the time of the ceremony: neither your guests nor you should have it in your eyes.
@@ -423,19 +421,18 @@ Beyond 200 guests, the choice of venue narrows. A large garden is not enough: yo
 ## Venues for more than 300 guests
 
 - [Château de Font du Broc](/en/venues/chateau-de-font-du-broc), in Les Arcs-sur-Argens: from 100 to 650 seated guests, with a monumental equestrian hall and a barrel cellar. It is the largest in our selection. No accommodation on site.
-- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline), in Les Arcs-sur-Argens: from 30 to 400 guests, including 250 in the Salle des Vendanges.
 - [Les Pins Penchés](/en/venues/les-pins-penches), in Toulon: up to 400 people seated, overlooking the harbour.
-- [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle: from 160 to 350 guests, with a large 500 m² salon.
-- [Château de Robernier](/en/venues/chateau-de-robernier), in Montfort-sur-Argens: from 100 to 300 guests indoors, and many more outdoors in the main courtyard.
+- [Château de Robernier](/en/venues/chateau-de-robernier), in Montfort-sur-Argens: up to 300 guests seated indoors, and up to 1,000 for drinks outdoors, in the main courtyard.
 
 ## Venues for 200 to 300 guests
 
 - [Domaine Souviou](/en/venues/domaine-souviou), in Le Beausset: from 20 to 300 guests, on the esplanade and in the Pavillon du Moulin.
-- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), in Villecroze: up to 250 guests, with around 50 beds.
-- [Château Mentone](/en/venues/chateau-mentone), in Saint-Antonin-du-Var: from 60 to 250 guests, with dinner in the Magnanerie.
+- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline), in Les Arcs-sur-Argens: from 50 to 250 seated guests, including 220 in the Salle des Vendanges, and 350 for drinks.
+- [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle: up to 250 seated guests, with a 490 m² salon that can hold 400.
+- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), in Villecroze: from 10 to 250 guests, with up to 90 beds.
+- [Château Mentone](/en/venues/chateau-mentone), in Saint-Antonin-du-Var: from 60 to 200 seated guests and 250 for drinks, with dinner in the Magnanerie.
 - [Château de Nans](/en/venues/chateau-de-nans), in Nans-les-Pins: up to 250 guests in the Orangerie.
-- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: up to 250 guests outdoors, 160 seated indoors.
-- [Château de Berne](/en/venues/chateau-de-berne), in Lorgues: from 120 to 200 guests.
+- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: up to 160 seated guests and 250 for drinks in the vaulted hall.
 
 To see every venue suited to your exact number of guests, use the [directory filters](/en#lieux).
 
@@ -479,7 +476,7 @@ With a lot of guests, the caterer becomes the biggest expense, well ahead of the
     faq: [
       {
         q: 'Which venue in the Var can host more than 300 wedding guests?',
-        a: "In our selection: [Château de Font du Broc](/en/venues/chateau-de-font-du-broc) (up to 650 seated), [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) and [Les Pins Penchés](/en/venues/les-pins-penches) (up to 400), and [Bastide Saint Julien](/en/venues/bastide-saint-julien) (up to 350).",
+        a: "In our selection: [Château de Font du Broc](/en/venues/chateau-de-font-du-broc) (up to 650 seated), [Les Pins Penchés](/en/venues/les-pins-penches) (up to 400 seated) and [Château de Robernier](/en/venues/chateau-de-robernier) (up to 300 seated indoors and 1,000 for drinks outdoors).",
       },
       {
         q: 'How do we organise transport for 200 guests?',

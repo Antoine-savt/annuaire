@@ -53,6 +53,19 @@ export function isPhotoUrl(id: string): boolean {
   return /^(https?:)?\/\//.test(id) || id.startsWith('/');
 }
 
+/** Photos of the curated venues, served from public/: each one has a 480 px wide copy named "<photo>-480.webp". */
+const LOCAL_PHOTO = /^\/images\/lieux\/.+\.webp$/;
+
+/** Responsive srcset of a curated venue's own photo, or undefined for any other photo. */
+export function localSrcSet(id: string): string | undefined {
+  return LOCAL_PHOTO.test(id) ? `${localThumb(id)} 480w, ${id} 1400w` : undefined;
+}
+
+/** 480 px wide copy of a curated venue's own photo (see localSrcSet). */
+export function localThumb(id: string): string {
+  return id.replace(/\.webp$/, '-480.webp');
+}
+
 /** URL of any photo: Unsplash ids are resized, uploaded photos are used as they are. */
 export function photoUrl(id: string, width = 1200): string {
   return isPhotoUrl(id) ? id : imgUrl(id, width);

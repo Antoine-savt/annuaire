@@ -4,7 +4,7 @@ import { Link, useRouter } from '../router';
 import { translator, useLang } from '../i18n/lang';
 import { Photo } from './Photo';
 
-function Chevron({ direction }: { direction: 'left' | 'right' }) {
+export function Chevron({ direction }: { direction: 'left' | 'right' }) {
   return (
     <svg viewBox="0 0 20 20" aria-hidden className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d={direction === 'left' ? 'M12.5 4.5 7 10l5.5 5.5' : 'M7.5 4.5 13 10l-5.5 5.5'} />
@@ -12,8 +12,11 @@ function Chevron({ direction }: { direction: 'left' | 'right' }) {
   );
 }
 
-const arrowClass =
+export const arrowClass =
   'absolute top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white';
+
+/** Photos shown in a venue's preview in the lists. */
+const PREVIEW_PHOTOS = 8;
 
 /**
  * Photo preview with arrows. After the last photo, the next click opens the full venue page.
@@ -22,7 +25,8 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
   const { navigate } = useRouter();
   const t = translator(useLang());
   const [index, setIndex] = useState(0);
-  const photos = venue.gallery;
+  // A few photos are enough to make couples want more: the venue page shows them all.
+  const photos = venue.gallery.slice(0, PREVIEW_PHOTOS);
   const last = photos.length - 1;
   const onLast = index === last;
 
@@ -46,7 +50,7 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
                   ? venue.imageAlt
                   : `${venue.nom_du_lieu}, photo ${i + 1} ${t('sur', 'of')} ${photos.length}${venue.illustrative ? t(' (illustration)', ' (illustrative)') : ''}`
               }
-              sizes="(min-width: 1280px) 420px, (min-width: 768px) 40vw, 100vw"
+              sizes="(min-width: 768px) 560px, 100vw"
               maxWidth={1200}
             />
           </div>

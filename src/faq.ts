@@ -5,6 +5,13 @@ import { formatEuros, Lang } from './i18n/lang';
 
 const lcFirst = (text: string) => text.charAt(0).toLowerCase() + text.slice(1);
 
+/** "au Château de Berne", "à la Bastide Saint Julien", "aux Pins Penchés", "à La Bastide de Montferrat". */
+function atVenue(name: string): string {
+  if (/^(Château|Domaine|Mas|Clos|Manoir|Moulin|Prieuré)/.test(name)) return `au ${name}`;
+  if (/^(Bastide|Villa|Ferme|Maison)/.test(name)) return `à la ${name}`;
+  return inCommune(name);
+}
+
 /** Questions couples ask about a venue, answered from its published data. */
 export function venueFaq(v: Venue, lang: Lang = 'fr'): FaqItem[] {
   const p = pathsFor(lang);
@@ -27,6 +34,8 @@ export function venueFaq(v: Venue, lang: Lang = 'fr'): FaqItem[] {
         q: `How much does a wedding at ${v.nom_du_lieu} cost?`,
         a: `Published indicative prices: ${lcFirst(v.fourchette_de_prix)}. Confirm them with the venue, as they depend on the date and the number of guests. Our article on [wedding venue prices in the Var](${p.article('prix-lieu-mariage-var')}) helps you compare.`,
       },
+      ...(v.traiteur ? [{ q: `Can we choose our own caterer at ${v.nom_du_lieu}?`, a: `${v.traiteur}.` }] : []),
+      ...(v.fin_de_soiree ? [{ q: `Until what time can the party go on at ${v.nom_du_lieu}?`, a: `${v.fin_de_soiree}.` }] : []),
       {
         q: `Where is ${v.nom_du_lieu}?`,
         a: area
@@ -47,15 +56,17 @@ export function venueFaq(v: Venue, lang: Lang = 'fr'): FaqItem[] {
         : `${v.nom_du_lieu} ne communique pas de capacité précise : ${lcFirst(v.capacite_accueil)}. Demandez-la directement au lieu.`,
     },
     {
-      q: `Peut-on dormir sur place à ${v.nom_du_lieu} ?`,
+      q: `Peut-on dormir sur place ${atVenue(v.nom_du_lieu)} ?`,
       a: v.hasAccommodation
         ? `Oui : ${lcFirst(v.hebergement_sur_place.replace(/^Oui\s*\(?/i, '').replace(/\)$/, ''))}. Voir aussi les [lieux avec hébergement dans le Var](${p.article('lieu-mariage-hebergement-var')}).`
         : `Non, ${v.nom_du_lieu} ne propose pas d'hébergement sur place${/hôtels? partenaires?/i.test(v.hebergement_sur_place) ? ', mais travaille avec des hôtels partenaires à proximité' : ''}. Prévoyez des hébergements proches et des navettes pour vos invités.`,
     },
     {
-      q: `Quel est le prix d'un mariage à ${v.nom_du_lieu} ?`,
+      q: `Quel est le prix d'un mariage ${atVenue(v.nom_du_lieu)} ?`,
       a: `Tarifs indicatifs publiés : ${lcFirst(v.fourchette_de_prix)}. Ils sont à confirmer auprès du lieu, selon la date et le nombre d'invités. Notre article sur [le prix d'un lieu de mariage dans le Var](${p.article('prix-lieu-mariage-var')}) aide à comparer.`,
     },
+    ...(v.traiteur ? [{ q: `Le traiteur est-il imposé ${atVenue(v.nom_du_lieu)} ?`, a: `${v.traiteur}.` }] : []),
+    ...(v.fin_de_soiree ? [{ q: `Jusqu'à quelle heure peut-on faire la fête ${atVenue(v.nom_du_lieu)} ?`, a: `${v.fin_de_soiree}.` }] : []),
     {
       q: `Où se trouve ${v.nom_du_lieu} ?`,
       a: area
@@ -141,6 +152,11 @@ export function zoneFaq(z: Zone, lang: Lang = 'fr'): FaqItem[] {
 export const homeFaq = (lang: Lang = 'fr'): FaqItem[] => {
   const p = pathsFor(lang);
   const withRooms = venues.filter((v) => v.hasAccommodation).length;
+  // Figures computed from the venues, so the answers stay true when listings change.
+  const prices = venues.map((v) => v.priceFrom).filter((n): n is number => n !== null);
+  const lowest = formatEuros(Math.min(...prices), lang);
+  const highest = formatEuros(Math.max(...prices), lang);
+  const mostBeds = Math.max(...venues.map((v) => v.sleeps));
   if (lang === 'en') {
     return [
       {
@@ -149,11 +165,11 @@ export const homeFaq = (lang: Lang = 'fr'): FaqItem[] => {
       },
       {
         q: 'How much does a wedding venue in the Var cost?',
-        a: `In our selection, starting prices range from about €1,000 for a reception room to more than €37,000 for an exclusive-use stay. See [the price breakdown](${p.article('prix-lieu-mariage-var')}).`,
+        a: `In our selection, published starting prices range from ${lowest} for venue hire to ${highest} for an exclusive-use stay. See [the price breakdown](${p.article('prix-lieu-mariage-var')}).`,
       },
       {
         q: 'Which wedding venues in the Var can host guests overnight?',
-        a: `${withRooms} venues of our selection offer accommodation on site, with up to about 86 beds. See [the venues with accommodation](${p.article('lieu-mariage-hebergement-var')}).`,
+        a: `${withRooms} venues of our selection offer accommodation on site, sleeping up to ${mostBeds} people. See [the venues with accommodation](${p.article('lieu-mariage-hebergement-var')}).`,
       },
       {
         q: 'What is the best time of year to get married in the Var?',
@@ -172,11 +188,11 @@ export const homeFaq = (lang: Lang = 'fr'): FaqItem[] => {
     },
     {
       q: 'Combien coûte un lieu de mariage dans le Var ?',
-      a: `Dans notre sélection, les prix de départ vont d'environ 1 000 € pour une salle à plus de 37 000 € pour une privatisation avec séjour. Voir [le détail des prix](${p.article('prix-lieu-mariage-var')}).`,
+      a: `Dans notre sélection, les prix de départ publiés vont de ${lowest} pour une location à ${highest} pour une privatisation avec séjour. Voir [le détail des prix](${p.article('prix-lieu-mariage-var')}).`,
     },
     {
       q: 'Quels lieux de mariage du Var logent les invités ?',
-      a: `${withRooms} lieux de notre sélection proposent un hébergement sur place, jusqu'à environ 86 couchages. Voir [les lieux avec hébergement](${p.article('lieu-mariage-hebergement-var')}).`,
+      a: `${withRooms} lieux de notre sélection proposent un hébergement sur place, jusqu'à ${mostBeds} couchages. Voir [les lieux avec hébergement](${p.article('lieu-mariage-hebergement-var')}).`,
     },
     {
       q: 'Quelle est la meilleure saison pour se marier dans le Var ?',

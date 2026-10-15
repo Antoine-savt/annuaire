@@ -1,9 +1,10 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Venue } from '../types';
 import { regionOf, venues, venueTarget, zoneHref } from '../data';
 import { translator, useLang, usePaths } from '../i18n/lang';
 import { Breadcrumbs } from '../components/Breadcrumbs';
 import { Photo } from '../components/Photo';
+import { arrowClass, Chevron } from '../components/VenueGallery';
 import { VenueGrid } from '../components/VenueGrid';
 import { KeyFigures, Tags } from '../components/VenueListItem';
 import { ContactAccess } from '../components/ContactAccess';
@@ -25,7 +26,15 @@ export function VenuePage({ venue }: { venue: Venue }) {
   const [selected, setSelected] = useState(0);
   // The gallery can change when the listing is updated while the page is open.
   const photo = Math.min(selected, venue.gallery.length - 1);
-  const setPhoto = setSelected;
+  const count = venue.gallery.length;
+  const thumbs = useRef<HTMLUListElement>(null);
+  /** Show a photo and bring its thumbnail into view in the strip. */
+  const setPhoto = (i: number) => {
+    setSelected(i);
+    const list = thumbs.current;
+    const item = list?.children[i] as HTMLElement | undefined;
+    if (list && item) list.scrollTo({ left: item.offsetLeft - (list.clientWidth - item.clientWidth) / 2, behavior: 'smooth' });
+  };
   const related = relatedVenues(venue);
   const relatedInZone = related.every((v) => v.zone.slug === venue.zone.slug);
 
@@ -42,13 +51,22 @@ export function VenuePage({ venue }: { venue: Venue }) {
     if (venue.ownerUid) void checkListing(venue.slug);
   }, [venue.slug, venue.ownerUid, refreshed]);
 
+  // The details a venue has not published are left out.
   const details = [
     { label: t('Cadre', 'Setting'), value: venue.type_de_cadre },
     { label: t('Capacité', 'Capacity'), value: venue.capacite_accueil },
+    { label: t('Espaces', 'Spaces'), value: venue.espaces },
+    { label: t('Cérémonie laïque', 'Symbolic ceremony'), value: venue.ceremonie_laique },
     { label: t('Hébergement', 'Accommodation'), value: venue.hebergement_sur_place },
+    { label: t('Traiteur', 'Catering'), value: venue.traiteur },
+    { label: t('Location', 'Hire terms'), value: venue.duree_location },
+    { label: t('Fin de soirée', 'End of the party'), value: venue.fin_de_soiree },
     { label: t('Tarifs indicatifs', 'Indicative prices'), value: venue.fourchette_de_prix },
-    { label: 'Budget', value: venue.budget ? `${venue.budget} ${t('(location)', '(venue hire)')}` : t('Sur devis', 'On request') },
-  ];
+    // Prices per guest have no hire budget band.
+    { label: 'Budget', value: venue.budget ? `${venue.budget} ${t('(location)', '(venue hire)')}` : undefined },
+    { label: t('Accès', 'Getting there'), value: venue.acces },
+    { label: t('Stationnement', 'Parking'), value: venue.stationnement },
+  ].filter((d): d is { label: string; value: string } => !!d.value);
 
   return (
     <>
@@ -59,7 +77,7 @@ export function VenuePage({ venue }: { venue: Venue }) {
       <article>
         <header className="mx-auto grid max-w-6xl items-start gap-8 px-5 pb-14 pt-8 sm:px-8 md:grid-cols-2 md:gap-12">
           <figure>
-            <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-sage-soft">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-sage-soft">
               <Photo
                 key={venue.gallery[photo]}
                 id={venue.gallery[photo]}
@@ -71,10 +89,28 @@ export function VenuePage({ venue }: { venue: Venue }) {
                 sizes="(min-width: 768px) 45vw, 100vw"
                 priority
               />
+              {count > 1 && (
+                <>
+                  <button type="button" onClick={() => setPhoto((photo - 1 + count) % count)} className={`${arrowClass} left-3`} aria-label={t('Photo précédente', 'Previous photo')}>
+                    <Chevron direction="left" />
+                  </button>
+                  <button type="button" onClick={() => setPhoto((photo + 1) % count)} className={`${arrowClass} right-3`} aria-label={t('Photo suivante', 'Next photo')}>
+                    <Chevron direction="right" />
+                  </button>
+                  <span aria-live="polite" className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white">
+                    {photo + 1} / {count}
+                  </span>
+                </>
+              )}
             </div>
-            <ul className="mt-3 grid grid-cols-5 gap-2" aria-label={t('Choisir une photo', 'Choose a photo')}>
+            {/* Five thumbnails in view, the others scroll sideways (the padding keeps the selection ring visible). */}
+            <ul
+              ref={thumbs}
+              className="relative -mx-1 mt-2 flex snap-x scroll-px-1 gap-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+              aria-label={t('Choisir une photo', 'Choose a photo')}
+            >
               {venue.gallery.map((id, i) => (
-                <li key={id}>
+                <li key={id} className="w-[calc((100%-2rem)/5)] shrink-0 snap-start">
                   <button
                     type="button"
                     onClick={() => setPhoto(i)}
@@ -92,7 +128,9 @@ export function VenuePage({ venue }: { venue: Venue }) {
             <figcaption className="mt-2 text-xs text-muted">
               {venue.illustrative
                 ? t("Photo d'illustration, ne représente pas le lieu.", 'Illustrative photo, not of the venue itself.')
-                : t('Photos fournies par le lieu.', 'Photos supplied by the venue.')}
+                : venue.photoCredit
+                  ? t(`Photos : ${venue.photoCredit}`, `Photos: ${venue.photoCredit}`)
+                  : t('Photos fournies par le lieu.', 'Photos supplied by the venue.')}
             </figcaption>
           </figure>
 

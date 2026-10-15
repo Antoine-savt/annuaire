@@ -128,11 +128,11 @@ The [Dracénie](/en/areas/dracenie) is home to many of the wine estates that wel
 
 ### Château de Berne, in Lorgues
 
-[Château de Berne](/en/venues/chateau-de-berne) is an organic-certified wine estate and a member of Relais & Châteaux. Its all-inclusive offer is built around a five-star hotel with 34 rooms, plus villas. It hosts from 120 to 200 guests, with a "Scène sur l'eau", a stage perched above a lake, for ceremonies. It is one of the most upmarket addresses in our selection, with packages from €19,500.
+[Château de Berne](/en/venues/chateau-de-berne) is an organic-certified wine estate and a member of Relais & Châteaux. Its all-inclusive offer is built around a five-star hotel with 34 rooms, plus villas. It hosts up to 120 guests, with a "Scène sur l'eau", a stage perched above a lake, for ceremonies. It is one of the most upmarket addresses in our selection, with a wedding package from €24,500 incl. VAT, including ten rooms for two nights.
 
 ### Château Sainte Roseline, in Les Arcs-sur-Argens
 
-A Cru Classé des Côtes de Provence, [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) stands out for its 12th-century cloister, a listed historic monument, its grand avenue of plane trees and its Salle des Barriques (barrel room). It welcomes from 30 to 400 guests, and its Salle des Vendanges holds up to 250. Rooms can be hired from €1,000, and there is a wedding package from €7,000.
+A Cru Classé des Côtes de Provence, [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) stands out for its 12th-century cloister, a listed historic monument, its grand avenue of plane trees and its Salle des Barriques (barrel room). It seats from 50 to 250 guests, including 220 in its Salle des Vendanges, and 350 for drinks. According to the rates published on Mariages.net, the venue is hired for €5,600, with menus from €95 per guest.
 
 ### Château de Font du Broc, in Les Arcs-sur-Argens
 
@@ -140,17 +140,17 @@ A wine estate that is also a stud farm, [Château de Font du Broc](/en/venues/ch
 
 ### Château Pimõ, in Draguignan
 
-At the other end of the scale, [Château Pimõ](/en/venues/chateau-pimo) is all about intimacy: up to 50 guests, staying in suites and nomad tents among the vines and olive trees, with the estate privatised for three days.
+At the other end of the scale, [Château Pimõ](/en/venues/chateau-pimo) is all about intimacy: an 18th-century house hired exclusively among the vines and olive trees, for 30 to 120 guests, with a rose garden, a nomad tent for dinner and a spa in the old wash house. Its five rooms and suites sleep ten, and hire ranges from €5,980 to €11,980 depending on the season and the number of nights.
 
 ## In Provence Verte, between vines and forests
 
 ### Château Mentone, in Saint-Antonin-du-Var
 
-Farmed biodynamically, [Château Mentone](/en/venues/chateau-mentone) hosts dinners in its Magnanerie and sleeps up to 54 people. It welcomes from 60 to 250 guests, with venue-only hire from €4,000 or per-person packages.
+Certified organic since 2008, [Château Mentone](/en/venues/chateau-mentone) hosts dinners in its Magnanerie and sleeps up to 54 people. It seats from 60 to 200 guests, with 250 for drinks, and offers venue-only hire from €4,000 or packages from €365 to €465 per person.
 
 ### Château de Robernier, in Montfort-sur-Argens
 
-With its 16th-century towers rising among the vines, [Château de Robernier](/en/venues/chateau-de-robernier) is every inch the fairy-tale castle. Its main courtyard and reception rooms are made for large receptions: from 100 to 300 guests indoors, and many more outdoors.
+With its 16th-century towers rising among the vines, [Château de Robernier](/en/venues/chateau-de-robernier) is every inch the fairy-tale castle. Its main courtyard and reception rooms are made for large receptions: up to 300 guests seated indoors, and up to 1,000 for drinks outdoors.
 
 ## On the coast, vines facing the sea
 
@@ -183,7 +183,7 @@ To compare budgets, see our article on [the price of a wedding venue in the Var]
     faq: [
       {
         q: 'How much does a wedding at a winery château in the Var cost?',
-        a: "In our selection, venue hire starts at around €1,000, wedding packages at around €7,000, and upmarket offers with a hotel go beyond €19,000. Catering and accommodation come on top, depending on the package.",
+        a: "In our selection, venue hire starts at around €4,000, wedding packages are priced per person (from €365 to €465 at Château Mentone), and upmarket offers with a hotel start at €24,500. Catering and accommodation come on top, depending on the package.",
       },
       {
         q: 'Can we get married on a wine estate during the grape harvest?',
@@ -195,7 +195,7 @@ To compare budgets, see our article on [the price of a wedding venue in the Var]
       },
       {
         q: 'Which wine estate in the Var can host a large wedding?',
-        a: "[Château de Font du Broc](/en/venues/chateau-de-font-du-broc) (up to 650 seated guests), [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) (up to 400) and [Château de Robernier](/en/venues/chateau-de-robernier) (up to 300 indoors) are the largest in our selection.",
+        a: "[Château de Font du Broc](/en/venues/chateau-de-font-du-broc) (up to 650 seated guests), [Château de Robernier](/en/venues/chateau-de-robernier) (up to 300 seated indoors, 1,000 for drinks), [Domaine Souviou](/en/venues/domaine-souviou) (up to 300) and [Château Sainte Roseline](/en/venues/chateau-sainte-roseline) (up to 250 seated, 350 for drinks) are the largest in our selection.",
       },
     ],
   },
@@ -218,19 +218,19 @@ The Var has more than 400 kilometres of coastline, including its islands. From B
 
 ## The villa facing the sea
 
-In Le Pradet, [Domaine Rocabella](/en/venues/domaine-rocabella) is a Belle Époque villa with swimming pools, gardens and access to private coves. Its offer includes accommodation for your nearest and dearest, with around 86 beds: it is the choice for a wedding stay over several days, for up to 150 guests. The budget reflects this, from around €37,000 with two nights for 32 people.
+In Le Pradet, [Domaine Rocabella](/en/venues/domaine-rocabella) is a Belle Époque villa with swimming pools, gardens and access to private coves. Its offer includes accommodation for your nearest and dearest, for 32 to 80 people: it is the choice for a wedding stay over several days, for up to 150 guests. The budget reflects this: from €34,000, with packages from €43,758 to €99,000 for 120 guests.
 
 **Who is it for?** Couples who want to bring their loved ones together for a whole weekend, in an exclusive-use setting, without having to organise transport between the venue and hotels.
 
 ## The château overlooking the harbour
 
-In Toulon, [Les Pins Penchés](/en/venues/les-pins-penches) is a 17th-century château surrounded by a park of palm trees that slopes down to the sea. The venue seats up to 400 guests and offers menus from €70 per person, with the hire fee quoted on request. There is no accommodation on site, but the city has plenty of hotels.
+In Toulon, [Les Pins Penchés](/en/venues/les-pins-penches) is a 17th-century château surrounded by a park of palm trees that slopes down to the sea. The venue seats from 60 to 400 guests and offers packages from €120 to €200 per person, for a minimum of 60 guests, with the exclusive-use fee depending on the date. There is no accommodation on site, but the city has plenty of hotels.
 
 **Who is it for?** Large weddings that need space and in-house catering, with a spectacular view over the harbour.
 
 ## The wine estate with a view
 
-For a balance between Provençal charm and the sea on the horizon, [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures, has an open-air theatre looking out to Porquerolles and vaulted rooms for the dinner. It seats up to 160 guests, 250 outdoors, and sleeps 29 people in guest rooms and holiday cottages.
+For a balance between Provençal charm and the sea on the horizon, [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures, has an open-air theatre looking out to Porquerolles and vaulted rooms for the dinner. It seats from 20 to 160 guests, 250 for drinks, and sleeps 25 people in guest rooms and apartments.
 
 **Who is it for?** Couples who want the sea as a backdrop without giving up vines and old stone.
 
@@ -263,7 +263,7 @@ Sunset over the sea is a highlight. Depending on which way the venue faces, the 
     faq: [
       {
         q: 'How much does a seaside wedding in the Var cost?',
-        a: "In our selection, allow menus from €70 per person at [Les Pins Penchés](/en/venues/les-pins-penches), venue hire from €4,300 at [Château Maravenne](/en/venues/chateau-maravenne), and from around €37,000 for exclusive use with a stay at [Domaine Rocabella](/en/venues/domaine-rocabella).",
+        a: "In our selection, allow packages from €120 to €200 per person at [Les Pins Penchés](/en/venues/les-pins-penches), venue hire from €3,900 to €6,800 at [Château Maravenne](/en/venues/chateau-maravenne), and from €34,000 for exclusive use with a stay at [Domaine Rocabella](/en/venues/domaine-rocabella).",
       },
       {
         q: 'Can we have a symbolic ceremony on a beach in the Var?',
