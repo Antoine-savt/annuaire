@@ -97,9 +97,9 @@ function englishSections(contact: ReactNode): Section[] {
       body: (
         <p>
           We anonymously count visits to the site, views of the listings, venues saved to “Saved venues” and
-          clicks on contact details. A random identifier is kept in your browser for the duration of the session (session
-          storage, cleared when the tab is closed) so that the same visit is not counted twice. No advertising cookies, no
-          tracking on other websites.
+          clicks on contact details. A random identifier is kept in your browser (local storage) for 30 minutes after
+          your last page, so that the same visit is not counted twice, even across several tabs. No advertising cookies,
+          no tracking on other websites.
         </p>
       ),
     },
@@ -222,9 +222,9 @@ export function PrivacyPage() {
       body: (
         <p>
           Nous comptons de façon anonyme les visites du site, les consultations des fiches, les enregistrements dans « Mes lieux » et les clics sur les coordonnées. Un
-          identifiant aléatoire est conservé dans votre navigateur le temps de la session (stockage de session, effacé à
-          la fermeture de l'onglet) pour ne pas compter deux fois la même visite. Aucun cookie publicitaire, aucun suivi
-          sur d'autres sites.
+          identifiant aléatoire est conservé dans votre navigateur (stockage local) pendant 30 minutes après votre dernière
+          page, pour ne pas compter deux fois la même visite, même sur plusieurs onglets. Aucun cookie publicitaire, aucun
+          suivi sur d'autres sites.
         </p>
       ),
     },

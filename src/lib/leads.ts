@@ -1,5 +1,5 @@
 import { firebaseConfigured, getDb, trackingEnabled } from './firebase';
-import { track } from './track';
+import { countsFor, track } from './track';
 
 export interface LeadInput {
   firstName: string;
@@ -60,7 +60,8 @@ export async function submitLead(venue: string, input: LeadInput, owner?: string
   if (input.weddingDate) lead.weddingDate = input.weddingDate.slice(0, 10);
   if (Number.isFinite(guests) && guests > 0) lead.guests = Math.min(guests, 5000);
 
-  if (trackingEnabled) {
+  // The team and the listing's own professional only test the form: nothing is recorded.
+  if (trackingEnabled && countsFor(owner)) {
     const [db, { addDoc, collection, serverTimestamp }] = await Promise.all([getDb(), import('firebase/firestore/lite')]);
     await addDoc(collection(db, 'leads'), { ...lead, at: serverTimestamp() });
     void track('lead', venue, owner);

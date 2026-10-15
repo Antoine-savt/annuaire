@@ -31,7 +31,7 @@ export function useAuthUser(): User | null | undefined {
       unsubscribe = onAuthStateChanged(auth, (u) => {
         setUser(u);
         if (!u) forgetPro();
-        else rememberPro({ name: u.displayName?.split(' ')[0] || u.email || '', photoURL: u.photoURL ?? '' }, false);
+        else rememberPro({ name: u.displayName?.split(' ')[0] || u.email || '', photoURL: u.photoURL ?? '', uid: u.uid }, false);
       });
     })();
     return () => {

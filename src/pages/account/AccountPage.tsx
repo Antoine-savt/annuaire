@@ -443,7 +443,7 @@ export default function AccountPage() {
     try {
       const [p, l, s, c] = await Promise.all([getProfile(u.uid), myListings(u.uid), myStats(u.uid), myClaims(u.uid)]);
       setProfile(p);
-      if (p) rememberPro({ name: p.firstName || u.email || '', photoURL: p.photoURL });
+      if (p) rememberPro({ name: p.firstName || u.email || '', photoURL: p.photoURL, uid: u.uid });
       setListings(l);
       setStats(s);
       setClaims(c);
@@ -565,7 +565,7 @@ export default function AccountPage() {
             isNew={profile === null}
             onSaved={(p) => {
               setProfile(p);
-              rememberPro({ name: p.firstName || user.email || '', photoURL: p.photoURL });
+              rememberPro({ name: p.firstName || user.email || '', photoURL: p.photoURL, uid: user.uid });
             }}
           />
         </div>

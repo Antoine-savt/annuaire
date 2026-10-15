@@ -295,10 +295,17 @@ export const emptyStats: ListingStats = { visitors: 0, saves: 0, opens: 0, leads
 /** Figures for each listing id, from the anonymous statistics recorded with the owner's id. */
 export async function myStats(uid: string): Promise<Map<string, ListingStats>> {
   const [db, fs] = await firestore();
-  const snap = await fs.getDocs(fs.query(fs.collection(db, 'events'), fs.where('owner', '==', uid)));
+  const [snap, settings] = await Promise.all([
+    fs.getDocs(fs.query(fs.collection(db, 'events'), fs.where('owner', '==', uid))),
+    fs.getDoc(fs.doc(db, 'settings', 'stats')).catch(() => null),
+  ]);
+  // Same first day as the dashboard: earlier figures were the team's tests.
+  const since = typeof settings?.get('since') === 'string' && settings.get('since') ? new Date(`${settings.get('since')}T00:00:00`) : null;
   const stats = new Map<string, ListingStats & { sessions: Set<string> }>();
   for (const doc of snap.docs) {
     const e = doc.data();
+    const at = e.at instanceof fs.Timestamp ? e.at.toDate() : null;
+    if (since && (!at || at < since)) continue;
     const id = String(e.venue);
     if (!stats.has(id)) stats.set(id, { ...emptyStats, sessions: new Set() });
     const s = stats.get(id)!;

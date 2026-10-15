@@ -13,6 +13,7 @@ import { ProspectsPanel } from './AdminProspectsPanel';
 import { site } from '../site';
 import { categoryLabel, vendorCategories } from '../vendors';
 import { findVendorById, vendorId, vendors } from '../vendorListings';
+import { isTeamDevice, setTeamDevice } from '../lib/track';
 
 interface EventRow {
   type: string;
@@ -188,6 +189,10 @@ export default function AdminPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [report, setReport] = useState(false);
   const [tab, setTab] = useState<Tab>('stats');
+  /** First day counted in the statistics (settings/stats), "" when everything counts; undefined while loading. */
+  const [statsSince, setStatsSince] = useState<string>();
+  const [sinceVersion, setSinceVersion] = useState(0);
+  const [teamDevice, setTeamDeviceState] = useState(false);
 
   // Admin check: an "admins/{uid}" document, or the confirmed e-mail address in "adminEmails" (Équipe tab).
   useEffect(() => {
@@ -204,6 +209,9 @@ export default function AdminPage() {
       if (!legacy && !entry) return setAccess(NO_ACCESS);
       const manage = entry?.manage === true;
       setAccess({ admin: true, manage, goals: manage || entry?.goals === true, team: manage || entry?.team === true });
+      // A browser used for the dashboard belongs to the team: its activity on the site is no longer counted.
+      setTeamDevice(true);
+      setTeamDeviceState(true);
     })();
   }, [user]);
 
@@ -215,9 +223,13 @@ export default function AdminPage() {
     void (async () => {
       try {
         const [db, fs] = await Promise.all([getDb(), import('firebase/firestore/lite')]);
-        const since = fs.Timestamp.fromDate(new Date(Date.now() - period * 86_400_000));
+        // Statistics start on the chosen day (earlier figures are kept, but were team tests), then the period.
+        const settings = await fs.getDoc(fs.doc(db, 'settings', 'stats')).catch(() => null);
+        const from = typeof settings?.get('since') === 'string' ? (settings.get('since') as string) : '';
+        setStatsSince(from);
+        const start = Math.max(period ? Date.now() - period * 86_400_000 : 0, from ? new Date(`${from}T00:00:00`).getTime() : 0);
         const ref = (name: string) =>
-          period ? fs.query(fs.collection(db, name), fs.where('at', '>=', since)) : fs.collection(db, name);
+          start ? fs.query(fs.collection(db, name), fs.where('at', '>=', fs.Timestamp.fromMillis(start))) : fs.collection(db, name);
         // Listing requests are few: always show them all, whatever the period.
         const [eventSnap, leadSnap, submissionSnap, portfolioSnap] = await Promise.all([
           fs.getDocs(ref('events')),
@@ -249,7 +261,7 @@ export default function AdminPage() {
         setLoading(false);
       }
     })();
-  }, [isAdmin, period]);
+  }, [isAdmin, period, sinceVersion]);
 
   const stats = useMemo(() => aggregate(events, leads), [events, leads]);
   const totals = useMemo(
@@ -450,8 +462,7 @@ export default function AdminPage() {
         </div>
         <p className="mt-3 text-sm text-muted">
           Visiteurs = personnes qui ont ouvert la page de la fiche (ou l'ont enregistrée depuis une liste), comptées une
-          fois par session. Taux = demandes ÷ visiteurs. Enregistrés = ajouts à la sélection « Mes lieux » d'un couple.
-          Les visites de robots et les rechargements de page ne sont pas comptés.
+          fois par visite. Taux = demandes ÷ visiteurs. Enregistrés = ajouts à la sélection « Mes lieux » d'un couple.
         </p>
       </>
     );
@@ -524,6 +535,19 @@ export default function AdminPage() {
         </div>
       )}
       {error && <p role="alert" className="mb-6 text-red-700">{error}</p>}
+      {tab === 'stats' && !report && isAdmin && firebaseConfigured && statsSince !== undefined && (
+        <StatsScope
+          since={statsSince}
+          canEdit={!!access?.manage}
+          userEmail={user?.email?.toLowerCase() ?? ''}
+          teamDevice={teamDevice}
+          onTeamDevice={(team) => {
+            setTeamDevice(team);
+            setTeamDeviceState(isTeamDevice());
+          }}
+          onSaved={() => setSinceVersion((v) => v + 1)}
+        />
+      )}
       {loading && ['stats', 'demandes', 'portfolios'].includes(tab) ? <p className="text-muted">Chargement des données…</p> : content}
     </section>
   );
@@ -781,6 +805,118 @@ function RequestsPanel({ submissions }: { submissions: SubmissionRow[] }) {
   );
 }
 
+/**
+ * What the statistics count, shown above them: the first day counted (changed by managers, to leave out
+ * the team's tests), what is excluded, and whether this browser is excluded as a team device.
+ */
+function StatsScope({
+  since,
+  canEdit,
+  userEmail,
+  teamDevice,
+  onTeamDevice,
+  onSaved,
+}: {
+  since: string;
+  canEdit: boolean;
+  userEmail: string;
+  teamDevice: boolean;
+  onTeamDevice: (team: boolean) => void;
+  onSaved: () => void;
+}) {
+  const [editing, setEditing] = useState(false);
+  const [value, setValue] = useState(since);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState('');
+  const day = (iso: string) => new Date(`${iso}T12:00:00`).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  const save = async () => {
+    setBusy(true);
+    setError('');
+    try {
+      const [db, fs] = await Promise.all([getDb(), import('firebase/firestore/lite')]);
+      await fs.setDoc(fs.doc(db, 'settings', 'stats'), { since: value, updatedBy: userEmail.slice(0, 200), updatedAt: fs.serverTimestamp() });
+      setEditing(false);
+      onSaved();
+    } catch (err) {
+      console.error(err);
+      setError('La date n’a pas pu être enregistrée.');
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  return (
+    <div className="mb-8 rounded-2xl border border-line bg-white px-5 py-4 text-[0.95rem] print:hidden">
+      <p>
+        {since ? (
+          <>
+            Statistiques comptées à partir du <strong className="font-semibold">{day(since)}</strong>.{' '}
+          </>
+        ) : (
+          'Statistiques comptées depuis la mise en ligne. '
+        )}
+        <span className="text-muted">
+          Ne sont pas comptés : l'équipe, les robots, les rechargements et les visites d'un professionnel sur sa propre
+          fiche.
+        </span>
+        {canEdit && !editing && (
+          <button type="button" onClick={() => setEditing(true)} className="ml-2 text-sm font-semibold text-pine underline underline-offset-2">
+            Changer la date de départ
+          </button>
+        )}
+      </p>
+      {editing && (
+        <div className="mt-3 flex flex-wrap items-end gap-3">
+          <label className="text-sm font-semibold">
+            Compter à partir du
+            <input
+              type="date"
+              value={value}
+              onChange={(e) => setValue(e.target.value)}
+              className="mt-1 block rounded-xl border-line bg-white px-3 py-2 text-[0.95rem] focus:border-pine focus:ring-pine/30"
+            />
+          </label>
+          <button type="button" disabled={busy} onClick={() => void save()} className="btn-primary !py-2.5 text-sm disabled:opacity-60">
+            {busy ? 'Enregistrement…' : 'Enregistrer'}
+          </button>
+          <button type="button" onClick={() => setEditing(false)} className="btn-ghost !py-2.5 text-sm">
+            Annuler
+          </button>
+          <p className="w-full text-sm text-muted">
+            Rien n'est effacé : les chiffres antérieurs sont seulement masqués, et réapparaissent si vous avancez la date.
+            Laissez vide pour tout compter.
+          </p>
+          {error && (
+            <p role="alert" className="w-full text-sm text-red-700">
+              {error}
+            </p>
+          )}
+        </div>
+      )}
+      <p className="mt-2 text-sm text-muted">
+        {teamDevice ? (
+          <>
+            <span className="font-semibold text-pine">✓ Cet appareil est exclu des statistiques.</span>{' '}
+            <button type="button" onClick={() => onTeamDevice(false)} className="underline underline-offset-2 hover:text-ink">
+              Le compter à nouveau
+            </button>
+          </>
+        ) : (
+          <>
+            Cet appareil est compté dans les statistiques.{' '}
+            <button type="button" onClick={() => onTeamDevice(true)} className="font-semibold text-pine underline underline-offset-2">
+              L'exclure
+            </button>
+          </>
+        )}{' '}
+        Sur un autre téléphone ou ordinateur, connectez-vous une fois à /admin, ou ouvrez{' '}
+        <code className="rounded bg-sage-soft px-1">ledition-mariage.fr/?stats=off</code>.
+      </p>
+    </div>
+  );
+}
+
 /** Visits of the whole site, whatever the pages seen. */
 function SiteVisits({ count }: { count: number }) {
   return (
@@ -790,8 +926,8 @@ function SiteVisits({ count }: { count: number }) {
         <p className="mt-1 font-display text-3xl tabular-nums">{count}</p>
       </div>
       <p className="max-w-xl text-sm text-muted">
-        Une visite = une personne qui arrive sur le site, quelle que soit la page, comptée une fois tant que son onglet
-        reste ouvert. Les robots, les rechargements, ce tableau de bord et l'espace professionnel ne sont pas comptés.
+        Une visite = une personne qui arrive sur le site, quelle que soit la page et le nombre d'onglets, jusqu'à 30
+        minutes sans activité. Ce tableau de bord et l'espace professionnel ne comptent pas.
       </p>
     </div>
   );
@@ -958,7 +1094,7 @@ function VenueReport({
         </div>
       )}
       <p className="mt-10 text-sm text-muted">
-        Chiffres issus des statistiques de {site.name}. Les rechargements de page et les robots ne sont pas comptés. Les
+        Chiffres issus des statistiques de {site.name}. Les robots, les rechargements de page, l'équipe de {site.name} et vos propres visites ne sont pas comptés. Les
         coordonnées des couples ne sont pas communiquées.
       </p>
     </div>

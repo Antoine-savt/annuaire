@@ -292,6 +292,17 @@ service cloud.firestore {
         && request.resource.data.updatedAt == request.time;
     }
 
+    // ---------- Settings of the statistics (first day counted), read by admins and professionals ----------
+    match /settings/{id} {
+      allow read: if signedIn();
+      allow write: if isManager()
+        && request.resource.data.keys().hasOnly(['since', 'updatedBy', 'updatedAt'])
+        && request.resource.data.since is string
+        && request.resource.data.since.matches('([0-9]{4}-[0-9]{2}-[0-9]{2})?')
+        && shortString(request.resource.data.updatedBy, 200)
+        && request.resource.data.updatedAt == request.time;
+    }
+
     // ---------- Recruitment goals and rewards: the managers and the people with "goals" only ----------
     match /goals/{id} {
       allow read: if seesGoals();

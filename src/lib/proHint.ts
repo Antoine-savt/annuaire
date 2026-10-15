@@ -9,6 +9,8 @@ import { useSyncExternalStore } from 'react';
 export interface ProHint {
   name: string;
   photoURL: string;
+  /** Account id, so a professional's visits to their own listings are not counted in its statistics. */
+  uid?: string;
 }
 
 const KEY = 'edition:pro';
@@ -47,9 +49,14 @@ function write(value: ProHint | null) {
 /** Remember the signed-in professional; "replace: false" keeps the name and photo of their profile if already known. */
 export function rememberPro(hint: ProHint, replace = true) {
   const current = read();
-  if (current && !replace) return;
-  if (current?.name === hint.name && current.photoURL === hint.photoURL) return;
-  write(hint);
+  const next = current && !replace ? { ...current, uid: hint.uid ?? current.uid } : { ...hint, uid: hint.uid ?? current?.uid };
+  if (current && current.name === next.name && current.photoURL === next.photoURL && current.uid === next.uid) return;
+  write(next);
+}
+
+/** Account id of the professional signed in on this browser, if any. */
+export function proUid(): string | undefined {
+  return read()?.uid;
 }
 
 export function forgetPro() {
