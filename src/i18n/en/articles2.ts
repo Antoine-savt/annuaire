@@ -353,4 +353,251 @@ Our [wedding planning timeline](/en/journal/wedding-planning-timeline) sets out 
       },
     ],
   },
+  'lieu-mariage-pas-cher-var': {
+    slug: 'affordable-wedding-venues-var',
+    title: 'Affordable wedding venues in the Var: the addresses under €6,000',
+    seoTitle: 'Affordable wedding venues in the Var: under €6,000',
+    category: 'Budget',
+    excerpt:
+      "A château or an estate in the Var does not have to cost a fortune. Several venues in our selection can be hired for €3,000 to €6,000, sometimes with accommodation included. The addresses, what the price covers and how to pay less.",
+    description:
+      "Venue hire from €3,000: the most affordable wedding venues in the Var, what the price includes, and our tips for cutting the bill without giving up the setting.",
+    imageAlt: 'Long wedding table set outdoors',
+    body: `
+In the Var, hiring a wedding venue costs anything from a few thousand euros to more than €30,000 for exclusive use with a stay. But many of the châteaux and estates in our selection publish a starting price under €6,000. Here are the most affordable addresses, what their price really covers, and the levers for reducing the bill.
+
+## Venues under €6,000
+
+The prices below are the starting rates published by the venues or by specialist directories. They vary with the date, the season and the number of guests: always ask for a quote.
+
+- [Château de la Présidente](/en/venues/chateau-de-la-presidente), near Brignoles: €3,000 incl. VAT for the weekend, from Friday 10 am to Sunday 6 pm, plus about €550 for cleaning. The whole estate is yours, with a 2-hectare park and up to 200 seated guests.
+- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: hire from €3,900 to €6,800 depending on the date, bridal room included, with a terrace facing the Îles d'Or.
+- [Château de Font du Broc](/en/venues/chateau-de-font-du-broc), in Les Arcs-sur-Argens: from €3,960 for an empty hall, up to 650 seated guests.
+- [Château Mentone](/en/venues/chateau-mentone), in Saint-Antonin-du-Var: venue hire only from €4,000, on an organic wine estate that sleeps up to 54.
+- [Château de Nans](/en/venues/chateau-de-nans), in Nans-les-Pins: €4,760 excl. VAT on weekdays, €5,780 on Fridays, €6,800 on Saturdays.
+- [Le Mas de Fontbelle](/en/venues/mas-de-fontbelle), in Besse-sur-Issole: €4,950 with access the day before, the marquee, the furniture and two nights in the couple's house.
+- [Château Sainte Roseline](/en/venues/chateau-sainte-roseline), in Les Arcs-sur-Argens: hire at €5,600, menus from €95 per guest.
+- [Château Pimõ](/en/venues/chateau-pimo), in Draguignan: from €5,980 to €11,980 depending on the season and the number of nights.
+
+## What the price really covers
+
+A low price is only interesting if you know what it covers. Before comparing, ask every venue the same questions:
+
+- **How long**: a day, an evening or the whole weekend? At Château de la Présidente, €3,000 covers three days; elsewhere, the same sum covers one evening.
+- **Furniture**: are tables, chairs and linen provided? At Le Mas de Fontbelle, tables and chairs are included, but not the tableware.
+- **Compulsory fees**: cleaning, a security guard, electricity. They often add €400 to €800 to the quote.
+- **Catering**: a cheap venue with a set caterer can end up costing more than a slightly dearer venue where you choose your own.
+- **Accommodation**: one or two nights included save the couple and their family a hotel bill.
+
+> To compare two venues, add up hire, compulsory fees, catering and drinks for your number of guests: that is the only figure that counts.
+
+## Five ways to pay less
+
+- **Choose a Friday or a Sunday**: at Château de Nans, a Friday costs about €1,000 excl. VAT less than a Saturday, a weekday about €2,000 less.
+- **Marry out of season**: April, May, late September and October are often cheaper than June and July, with superb light. See [which season to choose](/en/journal/best-season-wedding-var).
+- **Prefer a venue where you choose your caterer**: you can compare several caterers and opt for a buffet or food trucks.
+- **Shorten the guest list**: each guest costs on average €100 to €200 in food and drink.
+- **Keep the natural décor**: a park, olive trees or a sea view need little decoration.
+
+## For a larger budget
+
+If your budget allows, other venues offer packages that house your guests on site: [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) sleeps up to 90, [Château de Berne](/en/venues/chateau-de-berne) offers a package in its five-star hotel. Our article on [wedding venue prices in the Var](/en/journal/wedding-venue-prices-var) details every price range.
+`,
+    faq: [
+      {
+        q: 'What is the cheapest wedding venue in the Var?',
+        a: "In our selection, [Château de la Présidente](/en/venues/chateau-de-la-presidente), near Brignoles, has the lowest starting price: €3,000 incl. VAT for the whole weekend, plus about €550 for cleaning. Prices change: check them with the venue.",
+      },
+      {
+        q: 'Can you hire a château in the Var for less than €5,000?',
+        a: "Yes. [Château Maravenne](/en/venues/chateau-maravenne), [Château de Font du Broc](/en/venues/chateau-de-font-du-broc), [Château Mentone](/en/venues/chateau-mentone) and [Château de Nans](/en/venues/chateau-de-nans) publish starting prices between €3,900 and €4,760, often on weekdays or for venue hire only.",
+      },
+      {
+        q: 'What costs come on top of the hire price?',
+        a: "Cleaning, a security guard, tableware if it is not provided, catering and drinks. Ask the venue for its list of compulsory fees before signing.",
+      },
+    ],
+  },
+  'mariage-champetre-var': {
+    slug: 'country-wedding-var',
+    title: 'Country wedding in the Var: mas, bastides and estates in nature',
+    seoTitle: 'Country wedding venues in the Var, Provence',
+    category: 'Inspiration',
+    excerpt:
+      "Century-old olive trees, an illuminated marquee, dinner under the plane trees: the Var is perfect for a country wedding. Our selection of mas, bastides and estates in nature, and what to plan for an open-air celebration.",
+    description:
+      "Mas, bastides, olive groves and marquees: the most beautiful venues for a country wedding in the Var, and our tips for a successful open-air celebration.",
+    imageAlt: 'Ceremony arch on a hillside',
+    body: `
+A country wedding is a simple, warm celebration, as close to nature as possible: a ceremony under the trees, drinks on the grass, dinner under festoon lights. With its olive groves, wooded hills and old stone buildings, the Var is one of the most beautiful settings for it.
+
+## Our venues for a country wedding
+
+### Le Mas de Fontbelle, in Besse-sur-Issole
+
+Among century-old olive trees and hills, [Le Mas de Fontbelle](/en/venues/mas-de-fontbelle) hosts only one celebration at a time. The ceremony takes place in a tiered open-air amphitheatre, dinner under an illuminated 225 m² marquee for 150 guests. You choose your own caterer, and the couple sleeps on site in their own house.
+
+### Château de la Présidente, near Brignoles
+
+A 19th-century family house, [Château de la Présidente](/en/venues/chateau-de-la-presidente) is hired exclusively from Friday to Sunday. Its 2-hectare park, large pool, pond and small waterfall suit a country-style symbolic ceremony, before dinner on the 1,000 m² terrace or in the large dining room.
+
+### Domaine de la Rotonde, in Villecroze
+
+A former Templar farm in 53 hectares of woods and meadows, [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) combines a ceremony in the olive grove, drinks under century-old plane trees and dinner under a nomad tent and festoon lights. Suites, cottages and tipis sleep up to 90 guests.
+
+### Domaine Souviou, in Le Beausset
+
+Among thousand-year-old olive trees and Bandol vines, [Domaine Souviou](/en/venues/domaine-souviou) holds the ceremony at the Bancau des Millénaires, then dinner under the Pavillon du Moulin, covered and open to the terraced hillside.
+
+### Château Pimõ, in Draguignan
+
+A rose garden for the ceremony, drinks around the pool and the olive trees, dinner under a nomad tent among olive trees and vines: [Château Pimõ](/en/venues/chateau-pimo) is hired in its entirety for 30 to 120 guests.
+
+### La Bastide de Montferrat, at the gateway to the Verdon
+
+In a one-and-a-half-hectare park crossed by a river, [La Bastide de Montferrat](/en/venues/bastide-de-montferrat) holds the ceremony under a large mulberry tree, beside a waterfall. The all-inclusive package covers drinks, dinner and the evening party.
+
+## Plan B
+
+The Var is sunny, but a summer storm or a gust of mistral can disrupt an open-air party. Always check that the venue has a covered space for all your guests: a marquee, a hall, a covered terrace. Ask too how the switch works on the day, and how late you can decide.
+
+## Our tips for the atmosphere
+
+- **Lighting**: festoon lights, lanterns and candles are enough to transform a park at nightfall.
+- **Flowers**: go for seasonal flowers and olive branches, more natural and cheaper.
+- **Food**: buffets, long tables and sharing desserts suit the country spirit. A venue where you choose your caterer gives you more options.
+- **Comfort**: provide shade and water for the ceremony, blankets for the evening inland, and shuttles home.
+
+For the ceremony itself, our guide to [a symbolic ceremony in Provence](/en/journal/symbolic-wedding-ceremony-provence) explains how it unfolds and the officiant's role.
+`,
+    faq: [
+      {
+        q: 'Where can you have a country wedding in the Var?',
+        a: "In a mas, a bastide or an estate surrounded by nature: [Le Mas de Fontbelle](/en/venues/mas-de-fontbelle), [Château de la Présidente](/en/venues/chateau-de-la-presidente), [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) and [Domaine Souviou](/en/venues/domaine-souviou) offer an open-air ceremony and dinner under a marquee, a tent or plane trees.",
+      },
+      {
+        q: 'What plan B should you have for an outdoor wedding?',
+        a: "A covered space big enough for all your guests: a marquee, a reception hall or a covered terrace. Ask the venue for its indoor capacity and the latest time to decide to move inside.",
+      },
+      {
+        q: 'What is the best season for a country wedding in Provence?',
+        a: "May, June and September often offer the best balance of light, warmth and greenery. In July and August, hold the ceremony late in the afternoon, in the shade.",
+      },
+    ],
+  },
+  'mariage-petit-comite-var': {
+    slug: 'small-wedding-var',
+    title: 'Small wedding in the Var: venues for 10 to 60 guests',
+    category: 'Venues',
+    excerpt:
+      "A wedding with 20, 40 or 60 guests needs a venue on the right scale, and one that accepts small groups. The addresses in the Var with a low minimum number of guests, and our tips for an intimate wedding.",
+    description:
+      "An intimate wedding for 10 to 60 guests in the Var: the venues that accept small groups, the right packages and the pitfalls to avoid.",
+    imageAlt: 'Guests raising a toast under festoon lights',
+    body: `
+Getting married with only your closest family and friends means more time for each guest, a better-spread budget and a warmer atmosphere. But not every venue suits it: some impose a minimum number of guests, others feel empty with forty people. Here are the venues in the Var that welcome small groups.
+
+## The minimum-guest trap
+
+Many venues charge a minimum, especially when the meal is included: at [Château Mentone](/en/venues/chateau-mentone) and [Les Pins Penchés](/en/venues/les-pins-penches), the packages start at 60 guests. With 30 people, you would pay for 60. Ask at the first contact, and check whether venue hire only is possible.
+
+## Venues that accept small groups
+
+- [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde), in Villecroze: from 10 guests. Note that the partner caterer's menu is charged for a minimum of 60 adults.
+- [La Bastide de Montferrat](/en/venues/bastide-de-montferrat), at the gateway to the Verdon: an all-inclusive package for 10 to 150 guests, from €139 per person, with a 20-room hotel for exclusive use.
+- [Château Maravenne](/en/venues/chateau-maravenne), in La Londe-les-Maures: from 20 guests, with a fixed hire price that does not depend on the number of guests.
+- [Domaine Souviou](/en/venues/domaine-souviou), in Le Beausset: 20 to 300 guests, with three indoor rooms for 40 to 100 people.
+- [Château Pimõ](/en/venues/chateau-pimo), in Draguignan: a house hired exclusively for 30 to 120 guests, with five rooms and suites and a spa.
+- [Le Mas de Fontbelle](/en/venues/mas-de-fontbelle), in Besse-sur-Issole: one celebration at a time, a package that does not depend on the number of guests and a house for the couple.
+
+## A venue on the right scale
+
+For a small wedding, the size of the room matters as much as the setting. A half-empty 300-seat hall kills the atmosphere. Look instead for:
+
+- an estate hired in its entirety, so you enjoy every space without meeting other groups;
+- a room or terrace sized for your number of guests;
+- accommodation on site, to turn the wedding into a weekend among friends and family.
+
+> With fewer than 40 guests, dinner at one long table creates the feel of a family meal that round tables cannot.
+
+## The budget for a small wedding
+
+An intimate wedding is not always much cheaper: the venue hire stays the same, only food and drink go down. To make the most of it:
+
+- choose a venue with a fixed price rather than a per-person package with a high minimum;
+- put what you save into a better meal, a photographer or a weekend on site;
+- look at weekday dates, often easier to secure for a small group.
+
+Our article on [wedding venue prices in the Var](/en/journal/wedding-venue-prices-var) helps you compare packages.
+`,
+    faq: [
+      {
+        q: 'Where can you have a small wedding in the Var?',
+        a: "Several venues accept small groups: [Domaine de la Rotonde](/en/venues/domaine-de-la-rotonde) from 10 guests, [La Bastide de Montferrat](/en/venues/bastide-de-montferrat) from 10, [Château Maravenne](/en/venues/chateau-maravenne) and [Domaine Souviou](/en/venues/domaine-souviou) from 20, [Château Pimõ](/en/venues/chateau-pimo) from 30.",
+      },
+      {
+        q: 'Do wedding venues require a minimum number of guests?',
+        a: "Often, especially when the meal is included in a per-person package. At [Château Mentone](/en/venues/chateau-mentone) and [Les Pins Penchés](/en/venues/les-pins-penches), the packages start at 60 guests. Ask before visiting.",
+      },
+      {
+        q: 'Is a small wedding cheaper?',
+        a: "Food and drink cost less, but the venue hire often stays the same. A venue with a fixed price and no minimum number of guests is the best value for a small wedding.",
+      },
+    ],
+  },
+  'mariage-var-pres-aix-marseille': {
+    slug: 'wedding-var-near-aix-marseille',
+    title: 'Getting married in the Var near Aix-en-Provence and Marseille',
+    seoTitle: 'Wedding venues in the Var near Aix-en-Provence and Marseille',
+    category: 'Venues',
+    excerpt:
+      "Are your guests coming from Aix or Marseille? The west of the Var, from the Sainte-Baume to Provence Verte, offers châteaux, bastides and wine estates less than an hour's drive away.",
+    description:
+      "Getting married in the Var less than an hour from Aix-en-Provence and Marseille: the venues of Provence Verte and the Sainte-Baume, and the travel times.",
+    imageAlt: 'Hills of Provence at sunset',
+    body: `
+For many couples from Aix-en-Provence and Marseille, the Var is an obvious choice: the landscapes are just as beautiful, and the A8 motorway puts the first estates less than an hour's drive away. Here are the venues in the west of the Var that are most convenient for your guests.
+
+## The Sainte-Baume: the closest
+
+The Sainte-Baume massif marks the boundary between the two departments. At the foot of its forest, [Château de Nans](/en/venues/chateau-de-nans), in Nans-les-Pins, is around 30 minutes from Aix-en-Provence and Marseille, with the motorway less than a kilometre away. Its glass orangery seats 250 guests, and its 13 rooms sleep 36. Discover [the Sainte-Baume area](/en/areas/sainte-baume).
+
+## Provence Verte: around Brignoles
+
+Crossed by the A8, [Provence Verte](/en/areas/provence-verte) is one of the most accessible areas of the Var:
+
+- [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle: 10 minutes from the A8 and around 35 minutes from Aix-en-Provence. An 18th-century bastide facing the Montagne de la Loube, with a 490 m² salon.
+- [Château de la Présidente](/en/venues/chateau-de-la-presidente), south of Brignoles: around 45 minutes from Aix-en-Provence, the estate is hired for the whole weekend for €3,000.
+- [Le Mas de Fontbelle](/en/venues/mas-de-fontbelle), in Besse-sur-Issole: 15 minutes from A8 exit 35 (Brignoles), with a marquee for 150 guests and an open-air amphitheatre.
+- [Château Mentone](/en/venues/chateau-mentone), in Saint-Antonin-du-Var: an organic wine estate that sleeps up to 54, 20 minutes from the A8.
+- [Château de Robernier](/en/venues/chateau-de-robernier), in Montfort-sur-Argens: a 16th-century château for large celebrations, up to 300 guests.
+
+## The West Var: towards Marseille and Toulon
+
+Along the RN8, between Marseille and Toulon, [Domaine Souviou](/en/venues/domaine-souviou), in Le Beausset, welcomes 20 to 300 guests among thousand-year-old olive trees and Bandol vines. The [West Var](/en/areas/ouest-var) is also close to the sea, to extend the weekend.
+
+## Think about your guests' journey
+
+Less than an hour's drive is comfortable on the way there, much less so on the way back at 3 am. A few tips:
+
+- **Shuttles**: book a coach for the return to Aix or Marseille, and mention it in the invitation.
+- **Accommodation**: a venue that houses your family, such as Château de Nans or Château Mentone, avoids night-time drives.
+- **Traffic**: on Friday evenings and in summer, the A8 and A50 are busy. Set the ceremony time accordingly.
+- **The mistral**: the west of the Var is exposed to it. Plan a sheltered fallback for the ceremony.
+`,
+    faq: [
+      {
+        q: 'Which wedding venue in the Var is closest to Aix-en-Provence?',
+        a: "[Château de Nans](/en/venues/chateau-de-nans), in Nans-les-Pins, is around 30 minutes from Aix-en-Provence and Marseille. [Bastide Saint Julien](/en/venues/bastide-saint-julien), in La Celle, is around 35 minutes from Aix.",
+      },
+      {
+        q: 'Why get married in the Var rather than the Bouches-du-Rhône?',
+        a: "For its wine-estate châteaux, its bastides and its landscapes of hills and vines, less than an hour from Aix and Marseille along the A8. Several venues also house guests on site.",
+      },
+      {
+        q: 'How do you organise the return of guests to Marseille or Aix?',
+        a: "Book a shuttle at the end of the evening, or choose a venue that houses your guests on site. Give the shuttle time in the invitation so everyone can plan.",
+      },
+    ],
+  },
 };

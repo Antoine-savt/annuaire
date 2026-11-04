@@ -1056,6 +1056,261 @@ Un site ne suffit pas s'il n'est pas vu. Multipliez les portes d'entrée : votre
       },
     ],
   },
+  {
+    slug: 'lieu-mariage-pas-cher-var',
+    description: "Location dès 3 000 € : les lieux de mariage les plus abordables du Var, ce que comprend le prix, et nos conseils pour réduire la facture sans renoncer au cadre.",
+    title: 'Lieu de mariage pas cher dans le Var : les adresses à moins de 6 000 €',
+    seoTitle: 'Lieu de mariage pas cher dans le Var : moins de 6 000 €',
+    category: 'Budget',
+    date: '2026-11-04',
+    excerpt:
+      "Un château ou un domaine dans le Var n'est pas forcément hors de prix. Plusieurs lieux de notre sélection se louent entre 3 000 € et 6 000 €, parfois hébergement compris. Les adresses, ce que couvre le prix et les leviers pour payer moins.",
+    image: photos.longTable,
+    imageAlt: 'Longue table de mariage dressée en plein air',
+    venues: ['chateau-de-la-presidente', 'chateau-maravenne', 'mas-de-fontbelle', 'chateau-de-nans', 'chateau-mentone', 'chateau-sainte-roseline'],
+    body: `
+Dans le Var, la location d'un lieu de réception va de quelques milliers d'euros à plus de 30 000 € pour une privatisation avec séjour. Mais une bonne partie des châteaux et domaines de notre sélection publient un prix de départ inférieur à 6 000 €. Voici les adresses les plus abordables, ce que leur prix comprend vraiment, et les leviers pour alléger la facture.
+
+## Les lieux à moins de 6 000 €
+
+Les prix ci-dessous sont les tarifs de départ publiés par les lieux ou par les annuaires spécialisés. Ils varient selon la date, la saison et le nombre d'invités : demandez toujours un devis.
+
+- [Château de la Présidente](/lieux/chateau-de-la-presidente), près de Brignoles : 3 000 € TTC le week-end, du vendredi 10 h au dimanche 18 h, plus environ 550 € de ménage. Le domaine entier est privatisé, avec un parc de 2 hectares et jusqu'à 200 invités assis.
+- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : location de 3 900 € à 6 800 € selon la date, chambre des mariés incluse, avec une terrasse face aux îles d'Or.
+- [Château de Font du Broc](/lieux/chateau-de-font-du-broc), aux Arcs-sur-Argens : dès 3 960 € pour une salle vide, jusqu'à 650 invités assis.
+- [Château Mentone](/lieux/chateau-mentone), à Saint-Antonin-du-Var : location seule dès 4 000 €, dans un domaine viticole bio qui loge jusqu'à 54 personnes.
+- [Château de Nans](/lieux/chateau-de-nans), à Nans-les-Pins : 4 760 € HT en semaine, 5 780 € HT le vendredi, 6 800 € HT le samedi.
+- [Le Mas de Fontbelle](/lieux/mas-de-fontbelle), à Besse-sur-Issole : 4 950 € avec l'accès la veille, le chapiteau, le mobilier et deux nuits dans la maison des mariés.
+- [Château Sainte Roseline](/lieux/chateau-sainte-roseline), aux Arcs-sur-Argens : location à 5 600 €, menus dès 95 € par invité.
+- [Château Pimõ](/lieux/chateau-pimo), à Draguignan : de 5 980 € à 11 980 € selon la saison et le nombre de nuits.
+
+## Ce que comprend vraiment le prix
+
+Un prix bas n'est intéressant que si l'on sait ce qu'il couvre. Avant de comparer, posez les mêmes questions à chaque lieu :
+
+- **La durée** : une journée, une soirée, ou tout le week-end ? Au Château de la Présidente, les 3 000 € couvrent trois jours ; ailleurs, la même somme ne couvre qu'une soirée.
+- **Le mobilier** : tables, chaises et nappage sont-ils fournis ? Au Mas de Fontbelle, tables et chaises sont incluses, mais pas la vaisselle.
+- **Les frais obligatoires** : ménage, agent de sécurité, électricité. Ils ajoutent souvent 400 € à 800 € au devis.
+- **Le traiteur** : un lieu au prix bas avec traiteur imposé peut finir plus cher qu'un lieu un peu plus cher où le traiteur est libre.
+- **L'hébergement** : une ou deux nuits incluses évitent de payer un hôtel aux mariés et à leurs proches.
+
+> Pour comparer deux lieux, additionnez location, frais obligatoires, traiteur et boissons pour votre nombre d'invités : c'est le seul chiffre qui compte.
+
+## Cinq leviers pour payer moins
+
+- **Choisir un vendredi ou un dimanche** : au Château de Nans, le vendredi coûte environ 1 000 € HT de moins que le samedi, la semaine environ 2 000 € HT de moins.
+- **Se marier hors saison** : avril, mai, fin septembre et octobre sont souvent moins chers que juin et juillet, avec une lumière superbe. Voir [quelle saison choisir](/journal/quelle-saison-mariage-var).
+- **Préférer un lieu à traiteur libre** : vous pouvez mettre plusieurs traiteurs en concurrence et choisir un buffet ou des food trucks.
+- **Réduire la liste d'invités** : chaque invité coûte en moyenne entre 100 € et 200 € de repas et de boissons.
+- **Garder le décor naturel** : un parc, des oliviers ou une vue mer demandent peu de décoration.
+
+## Et pour un budget plus large
+
+Si votre budget le permet, d'autres lieux proposent des formules avec hébergement de vos invités sur place : le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) loge jusqu'à 90 personnes, le [Château de Berne](/lieux/chateau-de-berne) propose une formule dans son hôtel 5 étoiles. Notre article sur [le prix d'un lieu de mariage dans le Var](/journal/prix-lieu-mariage-var) détaille toutes les fourchettes.
+`,
+    faq: [
+      {
+        q: 'Quel est le lieu de mariage le moins cher du Var ?',
+        a: "Dans notre sélection, le [Château de la Présidente](/lieux/chateau-de-la-presidente), près de Brignoles, affiche le prix de départ le plus bas : 3 000 € TTC pour tout le week-end, plus environ 550 € de ménage. Les prix évoluent : vérifiez-les auprès du lieu.",
+      },
+      {
+        q: 'Peut-on louer un château dans le Var pour moins de 5 000 € ?',
+        a: "Oui. Le [Château Maravenne](/lieux/chateau-maravenne), le [Château de Font du Broc](/lieux/chateau-de-font-du-broc), le [Château Mentone](/lieux/chateau-mentone) et le [Château de Nans](/lieux/chateau-de-nans) publient des prix de départ entre 3 900 € et 4 760 €, souvent en semaine ou pour la location seule.",
+      },
+      {
+        q: 'Quels frais ajouter au prix de location ?',
+        a: "Le ménage, l'agent de sécurité, la vaisselle si elle n'est pas fournie, le traiteur et les boissons. Demandez au lieu la liste des frais obligatoires avant de signer.",
+      },
+    ],
+  },
+  {
+    slug: 'mariage-champetre-var',
+    description: "Mas, bastides, oliveraies et chapiteaux : les plus beaux lieux pour un mariage champêtre dans le Var, et nos conseils pour une fête nature réussie.",
+    title: 'Mariage champêtre dans le Var : mas, bastides et domaines nature',
+    category: 'Inspiration',
+    date: '2026-11-04',
+    excerpt:
+      "Oliviers centenaires, chapiteau illuminé, dîner sous les platanes : le Var se prête à merveille au mariage champêtre. Notre sélection de mas, bastides et domaines nature, et ce qu'il faut prévoir pour une fête en plein air.",
+    image: photos.hillsideArch,
+    imageAlt: 'Arche de cérémonie sur une colline',
+    venues: ['mas-de-fontbelle', 'chateau-de-la-presidente', 'domaine-de-la-rotonde', 'domaine-souviou', 'chateau-pimo', 'bastide-de-montferrat'],
+    body: `
+Le mariage champêtre, c'est une fête simple et chaleureuse, au plus près de la nature : une cérémonie sous les arbres, un cocktail dans l'herbe, un dîner sous les guirlandes. Le Var, avec ses oliveraies, ses collines boisées et ses vieilles bâtisses en pierre, en est l'un des plus beaux décors.
+
+## Nos lieux pour un mariage champêtre
+
+### Le Mas de Fontbelle, à Besse-sur-Issole
+
+Entre oliviers centenaires et collines, [Le Mas de Fontbelle](/lieux/mas-de-fontbelle) n'accueille qu'une réception à la fois. La cérémonie se tient dans un théâtre de verdure en gradins, le dîner sous un chapiteau illuminé de 225 m² pour 150 convives. Le traiteur est libre, et les mariés dorment sur place dans leur maison.
+
+### Le Château de la Présidente, près de Brignoles
+
+Demeure familiale du XIXe siècle, le [Château de la Présidente](/lieux/chateau-de-la-presidente) se privatise du vendredi au dimanche. Son parc de 2 hectares, son grand bassin, sa mare et sa cascadelle se prêtent à une cérémonie laïque champêtre, avant un dîner sur la terrasse de 1 000 m² ou dans la grande salle à manger.
+
+### Le Domaine de la Rotonde, à Villecroze
+
+Ancienne ferme templière au milieu de 53 hectares de forêts et de prairies, le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) marie la cérémonie dans l'oliveraie, le vin d'honneur sous les platanes centenaires et le dîner sous une tente nomade et des guirlandes guinguette. Suites, gîtes et tipis logent jusqu'à 90 invités.
+
+### Le Domaine Souviou, au Beausset
+
+Au milieu d'oliviers millénaires et des vignes de Bandol, le [Domaine Souviou](/lieux/domaine-souviou) installe la cérémonie au Bancau des Millénaires, puis le dîner sous le Pavillon du Moulin, couvert et ouvert sur les restanques.
+
+### Le Château Pimõ, à Draguignan
+
+Roseraie pour la cérémonie, vin d'honneur autour de la piscine et des oliviers, dîner sous une tente nomade entre oliviers et vignes : le [Château Pimõ](/lieux/chateau-pimo) se privatise en entier pour 30 à 120 invités.
+
+### La Bastide de Montferrat, aux portes du Verdon
+
+Dans un parc d'un hectare et demi traversé par une rivière, [La Bastide de Montferrat](/lieux/bastide-de-montferrat) célèbre la cérémonie sous un grand mûrier platane, au bord d'une cascade. La formule tout compris inclut le cocktail, le dîner et la soirée.
+
+## Prévoir un plan B
+
+Le Var est ensoleillé, mais un orage d'été ou un coup de mistral peut perturber une fête en plein air. Vérifiez toujours que le lieu dispose d'un espace couvert pour tous vos invités : un chapiteau, une salle, une terrasse couverte. Demandez aussi comment se fait la bascule le jour J, et jusqu'à quelle heure on peut décider.
+
+## Nos conseils pour l'ambiance
+
+- **Les lumières** : guirlandes guinguette, lanternes et bougies suffisent à transformer un parc à la nuit tombée.
+- **Les fleurs** : misez sur les fleurs de saison et les branches d'olivier, plus naturelles et moins chères.
+- **Le repas** : buffets, grandes tablées et desserts à partager collent à l'esprit champêtre. Un lieu à traiteur libre laisse plus de choix.
+- **Le confort** : prévoyez de l'ombre et de l'eau pour la cérémonie, des plaids pour la soirée dans l'arrière-pays, et des navettes pour le retour.
+
+Pour la cérémonie elle-même, notre guide pour [organiser une cérémonie laïque en Provence](/journal/ceremonie-laique-provence) détaille le déroulé et le rôle de l'officiant.
+`,
+    faq: [
+      {
+        q: 'Où organiser un mariage champêtre dans le Var ?',
+        a: "Dans un mas, une bastide ou un domaine entouré de nature : [Le Mas de Fontbelle](/lieux/mas-de-fontbelle), le [Château de la Présidente](/lieux/chateau-de-la-presidente), le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) ou le [Domaine Souviou](/lieux/domaine-souviou) proposent cérémonie en plein air et dîner sous chapiteau, tente ou platanes.",
+      },
+      {
+        q: 'Quel plan B prévoir pour un mariage en plein air ?',
+        a: "Un espace couvert assez grand pour tous les invités : chapiteau, salle de réception ou terrasse couverte. Demandez au lieu sa capacité en intérieur et l'heure limite pour décider de basculer.",
+      },
+      {
+        q: 'Quelle est la meilleure saison pour un mariage champêtre en Provence ?',
+        a: "Mai, juin et septembre offrent souvent le meilleur compromis entre lumière, chaleur et végétation. En juillet et en août, privilégiez une cérémonie en fin d'après-midi, à l'ombre.",
+      },
+    ],
+  },
+  {
+    slug: 'mariage-petit-comite-var',
+    description: "Mariage intime de 10 à 60 invités dans le Var : les lieux qui acceptent les petits groupes, les formules adaptées et les pièges à éviter.",
+    title: 'Mariage en petit comité dans le Var : les lieux pour 10 à 60 invités',
+    seoTitle: 'Mariage en petit comité dans le Var : 10 à 60 invités',
+    category: 'Lieux',
+    date: '2026-11-04',
+    excerpt:
+      "Un mariage à 20, 40 ou 60 invités demande un lieu à la bonne échelle, et qui accepte les petits groupes. Les adresses du Var où le minimum d'invités est bas, et nos conseils pour un mariage intime.",
+    image: photos.toastLights,
+    imageAlt: 'Invités trinquant sous des guirlandes lumineuses',
+    venues: ['domaine-de-la-rotonde', 'bastide-de-montferrat', 'chateau-maravenne', 'domaine-souviou', 'chateau-pimo', 'mas-de-fontbelle'],
+    body: `
+Se marier entouré de ses proches seulement, c'est plus de temps pour chaque invité, un budget mieux réparti et une ambiance plus chaleureuse. Mais tous les lieux ne s'y prêtent pas : certains imposent un minimum d'invités, d'autres paraissent vides avec quarante personnes. Voici les lieux du Var qui accueillent les petits groupes.
+
+## Le piège du minimum d'invités
+
+Beaucoup de lieux facturent un minimum, surtout quand le repas est inclus : au [Château Mentone](/lieux/chateau-mentone) et aux [Pins Penchés](/lieux/les-pins-penches), les formules démarrent à 60 invités. Avec 30 personnes, vous paieriez pour 60. Posez la question dès le premier contact, et vérifiez si la location seule est possible.
+
+## Les lieux qui acceptent les petits groupes
+
+- [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde), à Villecroze : à partir de 10 invités. Attention, le menu du traiteur partenaire est facturé pour 60 adultes minimum.
+- [La Bastide de Montferrat](/lieux/bastide-de-montferrat), aux portes du Verdon : formule tout compris de 10 à 150 participants, dès 139 € par personne, avec un hôtel de 20 chambres privatisé.
+- [Château Maravenne](/lieux/chateau-maravenne), à La Londe-les-Maures : à partir de 20 invités, avec un prix de location fixe qui ne dépend pas du nombre d'invités.
+- [Domaine Souviou](/lieux/domaine-souviou), au Beausset : de 20 à 300 invités, avec trois salles intérieures de 40 à 100 personnes.
+- [Château Pimõ](/lieux/chateau-pimo), à Draguignan : une demeure privatisée pour 30 à 120 invités, avec cinq chambres et suites et un spa.
+- [Le Mas de Fontbelle](/lieux/mas-de-fontbelle), à Besse-sur-Issole : une seule réception à la fois, un forfait qui ne dépend pas du nombre d'invités et une maison pour les mariés.
+
+## Un lieu à la bonne échelle
+
+Pour un petit mariage, la taille de la salle compte autant que le cadre. Une salle de 300 places à moitié vide casse l'ambiance. Cherchez plutôt :
+
+- un domaine qui se privatise en entier, pour profiter de tous les espaces sans croiser d'autres groupes ;
+- une salle ou une terrasse dimensionnée pour votre nombre d'invités ;
+- un hébergement sur place, pour transformer le mariage en week-end entre proches.
+
+> Avec moins de 40 invités, un dîner à une seule grande table crée une ambiance de repas de famille que les grandes tablées rondes ne donnent pas.
+
+## Le budget d'un petit mariage
+
+Un mariage intime n'est pas toujours beaucoup moins cher : la location du lieu reste la même, seuls le repas et les boissons diminuent. Pour en profiter pleinement :
+
+- choisissez un lieu au prix fixe, plutôt qu'une formule par personne avec un minimum élevé ;
+- investissez ce que vous économisez dans un meilleur repas, un photographe ou un week-end sur place ;
+- regardez les dates en semaine, souvent plus faciles à obtenir pour un petit groupe.
+
+Notre article sur [le prix d'un lieu de mariage dans le Var](/journal/prix-lieu-mariage-var) vous aide à comparer les formules.
+`,
+    faq: [
+      {
+        q: 'Où se marier en petit comité dans le Var ?',
+        a: "Plusieurs lieux acceptent les petits groupes : le [Domaine de la Rotonde](/lieux/domaine-de-la-rotonde) dès 10 invités, [La Bastide de Montferrat](/lieux/bastide-de-montferrat) dès 10, le [Château Maravenne](/lieux/chateau-maravenne) et le [Domaine Souviou](/lieux/domaine-souviou) dès 20, le [Château Pimõ](/lieux/chateau-pimo) dès 30.",
+      },
+      {
+        q: 'Les lieux de mariage imposent-ils un minimum d’invités ?',
+        a: "Souvent, surtout quand le repas est inclus dans une formule par personne. Au [Château Mentone](/lieux/chateau-mentone) et aux [Pins Penchés](/lieux/les-pins-penches), les formules démarrent à 60 invités. Demandez-le avant de visiter.",
+      },
+      {
+        q: 'Un mariage en petit comité coûte-t-il moins cher ?',
+        a: "Le repas et les boissons baissent, mais la location du lieu reste souvent la même. Un lieu au prix fixe, sans minimum d'invités, est le plus avantageux pour un petit mariage.",
+      },
+    ],
+  },
+  {
+    slug: 'mariage-var-pres-aix-marseille',
+    description: "Se marier dans le Var à moins d'une heure d'Aix-en-Provence et de Marseille : les lieux de la Provence Verte et de la Sainte-Baume, et les temps de trajet.",
+    title: 'Se marier dans le Var près d’Aix-en-Provence et de Marseille',
+    seoTitle: 'Mariage dans le Var près d’Aix-en-Provence et de Marseille',
+    category: 'Lieux',
+    date: '2026-11-04',
+    excerpt:
+      "Vos invités viennent d'Aix ou de Marseille ? L'ouest du Var, de la Sainte-Baume à la Provence Verte, offre châteaux, bastides et domaines viticoles à moins d'une heure de route.",
+    image: photos.sunsetHills,
+    imageAlt: 'Collines de Provence au coucher du soleil',
+    venues: ['chateau-de-nans', 'chateau-de-la-presidente', 'bastide-saint-julien', 'mas-de-fontbelle', 'domaine-souviou', 'chateau-mentone'],
+    body: `
+Pour beaucoup de couples d'Aix-en-Provence et de Marseille, le Var est une évidence : les paysages sont aussi beaux, et l'autoroute A8 met les premiers domaines à moins d'une heure de route. Voici les lieux de l'ouest du Var les plus pratiques pour vos invités.
+
+## La Sainte-Baume : le plus proche
+
+Le massif de la Sainte-Baume marque la limite entre les deux départements. Au pied de sa forêt, le [Château de Nans](/lieux/chateau-de-nans), à Nans-les-Pins, est à environ 30 minutes d'Aix-en-Provence et de Marseille, avec l'autoroute à moins d'un kilomètre. Son orangerie vitrée reçoit 250 invités assis, et ses 13 chambres logent 36 personnes. Découvrez le secteur de [la Sainte-Baume](/secteurs/sainte-baume).
+
+## La Provence Verte : autour de Brignoles
+
+Traversée par l'A8, la [Provence Verte](/secteurs/provence-verte) est l'un des secteurs les plus accessibles du Var :
+
+- [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle : à 10 minutes de l'A8 et environ 35 minutes d'Aix-en-Provence. Une bastide du XVIIIe siècle face à la montagne de la Loube, avec un salon de 490 m².
+- [Château de la Présidente](/lieux/chateau-de-la-presidente), au sud de Brignoles : à environ 45 minutes d'Aix-en-Provence, le domaine se privatise tout le week-end pour 3 000 €.
+- [Le Mas de Fontbelle](/lieux/mas-de-fontbelle), à Besse-sur-Issole : à 15 minutes de la sortie 35 de l'A8 (Brignoles), avec un chapiteau de 150 convives et un théâtre de verdure.
+- [Château Mentone](/lieux/chateau-mentone), à Saint-Antonin-du-Var : un domaine viticole bio qui loge jusqu'à 54 personnes, à 20 minutes de l'A8.
+- [Château de Robernier](/lieux/chateau-de-robernier), à Montfort-sur-Argens : un château du XVIe siècle pour les grandes réceptions, jusqu'à 300 invités.
+
+## L'Ouest Var : côté Marseille et Toulon
+
+Le long de la RN8, entre Marseille et Toulon, le [Domaine Souviou](/lieux/domaine-souviou), au Beausset, accueille de 20 à 300 invités au milieu d'oliviers millénaires et des vignes de Bandol. Le secteur de l'[Ouest Var](/secteurs/ouest-var) est aussi proche de la mer, pour prolonger le week-end.
+
+## Penser au trajet des invités
+
+Moins d'une heure de route, c'est confortable pour venir, beaucoup moins pour repartir à 3 h du matin. Quelques conseils :
+
+- **Les navettes** : réservez un car pour le retour vers Aix ou Marseille, et annoncez-le dans le faire-part.
+- **L'hébergement** : un lieu qui loge vos proches, comme le Château de Nans ou le Château Mentone, évite les retours de nuit.
+- **Le trafic** : le vendredi soir et en été, l'A8 et l'A50 sont chargées. Fixez l'heure de la cérémonie en conséquence.
+- **Le mistral** : l'ouest du Var y est exposé. Prévoyez un repli abrité pour la cérémonie.
+`,
+    faq: [
+      {
+        q: 'Quel lieu de mariage dans le Var est le plus proche d’Aix-en-Provence ?',
+        a: "Le [Château de Nans](/lieux/chateau-de-nans), à Nans-les-Pins, est à environ 30 minutes d'Aix-en-Provence et de Marseille. La [Bastide Saint Julien](/lieux/bastide-saint-julien), à La Celle, est à environ 35 minutes d'Aix.",
+      },
+      {
+        q: 'Pourquoi se marier dans le Var plutôt que dans les Bouches-du-Rhône ?',
+        a: "Pour ses châteaux viticoles, ses bastides et ses paysages de collines et de vignes, à moins d'une heure d'Aix et de Marseille par l'A8. Plusieurs lieux logent aussi les invités sur place.",
+      },
+      {
+        q: 'Comment organiser le retour des invités vers Marseille ou Aix ?',
+        a: "Réservez une navette en fin de soirée, ou choisissez un lieu qui loge vos invités sur place. Annoncez l'horaire de la navette dans le faire-part pour que chacun s'organise.",
+      },
+    ],
+  },
 ];
 
 export function findArticle(slug: string): Article | undefined {

@@ -15,6 +15,10 @@ export const articleSlugsEn: Record<string, string> = {
   'chateaux-viticoles-mariage-var': 'winery-chateau-weddings-var',
   'mariage-bord-de-mer-var': 'seaside-wedding-var',
   'quelle-saison-mariage-var': 'best-season-wedding-var',
+  'lieu-mariage-pas-cher-var': 'affordable-wedding-venues-var',
+  'mariage-champetre-var': 'country-wedding-var',
+  'mariage-petit-comite-var': 'small-wedding-var',
+  'mariage-var-pres-aix-marseille': 'wedding-var-near-aix-marseille',
 };
 
 /** French vendor category slug → English one. */
