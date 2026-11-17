@@ -15,18 +15,50 @@ export function Chevron({ direction }: { direction: 'left' | 'right' }) {
 export const arrowClass =
   'absolute top-1/2 z-10 flex h-10 w-10 -translate-y-1/2 items-center justify-center rounded-full bg-white/90 text-ink shadow-md transition hover:bg-white';
 
-/** Photos shown in a venue's preview in the lists. */
+/** Photos shown in a listing's preview in the lists. */
 const PREVIEW_PHOTOS = 8;
 
-/**
- * Photo preview with arrows. After the last photo, the next click opens the full venue page.
- */
+/** A venue's photo preview in the lists. */
 export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
+  const t = translator(useLang());
+  return (
+    <PhotoCarousel
+      photos={venue.gallery}
+      name={venue.nom_du_lieu}
+      firstAlt={venue.imageAlt}
+      href={href}
+      lastLabel={t('Voir la fiche', 'View venue')}
+      altSuffix={venue.illustrative ? t(' (illustration)', ' (illustrative)') : ''}
+    />
+  );
+}
+
+/**
+ * Photo preview with arrows, for a venue or a vendor in the lists. After the last photo, the next
+ * click opens the full listing page. A single photo shows without arrows.
+ */
+export function PhotoCarousel({
+  photos: all,
+  name,
+  firstAlt,
+  href,
+  lastLabel,
+  altSuffix = '',
+  className = 'aspect-[16/10] md:aspect-auto md:min-h-80',
+}: {
+  photos: string[];
+  name: string;
+  firstAlt: string;
+  href: string;
+  lastLabel: string;
+  altSuffix?: string;
+  className?: string;
+}) {
   const { navigate } = useRouter();
   const t = translator(useLang());
   const [index, setIndex] = useState(0);
-  // A few photos are enough to make couples want more: the venue page shows them all.
-  const photos = venue.gallery.slice(0, PREVIEW_PHOTOS);
+  // A few photos are enough to make couples want more: the listing page shows them all.
+  const photos = all.slice(0, PREVIEW_PHOTOS);
   const last = photos.length - 1;
   const onLast = index === last;
 
@@ -34,10 +66,10 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
 
   return (
     <div
-      className="relative aspect-[16/10] overflow-hidden bg-sage-soft md:aspect-auto md:min-h-80"
+      className={`relative overflow-hidden bg-sage-soft ${className}`}
       role="group"
       aria-roledescription={t('carrousel', 'carousel')}
-      aria-label={t(`Photos de ${venue.nom_du_lieu}`, `Photos of ${venue.nom_du_lieu}`)}
+      aria-label={t(`Photos de ${name}`, `Photos of ${name}`)}
     >
       {photos.map((id, i) =>
         // Render the visible photo and preload the next one.
@@ -45,11 +77,7 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
           <div key={id} aria-hidden={i !== index} className={`absolute inset-0 transition-opacity duration-300 ${i === index ? 'opacity-100' : 'opacity-0'}`}>
             <Photo
               id={id}
-              alt={
-                i === 0
-                  ? venue.imageAlt
-                  : `${venue.nom_du_lieu}, photo ${i + 1} ${t('sur', 'of')} ${photos.length}${venue.illustrative ? t(' (illustration)', ' (illustrative)') : ''}`
-              }
+              alt={i === 0 ? firstAlt : `${name}, photo ${i + 1} ${t('sur', 'of')} ${photos.length}${altSuffix}`}
               sizes="(min-width: 768px) 560px, 100vw"
               maxWidth={1200}
             />
@@ -59,37 +87,40 @@ export function VenueGallery({ venue, href }: { venue: Venue; href: string }) {
 
       <Link href={href} tabIndex={-1} aria-hidden className="absolute inset-0" />
 
-      {index > 0 && (
+      {photos.length > 1 && index > 0 && (
         <button type="button" onClick={() => setIndex(index - 1)} className={`${arrowClass} left-3`} aria-label={t('Photo précédente', 'Previous photo')}>
           <Chevron direction="left" />
         </button>
       )}
 
-      {onLast ? (
-        <button
-          type="button"
-          onClick={next}
-          className="absolute right-3 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-pine py-2.5 pl-4 pr-3 text-sm font-semibold text-white shadow-md transition hover:bg-pine-dark"
-        >
-          {t('Voir la fiche', 'View venue')}
-          <Chevron direction="right" />
-        </button>
-      ) : (
-        <button type="button" onClick={next} className={`${arrowClass} right-3`} aria-label={t('Photo suivante', 'Next photo')}>
-          <Chevron direction="right" />
-        </button>
-      )}
+      {photos.length > 1 &&
+        (onLast ? (
+          <button
+            type="button"
+            onClick={next}
+            className="absolute right-3 top-1/2 z-10 flex -translate-y-1/2 items-center gap-1.5 rounded-full bg-pine py-2.5 pl-4 pr-3 text-sm font-semibold text-white shadow-md transition hover:bg-pine-dark"
+          >
+            {lastLabel}
+            <Chevron direction="right" />
+          </button>
+        ) : (
+          <button type="button" onClick={next} className={`${arrowClass} right-3`} aria-label={t('Photo suivante', 'Next photo')}>
+            <Chevron direction="right" />
+          </button>
+        ))}
 
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-between bg-gradient-to-t from-black/45 to-transparent px-4 pb-3 pt-8 text-xs text-white">
-        <span aria-live="polite">
-          {index + 1} / {photos.length}
-        </span>
-        <span className="flex gap-1.5" aria-hidden>
-          {photos.map((id, i) => (
-            <span key={id} className={`h-1.5 rounded-full transition-all ${i === index ? 'w-4 bg-white' : 'w-1.5 bg-white/55'}`} />
-          ))}
-        </span>
-      </div>
+      {photos.length > 1 && (
+        <div className="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex items-center justify-between bg-gradient-to-t from-black/45 to-transparent px-4 pb-3 pt-8 text-xs text-white">
+          <span aria-live="polite">
+            {index + 1} / {photos.length}
+          </span>
+          <span className="flex gap-1.5" aria-hidden>
+            {photos.map((id, i) => (
+              <span key={id} className={`h-1.5 rounded-full transition-all ${i === index ? 'w-4 bg-white' : 'w-1.5 bg-white/55'}`} />
+            ))}
+          </span>
+        </div>
+      )}
     </div>
   );
 }

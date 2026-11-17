@@ -18,6 +18,7 @@ export const paths = {
     `/compte/fiche?type=${type}${category ? `&categorie=${encodeURIComponent(category)}` : ''}`,
   editListing: (id: string) => `/compte/fiche?id=${encodeURIComponent(id)}`,
   terms: '/conditions-professionnels',
+  legal: '/mentions-legales',
   admin: '/admin',
   journal: '/journal',
   article: (slug: string) => `/journal/${slug}`,

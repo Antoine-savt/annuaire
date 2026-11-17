@@ -142,18 +142,6 @@ function ContactDialog({ target, onClose }: { target: ContactTarget; onClose: ()
                 </div>
               )}
             </dl>
-            <p className="mt-4 rounded-xl bg-sage-soft px-4 py-3 text-[0.95rem]">
-              {t(
-                <>
-                  En les contactant, dites que vous les avez trouvés sur {site.name} : cela les aide à savoir d'où
-                  viennent leurs demandes.
-                </>,
-                <>
-                  When you get in touch, mention that you found them on {site.name}: it helps them know where their
-                  enquiries come from.
-                </>,
-              )}
-            </p>
           </div>
         ) : (
           <form onSubmit={onSubmit} className="mt-6">

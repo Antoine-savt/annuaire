@@ -27,7 +27,7 @@ export const enCategories: Record<string, EnCategoryText> = {
     pro: 'wedding photographer',
     menuDesc: 'Photographing your wedding day',
     description:
-      'How to choose your wedding photographer in the Var: styles, southern light, questions to ask and the contract. Our advice and our partner studio.',
+      'How to choose your wedding photographer in the Var: styles, southern light, questions to ask and the contract. Listed photographers and our advice.',
     intro:
       'Photographs are what remain of your wedding. In the Var, the light is a real asset, provided you know how to tame it. Here is how to choose the photographer who will tell the story of your day.',
     bookAhead: '12 to 18 months ahead',

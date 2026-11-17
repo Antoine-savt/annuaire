@@ -26,6 +26,7 @@ export type Route =
   | { name: 'account' }
   | { name: 'listingEditor' }
   | { name: 'terms' }
+  | { name: 'legal' }
   | { name: 'admin' }
   | { name: 'journal' }
   | { name: 'article'; article: Article }
@@ -78,6 +79,7 @@ export function matchRoute(path: string): Route {
   if (path === paths.login) return { name: 'login' };
   if (path === paths.account) return { name: 'account' };
   if (path === paths.terms) return { name: 'terms' };
+  if (path === paths.legal) return { name: 'legal' };
   if (path === paths.listingEditor) return { name: 'listingEditor' };
 
   const parts = path.split('/');
@@ -159,7 +161,7 @@ function publicPaths(lang: Lang): string[] {
     ...vendors.map((v) => p.vendorPage(v.category, v.slug)),
     ...(lang === 'fr' ? [paths.referencer] : []),
     p.confidentialite,
-    ...(lang === 'fr' ? [paths.terms] : []),
+    ...(lang === 'fr' ? [paths.terms, paths.legal] : []),
   ];
 }
 
@@ -592,6 +594,14 @@ export function getSeo(route: Route, path: string): Seo {
         title: withBrand('Conditions d’utilisation pour les professionnels'),
         description: `Les conditions d'utilisation de l'espace professionnel de ${site.name} : compte, fiches, contenus, tarifs et données.`,
         jsonLd: [breadcrumb([home, { name: 'Conditions professionnels', path }])],
+      };
+
+    case 'legal':
+      return {
+        ...base,
+        title: withBrand('Mentions légales'),
+        description: `Mentions légales de ${site.name}, service édité par ${site.legal.company} : éditeur, directeur de la publication, hébergeur et contact.`,
+        jsonLd: [breadcrumb([home, { name: 'Mentions légales', path }])],
       };
 
     case 'saved':

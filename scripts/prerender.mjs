@@ -103,6 +103,13 @@ if (!site.contactEmail || !site.publisher) {
       '   collects the contact requests. Fill them in before going live (required by the GDPR).\n',
   );
 }
+const missingLegal = ['legalForm', 'address', 'registration', 'publicationDirector'].filter((k) => !site.legal?.[k]);
+if (missingLegal.length) {
+  console.warn(
+    `\n⚠  Mentions légales incomplètes : site.legal.${missingLegal.join(', site.legal.')} vides dans src/site.ts.\n` +
+      '   Ces informations sont obligatoires (LCEN, art. 6) : remplissez-les avant la mise en ligne.\n',
+  );
+}
 if (!site.url) {
   console.warn(
     '\n⚠  SITE_URL is not set: canonical links, og:url and sitemap.xml were skipped.\n' +

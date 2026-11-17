@@ -1,35 +1,37 @@
 import { Vendor } from '../types';
-import { Photo } from './Photo';
 import { Tags } from './VenueListItem';
+import { PhotoCarousel } from './VenueGallery';
 import { Link } from '../router';
 import { usePaths, useT } from '../i18n/lang';
 
-function VendorImage({ vendor }: { vendor: Vendor }) {
-  const alt = vendor.imageAlt ?? vendor.name;
-  if (!vendor.image) {
-    // No photo yet: a monogram keeps the card tidy.
-    return (
-      <div aria-hidden className="flex h-full min-h-48 items-center justify-center bg-sage-soft font-display text-6xl text-pine/60">
-        {vendor.name.charAt(0)}
-      </div>
-    );
-  }
-  if (vendor.image.startsWith('/')) {
-    return <img src={vendor.image} alt={alt} loading="lazy" decoding="async" className="h-full w-full object-cover" />;
-  }
-  return <Photo id={vendor.image} alt={alt} sizes="(min-width: 768px) 30vw, 100vw" maxWidth={800} />;
+/** A vendor's photos: the cover first, then the extra ones, without duplicates. */
+export function vendorPhotos(v: Vendor): string[] {
+  return [v.image, ...(v.photos ?? [])].filter((p, i, all): p is string => !!p && all.indexOf(p) === i);
 }
 
 /** A vendor in its category list; the contact form is on its page, as for the venues. */
 export function VendorCard({ vendor }: { vendor: Vendor }) {
   const t = useT();
   const href = usePaths().vendorPage(vendor.category, vendor.slug);
+  const photos = vendorPhotos(vendor);
 
   return (
     <article className="grid overflow-hidden rounded-2xl border border-line bg-white md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)]">
-      <div className="aspect-[16/10] overflow-hidden md:aspect-auto">
-        <VendorImage vendor={vendor} />
-      </div>
+      {photos.length > 0 ? (
+        <PhotoCarousel
+          photos={photos}
+          name={vendor.name}
+          firstAlt={vendor.imageAlt ?? vendor.name}
+          href={href}
+          lastLabel={t('Voir la fiche', 'View listing')}
+          className="aspect-[16/10] md:aspect-auto md:min-h-64"
+        />
+      ) : (
+        // No photo yet: a monogram keeps the card tidy.
+        <div aria-hidden className="flex aspect-[16/10] min-h-48 items-center justify-center bg-sage-soft font-display text-6xl text-pine/60 md:aspect-auto">
+          {vendor.name.charAt(0)}
+        </div>
+      )}
       <div className="flex min-w-0 flex-col p-5 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-3">
           <p className="text-sm text-muted">

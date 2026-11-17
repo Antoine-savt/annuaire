@@ -10,48 +10,8 @@ import { PricingNotice } from '../components/PricingNotice';
 import { Photo } from '../components/Photo';
 import { VendorListingForm } from '../components/VendorListingForm';
 import { EnglishProNote, SelfServeCta } from '../components/SelfServeCta';
-import { photos } from '../images';
 import { vendorsIn } from '../vendorListings';
 import { VendorCard } from '../components/VendorCard';
-
-/** Our partner photographer, shown on the photographers page. */
-function PhotographerPartner() {
-  const { photographer } = site;
-  const t = useT();
-  return (
-    <div className="grid items-center gap-8 rounded-2xl border border-line bg-white p-5 sm:p-8 md:grid-cols-2">
-      <div className="aspect-[4/3] overflow-hidden rounded-xl bg-sage-soft">
-        <Photo id={photos.coupleBw} alt={t('Portrait de mariés en noir et blanc', 'Black and white portrait of a bride and groom')} sizes="(min-width: 768px) 40vw, 100vw" maxWidth={1200} />
-      </div>
-      <div>
-        <p className="text-sm font-semibold text-pine">{t('Notre studio partenaire', 'Our partner studio')}</p>
-        <h3 className="mt-1 text-3xl text-ink">{photographer.name}</h3>
-        <p className="mt-4 leading-relaxed text-muted">
-          {t(
-            "Reportages de mariage et photographie d'architecture dans le Var et en Provence-Alpes-Côte d'Azur. Une approche inspirée de la photographie Fine Art et du reportage documentaire, qui privilégie la lumière naturelle et les instants vrais.",
-            "Wedding reportage and architectural photography in the Var and across Provence-Alpes-Côte d'Azur. An approach inspired by fine-art photography and documentary reportage, favouring natural light and genuine moments.",
-          )}
-        </p>
-        {(photographer.website || photographer.instagram) && (
-          <div className="mt-6 flex flex-wrap gap-3">
-            {photographer.website && (
-              <a href={photographer.website} target="_blank" rel="noopener" className="btn-primary">
-                {t('Voir le portfolio', 'View the portfolio')}
-                <span className="sr-only">{t(' (nouvel onglet)', ' (opens in a new tab)')}</span>
-              </a>
-            )}
-            {photographer.instagram && (
-              <a href={photographer.instagram} target="_blank" rel="noopener" className="btn-ghost">
-                Instagram
-                <span className="sr-only">{t(' (nouvel onglet)', ' (opens in a new tab)')}</span>
-              </a>
-            )}
-          </div>
-        )}
-      </div>
-    </div>
-  );
-}
 
 export function VendorCategoryPage({ category: c }: { category: VendorCategory }) {
   const listed = vendorsIn(c.slug);
@@ -104,7 +64,6 @@ export function VendorCategoryPage({ category: c }: { category: VendorCategory }
             : t(`${c.name} dans le Var`, `${c.name} in the Var`)}
         </h2>
         <div className="mt-6 space-y-6">
-          {c.slug === 'photographes' && <PhotographerPartner />}
           {listed.length > 0 ? (
             <ul className="space-y-6">
               {listed.map((v) => (
@@ -114,24 +73,22 @@ export function VendorCategoryPage({ category: c }: { category: VendorCategory }
               ))}
             </ul>
           ) : (
-            c.slug !== 'photographes' && (
-              <p className="rounded-2xl border border-dashed border-line px-6 py-8 leading-relaxed text-muted">
-                {t(
-                  <>
-                    L’annuaire des {c.name.toLowerCase()} du Var est en cours de constitution. En attendant, nos conseils
-                    ci-dessous vous aident à bien choisir. Vous êtes {c.pro} ?{' '}
-                    <a href="#referencer" className="link text-ink">
-                      Publiez votre fiche
-                    </a>
-                    .
-                  </>,
-                  <>
-                    Our directory of {lowerName} in the Var is still being put together. In the meantime, the advice below
-                    will help you choose well.
-                  </>,
-                )}
-              </p>
-            )
+            <p className="rounded-2xl border border-dashed border-line px-6 py-8 leading-relaxed text-muted">
+              {t(
+                <>
+                  L’annuaire des {c.name.toLowerCase()} du Var est en cours de constitution. En attendant, nos conseils
+                  ci-dessous vous aident à bien choisir. Vous êtes {c.pro} ?{' '}
+                  <a href="#referencer" className="link text-ink">
+                    Publiez votre fiche
+                  </a>
+                  .
+                </>,
+                <>
+                  Our directory of {lowerName} in the Var is still being put together. In the meantime, the advice below
+                  will help you choose well.
+                </>,
+              )}
+            </p>
           )}
         </div>
       </section>

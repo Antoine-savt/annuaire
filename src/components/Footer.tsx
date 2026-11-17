@@ -31,6 +31,17 @@ export function Footer() {
                 </>,
               )}
             </p>
+            {site.contactEmail && (
+              <div className="mt-6">
+                <h2 className="font-sans text-sm font-semibold text-white">{t('Nous contacter', 'Contact us')}</h2>
+                <a
+                  href={`mailto:${site.contactEmail}`}
+                  className="mt-2 inline-block break-all text-[0.95rem] underline decoration-white/30 underline-offset-4 transition-colors hover:text-white hover:decoration-white"
+                >
+                  {site.contactEmail}
+                </a>
+              </div>
+            )}
           </div>
 
           <nav aria-label={t('Lieux par secteur', 'Venues by area')}>
@@ -118,6 +129,17 @@ export function Footer() {
             {t(
               '. Tarifs et capacités indicatifs, à confirmer auprès de chaque lieu.',
               '. Prices and capacities are indicative: please confirm them with each venue.',
+            )}
+          </p>
+          <p className="flex flex-wrap gap-x-4 gap-y-1">
+            <span>{t(`Édité par ${site.legal.company}`, `Published by ${site.legal.company}`)}</span>
+            <Link href={paths.legal} hrefLang={proLang} className="transition-colors hover:text-white">
+              {t('Mentions légales', 'Legal notice (in French)')}
+            </Link>
+            {site.contactEmail && (
+              <a href={`mailto:${site.contactEmail}`} className="transition-colors hover:text-white">
+                Contact
+              </a>
             )}
           </p>
         </div>

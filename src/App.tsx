@@ -14,6 +14,7 @@ import { VendorPage } from './pages/VendorPage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { PrivacyPage } from './pages/PrivacyPage';
 import { TermsPage } from './pages/TermsPage';
+import { LegalNoticePage } from './pages/LegalNoticePage';
 import { ListYourVenuePage } from './pages/ListYourVenuePage';
 import { SavedPage } from './pages/SavedPage';
 import { SavedShortcut } from './components/SavedShortcut';
@@ -106,6 +107,8 @@ function Page({ route, filters, onFiltersChange }: { route: Route; filters: Filt
       return <PrivacyPage />;
     case 'terms':
       return <TermsPage />;
+    case 'legal':
+      return <LegalNoticePage />;
     case 'referencer':
       return <ListYourVenuePage />;
     case 'saved':

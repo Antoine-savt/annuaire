@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Vendor, VendorCategory } from '../types';
 import { vendorsIn, vendorTarget } from '../vendorListings';
 import { track } from '../lib/track';
@@ -9,13 +9,24 @@ import { Breadcrumbs } from '../components/Breadcrumbs';
 import { ContactAccess } from '../components/ContactAccess';
 import { Photo } from '../components/Photo';
 import { Tags } from '../components/VenueListItem';
+import { arrowClass, Chevron } from '../components/VenueGallery';
+import { vendorPhotos } from '../components/VendorCard';
 
 /** Page of one vendor: photos, presentation and the gated contact form. */
 export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; category: VendorCategory }) {
   const target = vendorTarget(v);
-  const photos = [v.image, ...(v.photos ?? [])].filter((p, i, all): p is string => !!p && all.indexOf(p) === i);
-  const [selected, setPhoto] = useState(0);
+  const photos = vendorPhotos(v);
+  const [selected, setSelected] = useState(0);
   const photo = Math.max(0, Math.min(selected, photos.length - 1));
+  const count = photos.length;
+  const thumbs = useRef<HTMLUListElement>(null);
+  /** Show a photo and bring its thumbnail into view in the strip. */
+  const setPhoto = (i: number) => {
+    setSelected(i);
+    const list = thumbs.current;
+    const item = list?.children[i] as HTMLElement | undefined;
+    if (list && item) list.scrollTo({ left: item.offsetLeft - (list.clientWidth - item.clientWidth) / 2, behavior: 'smooth' });
+  };
   const others = vendorsIn(c.slug).filter((x) => x.slug !== v.slug).slice(0, 6);
 
   const { refreshed } = useCatalogState();
@@ -46,19 +57,43 @@ export function VendorPage({ vendor: v, category: c }: { vendor: Vendor; categor
       <article>
         <header className="mx-auto grid max-w-6xl items-start gap-8 px-5 pb-14 pt-8 sm:px-8 md:grid-cols-2 md:gap-12">
           <figure>
-            <div className="aspect-[4/3] overflow-hidden rounded-2xl bg-sage-soft">
-              {photos.length > 0 ? (
-                <Photo key={photos[photo]} id={photos[photo]} alt={v.imageAlt ?? v.name} sizes="(min-width: 768px) 45vw, 100vw" priority />
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-sage-soft">
+              {count > 0 ? (
+                <Photo
+                  key={photos[photo]}
+                  id={photos[photo]}
+                  alt={photo === 0 ? v.imageAlt ?? v.name : `${v.name}, photo ${photo + 1}`}
+                  sizes="(min-width: 768px) 45vw, 100vw"
+                  priority
+                />
               ) : (
                 <div aria-hidden className="flex h-full items-center justify-center font-display text-8xl text-pine/50">
                   {v.name.charAt(0)}
                 </div>
               )}
+              {count > 1 && (
+                <>
+                  <button type="button" onClick={() => setPhoto((photo - 1 + count) % count)} className={`${arrowClass} left-3`} aria-label={t('Photo précédente', 'Previous photo')}>
+                    <Chevron direction="left" />
+                  </button>
+                  <button type="button" onClick={() => setPhoto((photo + 1) % count)} className={`${arrowClass} right-3`} aria-label={t('Photo suivante', 'Next photo')}>
+                    <Chevron direction="right" />
+                  </button>
+                  <span aria-live="polite" className="absolute bottom-3 right-3 rounded-full bg-black/55 px-2.5 py-1 text-xs font-semibold text-white">
+                    {photo + 1} / {count}
+                  </span>
+                </>
+              )}
             </div>
-            {photos.length > 1 && (
-              <ul className="mt-3 grid grid-cols-5 gap-2" aria-label={t('Choisir une photo', 'Choose a photo')}>
-                {photos.slice(0, 10).map((id, i) => (
-                  <li key={id}>
+            {count > 1 && (
+              // Five thumbnails in view, the others scroll sideways (the padding keeps the selection ring visible).
+              <ul
+                ref={thumbs}
+                className="relative -mx-1 mt-2 flex snap-x scroll-px-1 gap-2 overflow-x-auto p-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                aria-label={t('Choisir une photo', 'Choose a photo')}
+              >
+                {photos.map((id, i) => (
+                  <li key={id} className="w-[calc((100%-2rem)/5)] shrink-0 snap-start">
                     <button
                       type="button"
                       onClick={() => setPhoto(i)}

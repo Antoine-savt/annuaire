@@ -10,7 +10,7 @@ export const vendorCategories: VendorCategory[] = [
     pro: 'photographe de mariage',
     menuDesc: 'Le reportage photo du jour J',
     description:
-      'Bien choisir son photographe de mariage dans le Var : styles, lumière du Sud, questions à poser et contrat. Nos conseils et notre studio partenaire.',
+      'Bien choisir son photographe de mariage dans le Var : styles, lumière du Sud, questions à poser et contrat. Les photographes référencés et nos conseils.',
     intro:
       "Les photos sont ce qui reste du mariage. Dans le Var, la lumière est un atout, à condition de savoir l'apprivoiser. Voici comment choisir le photographe qui racontera votre journée.",
     bookAhead: '12 à 18 mois avant',
