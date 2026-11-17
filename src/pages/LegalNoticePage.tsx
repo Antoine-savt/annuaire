@@ -30,6 +30,14 @@ export function LegalNoticePage() {
             {legal.vatNumber && <li>N° de TVA intracommunautaire : {legal.vatNumber}</li>}
             {legal.phone && <li>Téléphone : {legal.phone}</li>}
             {email && <li>E-mail : {email}</li>}
+            {legal.website && (
+              <li>
+                Site web :{' '}
+                <a href={legal.website} target="_blank" rel="noopener" className="link">
+                  {legal.website.replace('https://', '')}
+                </a>
+              </li>
+            )}
           </ul>
         </>
       ),
@@ -87,6 +95,20 @@ export function LegalNoticePage() {
           par les professionnels. Ils doivent être confirmés auprès de chaque lieu ou prestataire. Pour signaler une erreur
           ou demander le retrait d’un contenu : {email ?? 'utilisez l’adresse de contact du site'}.
         </p>
+      ),
+    },
+    {
+      title: 'Nous contacter',
+      body: (
+        <ul className="list-disc space-y-1 pl-6">
+          {email && <li>Par e-mail : {email}</li>}
+          {legal.phone && <li>Par téléphone : {legal.phone}</li>}
+          {legal.address && (
+            <li>
+              Par courrier : {legal.company}, {legal.address}
+            </li>
+          )}
+        </ul>
       ),
     },
     {

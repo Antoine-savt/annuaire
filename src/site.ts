@@ -13,7 +13,7 @@ export const site = {
   /** Who publishes the site and keeps the contact requests (company or person), shown on the privacy page. */
   publisher: 'Wheeloh',
   /** Contact address for submissions and personal-data requests, e.g. "contact@mon-domaine.fr". */
-  contactEmail: '',
+  contactEmail: 'contact@wheeloh.com',
   /** How long contact requests are kept before deletion, shown on the privacy page. */
   leadRetentionMonths: 12,
   /**
@@ -23,16 +23,17 @@ export const site = {
   legal: {
     company: 'Wheeloh',
     /** Legal form and share capital, e.g. "SAS au capital de 1 000 €". */
-    legalForm: '',
+    legalForm: 'Société par actions simplifiée (SAS) au capital variable de 20 €',
     /** Registered office address. */
-    address: '',
+    address: 'Bâtiment B, 155 boulevard de la Reine, 78000 Versailles, France',
     /** Registration, e.g. "RCS Toulon 123 456 789". */
-    registration: '',
+    registration: 'RCS Versailles 995 071 040',
     /** Intra-EU VAT number, if any. */
-    vatNumber: '',
-    phone: '',
+    vatNumber: 'non applicable',
+    phone: '+33 7 52 05 25 59',
+    website: 'https://wheeloh.com',
     /** Publication director (directeur de la publication): a natural person. */
-    publicationDirector: '',
+    publicationDirector: 'Antoine Savoyant, président',
   },
   host: {
     name: 'Netlify, Inc.',
